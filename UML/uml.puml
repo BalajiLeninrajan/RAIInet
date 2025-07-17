@@ -1,0 +1,235 @@
+@startuml
+
+' --- Model Classes ---
+package "model" {
+    class Game {
+      - vector<Player> players
+      - int currentPlayerIndex;
+
+      + void startGame()
+      + void nextTurn()
+      + bool checkWinLoss()
+      + Player* getCurrentPlayer()
+      + int getPlayerIndex(Player *)
+      + void makeMove(char link, char dir)
+      + void showCurrentPlayerAbility()
+      + void useAbility(int id, vector<string> params)
+    }
+
+    class Board {
+      - vector<vector<BaseCell>> board;
+
+      + bool moveLink(Link* link, pair<int, int> coords)
+    }
+
+    abstract class BaseCell {
+      - Link* occupantLink
+
+      + void onEnter(Link *)
+    }
+
+    class BoardCell {
+    }
+
+    abstract class PlayerCell {
+      - Player* owner
+    }
+
+    class Server {
+    }
+
+    class Firewall {
+    }
+
+    class Goal {
+    }
+
+    class Player {
+      - pair<int, int> getScore
+      - vector<Ability*> abilities
+      - vector<Link*> links
+
+      + pair<int, int> getScore()
+      + vector<Ability*> getAbilities()
+      + Ability* getAbility()
+      + void download(Link* link)
+      + void requestMove(Direction dir)
+      + void deleteLink(Link* link)
+      + Link* getLink(char link)
+    }
+
+    abstract class Link {
+      - pair<int, int> coords
+      - int strength 
+
+      + pair<int, int> getCoords()
+      + void setCoords(pair<int, int> newCoords)
+      + int getStrength
+      + bool isVirus()
+    }
+
+    class VirusLink {
+    }
+
+    class DataLink {
+    }
+
+    abstract class LinkDecorator {
+      # Link* base 
+    }
+
+    class LinkBoostDecorator {
+    }
+
+    class PolarizeDecorator {
+    }
+
+    class RevealDecorator {
+    }
+
+    class LagDecorator {
+      - int turnsLeft
+    }
+
+    class QuantumEntanglementDecorator {
+      - Link* partner
+    }
+
+    abstract class Ability {
+        - string name
+        - bool used
+
+        + void use()
+        + bool isUsed()
+        + void markUsed()
+        + string getName()
+    }
+
+    class FirewallAbility {
+    }
+
+    class DownloadAbility {
+    }
+
+    class PolarizeAbility {
+    }
+
+    class ScanAbility {
+    }
+
+    class LinkBoostAbility {
+    }
+
+    class PappleAbility {
+    }
+
+    class LagAbility {
+    }
+
+    class QuantumEntanglementAbility {
+    }
+}
+
+' --- View Classes ---
+package "view" {
+    abstract class View {
+        + void update()
+        + void display()
+        + void notify(Player* player)
+    }
+
+    class TextView {
+        + TextView(Game* model)
+        + void update() override
+        + void display() override
+    }
+
+    class GraphicalView {
+        + GraphicalView(Game* model)
+        + void update() override
+        + void display() override
+    }
+}
+
+' --- Controller Class ---
+package "controller" {
+    class Controller {
+        - vector<vector<View>> views
+        - Game* game
+
+        + Controller(Game* game)
+        + void runGameLoop()
+        + void parseCommand(const std::string& commandLine)
+    }
+}
+
+' --- Factory Classes ---
+package "factory" {
+    class LinkFactory {
+      + Link * createPlayerLink(Player * player)
+    }
+
+    class AbilityFactory {
+      + Ability * createPlayerAbility(Player * player)
+    }
+
+    class LinkDecoratorFactory {
+      + LinkDecorator * createLinkDecorator(Link * link)
+    }
+}
+
+
+' --- Relationships ---
+
+Game *-- Board
+Game *-- Player
+
+Board *-- BaseCell
+BaseCell o-- Link
+
+Player *-- Ability
+Player *--  Link
+
+Link o-- Board
+
+Player *--  PlayerCell
+PlayerCell *-- BaseCell
+
+BaseCell <|-- BoardCell
+BaseCell <|-- PlayerCell
+PlayerCell <|-- Server 
+PlayerCell <|-- Firewall 
+PlayerCell <|-- Goal
+
+Link <|-- VirusLink
+Link <|-- DataLink
+Link <|-- LinkDecorator
+
+LinkDecorator <|-- LinkBoostDecorator
+LinkDecorator <|-- PolarizeDecorator
+LinkDecorator <|-- RevealDecorator
+LinkDecorator <|-- LagDecorator
+LinkDecorator <|-- QuantumEntanglementDecorator
+
+Ability <|-- FirewallAbility
+Ability <|-- DownloadAbility
+Ability <|-- PolarizeAbility
+Ability <|-- ScanAbility
+Ability <|-- LinkBoostAbility
+Ability <|-- PappleAbility
+Ability <|-- LagAbility
+Ability <|-- QuantumEntanglementAbility
+
+LinkDecorator *-- Link
+
+View <|-- TextView
+View <|-- GraphicalView
+
+Controller o-- Game 
+Controller o-- View
+
+LinkFactory .> Link
+AbilityFactory .> Ability
+LinkDecoratorFactory .> LinkDecorator
+
+@enduml
