@@ -5,9 +5,11 @@ package "model" {
     class Game {
       - vector<Player> players
       - int currentPlayerIndex;
+      - Board board
 
       + void startGame()
       + void nextTurn()
+      + Board* getBoard()
       + bool checkWinLoss()
       + Player* getCurrentPlayer()
       + int getPlayerIndex(Player *)
@@ -64,7 +66,7 @@ package "model" {
 
       + pair<int, int> getCoords()
       + void setCoords(pair<int, int> newCoords)
-      + int getStrength
+      + int getStrength()
       + bool isVirus()
     }
 
@@ -157,7 +159,6 @@ package "controller" {
         - vector<vector<View>> views
         - Game* game
 
-        + Controller(Game* game)
         + void runGameLoop()
         + void parseCommand(const std::string& commandLine)
     }
