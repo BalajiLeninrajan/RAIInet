@@ -78,12 +78,14 @@ package "model" {
     abstract class Link {
       - pair<int, int> coords
       - int strength 
+      - bool revealState
 
       + pair<int, int> getCoords()
       + void setCoords(pair<int, int> newCoords)
       + void requestMove(Direction dir)
       + int getStrength()
       + LinkType getType()
+      + bool getRevealSet()
     }
 
     class VirusLink {
