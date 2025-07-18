@@ -1,5 +1,8 @@
 @startuml
 
+skinparam classAttributeIconSize 0
+skinparam defaultFontName "JetBrains Mono"
+
 ' --- Enums ---
 package "enums" {
   enum Direction {
@@ -50,7 +53,7 @@ package "model" {
     }
 
     abstract class PlayerCell {
-      - BaseCell* base
+      # BaseCell* base
       - Player* owner
     }
 
@@ -78,14 +81,13 @@ package "model" {
     abstract class Link {
       - pair<int, int> coords
       - int strength 
-      - bool revealState
 
       + pair<int, int> getCoords()
       + void setCoords(pair<int, int> newCoords)
       + void requestMove(Direction dir)
       + int getStrength()
       + LinkType getType()
-      + bool getRevealSet()
+      + bool getRevealState()
     }
 
     class VirusLink {
@@ -119,7 +121,7 @@ package "model" {
         - string name
         - bool used
 
-        + void use()
+        + void use(vector<string> params)
         + bool isUsed()
         + void markUsed()
         + string getName()
@@ -153,8 +155,8 @@ package "model" {
 ' --- View Classes ---
 package "view" {
     abstract class View {
-        + void update()
-        + void display()
+        - void update()
+        - void display()
         + void notify(Player* player)
     }
 
