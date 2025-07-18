@@ -1,5 +1,21 @@
 @startuml
 
+' --- Enums ---
+package "enums" {
+  enum Direction {
+    NORTH
+    SOUTH
+    EAST
+    WEST
+  }
+  
+  enum LinkType {
+    VIRUS
+    DATA
+  }
+}
+
+
 ' --- Model Classes ---
 package "model" {
     class Game {
@@ -12,7 +28,7 @@ package "model" {
       + Board* getBoard()
       + bool checkWinLoss()
       + Player* getCurrentPlayer()
-      + int getPlayerIndex(Player *)
+      + int getPlayerIndex(Player*)
       + void makeMove(char link, char dir)
       + void showCurrentPlayerAbility()
       + void useAbility(int id, vector<string> params)
@@ -27,7 +43,7 @@ package "model" {
     abstract class BaseCell {
       - Link* occupantLink
 
-      + void onEnter(Link *)
+      + void onEnter(Link*)
     }
 
     class BoardCell {
@@ -55,7 +71,6 @@ package "model" {
       + vector<Ability*> getAbilities()
       + Ability* getAbility()
       + void download(Link* link)
-      + void requestMove(Direction dir)
       + void deleteLink(Link* link)
       + Link* getLink(char link)
     }
@@ -66,8 +81,9 @@ package "model" {
 
       + pair<int, int> getCoords()
       + void setCoords(pair<int, int> newCoords)
+      + void requestMove(Direction dir)
       + int getStrength()
-      + bool isVirus()
+      + LinkType getType()
     }
 
     class VirusLink {
@@ -141,15 +157,9 @@ package "view" {
     }
 
     class TextView {
-        + TextView(Game* model)
-        + void update() override
-        + void display() override
     }
 
     class GraphicalView {
-        + GraphicalView(Game* model)
-        + void update() override
-        + void display() override
     }
 }
 
@@ -167,15 +177,15 @@ package "controller" {
 ' --- Factory Classes ---
 package "factory" {
     class LinkFactory {
-      + Link * createPlayerLink(Player * player)
+      + Link* createPlayerLink(Player* player)
     }
 
     class AbilityFactory {
-      + Ability * createPlayerAbility(Player * player)
+      + Ability* createPlayerAbility(Player* player)
     }
 
     class LinkDecoratorFactory {
-      + LinkDecorator * createLinkDecorator(Link * link)
+      + LinkDecorator* createLinkDecorator(Link* link)
     }
 }
 
