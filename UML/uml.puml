@@ -50,6 +50,7 @@ package "model" {
     }
 
     abstract class PlayerCell {
+      - BaseCell* base
       - Player* owner
     }
 
@@ -69,7 +70,6 @@ package "model" {
 
       + pair<int, int> getScore()
       + vector<Ability*> getAbilities()
-      + Ability* getAbility()
       + void download(Link* link)
       + void deleteLink(Link* link)
       + Link* getLink(char link)
