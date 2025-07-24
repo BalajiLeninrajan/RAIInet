@@ -1,3 +1,2 @@
 RAIInet
-*.o
-*.d
+build/
