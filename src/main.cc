@@ -13,7 +13,10 @@ int main(int argc, char* argv[]) {
     opts.add_options()
         ("help,h", "Print help")
         ("ability1,a1", po::value<std::vector<std::string>>()->multitoken(), "5 space separated ability IDs for player 1.")
-        ("ability2,a2", po::value<std::vector<std::string>>()->multitoken(), "5 space separated ability IDs for player 2.");
+        ("ability2,a2", po::value<std::vector<std::string>>()->multitoken(), "5 space separated ability IDs for player 2.")
+        ("link1,l1", po::value<std::string>(), "Link placement file for player 1.")
+        ("link2,l2", po::value<std::string>(), "Link placement file for player 2.")
+        ("graphics,g", "Optional flag enabling graphical support.");
 
     auto style = po::command_line_style::default_style
            | po::command_line_style::allow_long_disguise; 
@@ -72,7 +75,27 @@ int main(int argc, char* argv[]) {
                 std::cout << a << " ";
             }
         }
-        std::cout << std::endl;
+
+        // link 1 
+        if (vm.count("link1")) {
+            string filename = vm["link1"].as<string>();
+            std::cout << "link 1 file: " << filename << std::endl;
+        } else {
+            // randomize link placements for player 1
+        }
+        
+        // link 2
+        if (vm.count("link2")) {
+            string filename = vm["link2"].as<string>();
+            std::cout << "link 2 file: " << filename << std::endl;
+        } else {
+            // randomize link placements for player 2
+        }
+
+        // graphics
+        if (vm.count("graphics")) {
+            std::cout << "Using graphics" << std::endl;
+        }
 
     } catch (const po::error& e) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
