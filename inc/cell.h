@@ -7,7 +7,7 @@ class Player;
 
 // Abstract base class for all cells on the board.
 class BaseCell {
-    Link *occupantLink =
+    std::shared_ptr<Link> occupantLink =
         nullptr;  // Non-owning pointer to the link on this cell.
 
    public:
@@ -19,6 +19,8 @@ class BaseCell {
 // A standard, unoccupied cell on the board.
 class BoardCell : public BaseCell {
    public:
+    BoardCell();
+    ~BoardCell();
     void onEnter(Link &link) override;
 };
 
@@ -26,17 +28,19 @@ class BoardCell : public BaseCell {
 class PlayerCell : public BaseCell {
    protected:
     std::unique_ptr<BaseCell> base;  // The cell being decorated.
-    Player *owner;  // Non-owning pointer to the player who owns this cell.
+    std::weak_ptr<Player>
+        owner;  // Non-owning pointer to the player who owns this cell.
 
    public:
-    PlayerCell(std::unique_ptr<BaseCell> base, Player *owner)
-        : base{std::move(base)}, owner{owner} {}
+    PlayerCell(std::unique_ptr<BaseCell> base, std::weak_ptr<Player> owner);
+    virtual ~PlayerCell();
 };
 
 // Represents a player's Server Port.
 class Server : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
+    ~Server() = default;
     void onEnter(Link &link) override;
 };
 
@@ -44,6 +48,7 @@ class Server : public PlayerCell {
 class Firewall : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
+    ~Firewall() = default;
     void onEnter(Link &link) override;
 };
 
@@ -51,5 +56,6 @@ class Firewall : public PlayerCell {
 class Goal : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
+    ~Goal() = default;
     void onEnter(Link &link) override;
 };

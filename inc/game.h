@@ -18,12 +18,12 @@ class Game {
 
     void startGame();
     void nextTurn();
-    Board *getBoard() { return board.get(); }  // Non-owning pointer for access.
-    bool checkWinLoss();                       // [cite: 11]
-    Player *getCurrentPlayer();
-    int getPlayerIndex(const Player *player);
+    std::weak_ptr<Board> getBoard();
+    bool checkWinLoss();
+    std::weak_ptr<Player> getCurrentPlayer();
+    int getPlayerIndex(const std::weak_ptr<Player>& player);
 
-    void makeMove(char link, char dir);  //
+    void makeMove(char link, char dir);
     void showCurrentPlayerAbility();
-    void useAbility(int id, const std::vector<std::string> &params);
+    void useAbility(int id, const std::vector<std::string>& params);
 };
