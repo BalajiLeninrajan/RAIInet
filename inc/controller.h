@@ -10,11 +10,11 @@ class Game;
 
 // The Controller handles user input and orchestrates the Model and View.
 class Controller {
-  std::unique_ptr<Game> game; // Controller owns the Game instance.
-  std::vector<std::shared_ptr<View>> views; // Manages all active views.
+    std::unique_ptr<Game> game;  // Controller owns the Game instance.
+    std::vector<std::shared_ptr<View>> views;  // Manages all active views.
 
-public:
-  Controller();
-  void runGameLoop();
-  void parseCommand(const std::string &commandLine);
+   public:
+    Controller();
+    void runGameLoop();
+    void parseCommand(const std::string &commandLine);
 };
