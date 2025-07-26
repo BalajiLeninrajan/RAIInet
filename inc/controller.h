@@ -18,6 +18,7 @@ class Controller {
    public:
 
     Controller();
+    ~Controller();
     void runGameLoop();
     void parseCommand(const std::string &commandLine);
     void init(int argc, char* argv[]);
