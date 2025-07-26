@@ -35,12 +35,12 @@ class ScanAbility : public Ability {
 };
 
 // Our custom abilities
-class LagAbility : public Ability {
+class BadConnectionAbility : public Ability {
     void use(const std::vector<std::string> &params) override;
 };
 class QuantumEntanglementAbility : public Ability {
     void use(const std::vector<std::string> &params) override;
 };
-class PappleAbility : public Ability {
+class NetworkAbility : public Ability {
     void use(const std::vector<std::string> &params) override;
 };

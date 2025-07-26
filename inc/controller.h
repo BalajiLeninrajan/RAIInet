@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+#include "game.h"
 
 #include <memory>
 #include <string>
@@ -14,7 +16,9 @@ class Controller {
     std::vector<std::shared_ptr<View>> views;  // Manages all active views.
 
    public:
+
     Controller();
     void runGameLoop();
     void parseCommand(const std::string &commandLine);
+    void init(int argc, char* argv[]);
 };
