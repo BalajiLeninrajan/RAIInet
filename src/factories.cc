@@ -29,8 +29,8 @@ std::unique_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
     }
 }
 
-std::shared_ptr<Link> createLink(std::string id,
-                                 std::pair<int, int> startCoords) {
+std::shared_ptr<Link> LinkFactory::createLink(std::string id,
+                                              std::pair<int, int> startCoords) {
     switch (id[0]) {
         case 'V':
             return std::make_shared<VirusLink>(startCoords, id[1] - '0');
