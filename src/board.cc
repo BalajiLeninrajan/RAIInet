@@ -7,13 +7,9 @@
 #include "cell.h"
 #include "link.h"
 
-Board::Board(int width, int height) : board(height) {
-    for (int h = 0; h < height; ++h) {
-        for (int w = 0; w < width; ++w) {
-            board[h].emplace_back(std::make_unique<BoardCell>());
-        }
-    }
-}
+Board::Board(int width, int height)
+    : board(height, std::vector<std::unique_ptr<BaseCell>>(
+                        width, std::make_unique<BoardCell>())) {}
 
 //  Board checks co-ordinates
 //  - board calls onEnter on cell
@@ -26,12 +22,13 @@ Board::Board(int width, int height) : board(height) {
 //  - checks if co-ords in range
 //  - runs onEnter() on cell
 // coords is [y,x]
-bool Board::moveLink(std::pair<int, int> old_coords,
+void Board::moveLink(std::pair<int, int> old_coords,
                      std::pair<int, int> new_coords) {
     if (new_coords.first < 0 || new_coords.first > (int)board.size()) {
         throw std::out_of_range("Move is out of bounds");
-    } else if (new_coords.second < 0 ||
-               new_coords.second > (int)board[new_coords.first].size()) {
+    }
+    if (new_coords.second < 0 ||
+        new_coords.second > (int)board[new_coords.first].size()) {
         throw std::out_of_range("Move is out of bounds");
     }
     try {
@@ -43,5 +40,4 @@ bool Board::moveLink(std::pair<int, int> old_coords,
     } catch (const std::invalid_argument& e) {
         throw;
     }
-    return true;
 }
