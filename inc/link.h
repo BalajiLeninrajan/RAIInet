@@ -3,8 +3,6 @@
 #include <memory>
 #include <utility>
 
-class Board;
-
 // Abstract base class for player-controlled links (pieces).
 class Link {
    protected:

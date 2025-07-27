@@ -1,4 +1,5 @@
 #include "controller.h"
+
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <fstream>
@@ -8,8 +9,10 @@
 #include <random>
 #include "player.h"
 #include "ability.h"
+#include "game.h"
 
 using std::string;
+using std::vector;
 
 namespace po = boost::program_options;
 
@@ -63,11 +66,9 @@ void Controller::init(int argc, char* argv[]) {
 
     po::options_description opts("Options");
     opts.add_options()("help,h", "Print help")(
-        "ability1,a1", po::value<string>(),
-        "Abilities for player 1.")(
-        "ability2,a2", po::value<string>(),
-        "Abilities for player 2.")(
-        "link1,l1", po::value<string>(),
+        "ability1,a1", po::value<std::string>(), "Abilities for player 1.")(
+        "ability2,a2", po::value<std::string>(), "Abilities for player 2.")(
+        "link1,l1", po::value<std::string>(),
         "Link placement file for player 1.")(
         "link2,l2", po::value<string>(),
         "Link placement file for player 2.")(
@@ -159,7 +160,6 @@ void Controller::init(int argc, char* argv[]) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
         throw std::invalid_argument("");
     }
-
     std::vector<string> allAbilities = {ability1, ability2};
     std::vector<std::vector<string>> allLinkPlacements = {links1, links2};
     game->startGame(2, allAbilities, allLinkPlacements);

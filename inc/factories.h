@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "ability.h"
+class Ability;
 
 class AbilityFactory {
    public:

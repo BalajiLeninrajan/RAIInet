@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 
-#include "board.h"
-#include "player.h"
+class Player;
+class Board;
 
 // Manages the overall game state, players, and turn logic.
 class Game {
-    std::vector<Player> players;
+    std::vector<std::unique_ptr<Player>> players;
     int currentPlayerIndex;
     std::unique_ptr<Board> board;
 
@@ -20,10 +20,10 @@ class Game {
     void startGame(int nPlayers, const std::vector<std::string> &abilities, const std::vector<std::vector<std::string>> &linkPlacements);
 
     void nextTurn();
-    std::weak_ptr<Board> getBoard();
+    Board& getBoard();
     bool checkWinLoss();
-    std::weak_ptr<Player> getCurrentPlayer();
-    int getPlayerIndex(const std::weak_ptr<Player>& player);
+    Player& getCurrentPlayer();
+    int getPlayerIndex(const Player& player);
 
     void makeMove(char link, char dir);
     void showCurrentPlayerAbility();

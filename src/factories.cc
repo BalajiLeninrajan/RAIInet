@@ -1,4 +1,5 @@
 #include "factories.h"
+#include "ability.h"
 #include <stdexcept>
 
 std::unique_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
