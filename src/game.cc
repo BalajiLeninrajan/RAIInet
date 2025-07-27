@@ -6,4 +6,16 @@ void Game::startGame(int nPlayers, const std::vector<std::string> &abilities, co
     if (abilities.size() != nPlayers || linkPlacements.size() != nPlayers) {
         throw std::invalid_argument("Incorrect number of abilities/link placements.");
     }
+    players.clear();
+    for (int i=0; i<nPlayers; ++i) {
+        players.push_back(Player());
+        for (auto ch: abilities[i]) {
+
+            players[i].assignAbility(AbilityFactory::createPlayerAbility(ch));
+        }
+    }
+    
 }
+
+Game::Game() {}
+Game::~Game() {}

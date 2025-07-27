@@ -1,23 +1,23 @@
 #include "factories.h"
 #include <stdexcept>
 
-std::shared_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
+std::unique_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
     if (id == 'F') {
-        return std::make_shared<FirewallAbility>();
+        return std::make_unique<FirewallAbility>();
     } else if (id == 'D') {
-        return std::make_shared<DownloadAbility>();
+        return std::make_unique<DownloadAbility>();
     } else if (id == 'L') {
-        return std::make_shared<LinkBoostAbility>();
+        return std::make_unique<LinkBoostAbility>();
     } else if (id == 'P') {
-        return std::make_shared<PolarizeAbility>();
+        return std::make_unique<PolarizeAbility>();
     } else if (id == 'S') {
-        return std::make_shared<ScanAbility>();
+        return std::make_unique<ScanAbility>();
     } else if (id == 'B') {
-        return std::make_shared<BadConnectionAbility>();
+        return std::make_unique<BadConnectionAbility>();
     } else if (id == 'Q') {
-        return std::make_shared<QuantumEntanglementAbility>();
+        return std::make_unique<QuantumEntanglementAbility>();
     } else if (id == 'N') {
-        return std::make_shared<NetworkAbility>();
+        return std::make_unique<NetworkAbility>();
     }
     throw std::invalid_argument("Invalid ability id");
 }

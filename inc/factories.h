@@ -5,5 +5,5 @@
 
 class AbilityFactory {
    public:
-    std::shared_ptr<Ability> createPlayerAbility(char id);
+    static std::unique_ptr<Ability> createPlayerAbility(char id);
 };

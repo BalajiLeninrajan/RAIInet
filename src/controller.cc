@@ -6,13 +6,15 @@
 #include <exception>
 #include <algorithm>
 #include <random>
+#include "player.h"
+#include "ability.h"
 
 using std::string;
 
 namespace po = boost::program_options;
 
 
-void Controller::readLinkFile(std::string filename, std::vector<std::string> &linkList, int placements) {
+void Controller::readLinkFile(string filename, std::vector<string> &linkList, int placements) {
     std::ifstream linkFile(filename);
 
     if (!linkFile) {
@@ -28,8 +30,8 @@ void Controller::readLinkFile(std::string filename, std::vector<std::string> &li
     }
 }
 
-void Controller::generateRandomLinks(std::vector<std::string> &linkList, int placements) {
-    std::vector<std::string> link_assignments(placements, "V");
+void Controller::generateRandomLinks(std::vector<string> &linkList, int placements) {
+    std::vector<string> link_assignments(placements, "V");
     for (int i=0; i<placements/2; ++i) {
         link_assignments[i] = "D";
     }
@@ -61,13 +63,13 @@ void Controller::init(int argc, char* argv[]) {
 
     po::options_description opts("Options");
     opts.add_options()("help,h", "Print help")(
-        "ability1,a1", po::value<std::string>(),
+        "ability1,a1", po::value<string>(),
         "Abilities for player 1.")(
-        "ability2,a2", po::value<std::string>(),
+        "ability2,a2", po::value<string>(),
         "Abilities for player 2.")(
-        "link1,l1", po::value<std::string>(),
+        "link1,l1", po::value<string>(),
         "Link placement file for player 1.")(
-        "link2,l2", po::value<std::string>(),
+        "link2,l2", po::value<string>(),
         "Link placement file for player 2.")(
         "graphics,g", "Optional flag enabling graphical support.");
 
@@ -157,7 +159,29 @@ void Controller::init(int argc, char* argv[]) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
         throw std::invalid_argument("");
     }
-    // create game here
+
+    std::vector<string> allAbilities = {ability1, ability2};
+    std::vector<std::vector<string>> allLinkPlacements = {links1, links2};
+    game->startGame(2, allAbilities, allLinkPlacements);
+    gameIsRunning = true;
+    std::cout << "Starting game\n";
+    runGameLoop();
 }
 
+void Controller::runGameLoop() {
+    while (gameIsRunning) {
+        string s; std::getline(std::cin, s);
+        parseCommand(s);
+    }
+}
+
+void Controller::parseCommand(const std::string &commandLine) {
+    std::stringstream ss(commandLine);
+    string command;
+    ss >> command;
+    if (command == "exit") {
+        gameIsRunning = false;
+    }
+}
 Controller::Controller() {}
+Controller::~Controller() {}

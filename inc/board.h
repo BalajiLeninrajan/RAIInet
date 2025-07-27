@@ -13,6 +13,6 @@ class Board {
 
    public:
     Board(int width, int height);
-    ~Board();
+    ~Board() {}
     bool moveLink(Link &link, std::pair<int, int> coords);
 };
