@@ -12,32 +12,33 @@ class Link {
    protected:
     std::pair<int, int> coords;
     int strength;
-    LinkType type;
-    bool isRevealed = false;
 
    public:
     virtual ~Link() = default;
-    virtual int getStrength() const { return strength; }
-    virtual LinkType getType() const { return type; }
+    int getStrength() const;
 
-    std::pair<int, int> getCoords() const { return coords; }
-    void setCoords(std::pair<int, int> newCoords) { coords = newCoords; }
-    bool getRevealState() const { return isRevealed; }
+    virtual LinkType getType() const;
+    virtual bool getRevealState() const;
+
+    std::pair<int, int> getCoords() const;
+    void setCoords(std::pair<int, int> newCoords);
 
     // The Game class will handle the logic for this.
-    void requestMove(Direction dir);
+    virtual void requestMove(Direction dir);
 };
 
 // A concrete implementation for a Virus link.
 class VirusLink : public Link {
    public:
     VirusLink(std::pair<int, int> startCoords);
+    virtual LinkType getType() const override;
 };
 
 // A concrete implementation for a Data link.
 class DataLink : public Link {
    public:
     DataLink(std::pair<int, int> startCoords);
+    virtual LinkType getType() const override;
 };
 
 // Abstract decorator for Links to add abilities.
@@ -47,24 +48,25 @@ class LinkDecorator : public Link {
         base;  // Shared ownership of the link being decorated.
 
    public:
-    LinkDecorator(std::shared_ptr<Link> base) : base{std::move(base)} {}
-    int getStrength() const override { return base->getStrength(); }
+    LinkDecorator(std::shared_ptr<Link> base);
 };
 
 class LinkBoostDecorator : public LinkDecorator {
    public:
     using LinkDecorator::LinkDecorator;
-    int getStrength() const override;
+    void requestMove(Direction dir) override;
 };
 
 class PolarizeDecorator : public LinkDecorator {
    public:
     using LinkDecorator::LinkDecorator;
+    LinkType getType() const override;
 };
 
 class RevealDecorator : public LinkDecorator {
    public:
     using LinkDecorator::LinkDecorator;
+    bool getRevealState() const override;
 };
 
 class LagDecorator : public LinkDecorator {
@@ -72,6 +74,7 @@ class LagDecorator : public LinkDecorator {
 
    public:
     using LinkDecorator::LinkDecorator;
+    void requestMove(Direction dir) override;
 };
 
 class QuantumEntanglementDecorator : public LinkDecorator {
@@ -79,6 +82,5 @@ class QuantumEntanglementDecorator : public LinkDecorator {
         partner;  // Shares ownership with the entangled partner.
    public:
     QuantumEntanglementDecorator(std::shared_ptr<Link> base,
-                                 std::shared_ptr<Link> partner)
-        : LinkDecorator{std::move(base)}, partner{std::move(partner)} {}
+                                 std::shared_ptr<Link> partner);
 };

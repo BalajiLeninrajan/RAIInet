@@ -15,6 +15,7 @@ class Game {
 
    public:
     Game();
+    ~Game();
 
     void startGame();
     void nextTurn();
