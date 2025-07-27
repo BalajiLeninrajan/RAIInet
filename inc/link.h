@@ -9,13 +9,14 @@ class Player;
 class Link {
    protected:
     std::pair<int, int> coords;
-    Player* owner;
     int strength;
 
    public:
     enum class Direction { NORTH, SOUTH, EAST, WEST };
     enum class LinkType { VIRUS, DATA };
 
+    Link(std::pair<int, int> startCoords, int strength,
+         std::weak_ptr<Player> owner);
     virtual ~Link() = default;
     int getStrength() const;
 
@@ -34,14 +35,16 @@ class Link {
 // A concrete implementation for a Virus link.
 class VirusLink : public Link {
    public:
-    VirusLink(std::pair<int, int> startCoords, int strength);
+    VirusLink(std::pair<int, int> startCoords, int strength,
+              std::weak_ptr<Player> owner);
     virtual LinkType getType() const override;
 };
 
 // A concrete implementation for a Data link.
 class DataLink : public Link {
    public:
-    DataLink(std::pair<int, int> startCoords, int strength);
+    DataLink(std::pair<int, int> startCoords, int strength,
+             std::weak_ptr<Player> owner);
     virtual LinkType getType() const override;
 };
 
