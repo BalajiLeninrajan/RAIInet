@@ -4,11 +4,14 @@
 #include <utility>
 
 class Player;
+class Board;
 
 // Abstract base class for player-controlled links (pieces).
 class Link {
    protected:
     std::pair<int, int> coords;
+    Player* owner;
+    Board* board;
     int strength;
 
    public:
@@ -16,7 +19,7 @@ class Link {
     enum class LinkType { VIRUS, DATA };
 
     Link(std::pair<int, int> startCoords, int strength,
-         std::weak_ptr<Player> owner);
+         std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
     virtual ~Link() = default;
     int getStrength() const;
 
@@ -36,7 +39,7 @@ class Link {
 class VirusLink : public Link {
    public:
     VirusLink(std::pair<int, int> startCoords, int strength,
-              std::weak_ptr<Player> owner);
+              std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
     virtual LinkType getType() const override;
 };
 
@@ -44,7 +47,7 @@ class VirusLink : public Link {
 class DataLink : public Link {
    public:
     DataLink(std::pair<int, int> startCoords, int strength,
-             std::weak_ptr<Player> owner);
+             std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
     virtual LinkType getType() const override;
 };
 

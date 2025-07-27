@@ -5,10 +5,12 @@
 #include "board.h"
 
 // Base Link
-
 Link::Link(std::pair<int, int> startCoords, int strength,
-           std::weak_ptr<Player> owner)
-    : coords(startCoords), owner(owner), strength(strength) {}
+           std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board)
+    : coords(startCoords),
+      owner(owner.get()),
+      board(board.get()),
+      strength(strength) {}
 
 int Link::getStrength() const { return strength; }
 
@@ -20,20 +22,22 @@ void Link::setCoords(std::pair<int, int> newCoords) { coords = newCoords; }
 
 void Link::requestMove(Link::Direction dir) {}
 
-std::weak_ptr<Player> Link::getOwner() const { return owner; }
+Player* Link::getOwner() const { return owner; }
 
 // VirusLink
 
 VirusLink::VirusLink(std::pair<int, int> startCoords, int strength,
-                     std::weak_ptr<Player> owner)
-    : Link(startCoords, strength, owner) {}
+                     std::unique_ptr<Player>& owner,
+                     std::unique_ptr<Board>& board)
+    : Link(startCoords, strength, owner, board) {}
 
 Link::LinkType VirusLink::getType() const { return Link::LinkType::VIRUS; }
 
 // DataLink
 
 DataLink::DataLink(std::pair<int, int> startCoords, int strength,
-                   std::weak_ptr<Player> owner)
-    : Link(startCoords, strength, owner) {}
+                   std::unique_ptr<Player>& owner,
+                   std::unique_ptr<Board>& board)
+    : Link(startCoords, strength, owner, board) {}
 
 Link::LinkType DataLink::getType() const { return Link::LinkType::VIRUS; }
