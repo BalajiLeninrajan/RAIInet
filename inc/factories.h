@@ -11,6 +11,6 @@ class AbilityFactory {
 
 class LinkFactory {
    public:
-    static std::shared_ptr<Link> createLink(std::string id,
+    static std::unique_ptr<Link> createLink(std::string id,
                                             std::pair<int, int> startCoords);
 };
