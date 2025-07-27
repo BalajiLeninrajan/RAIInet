@@ -25,21 +25,23 @@ Board::Board(int width, int height) : board(height) {
 //  Responsibilities for moveLink
 //  - checks if co-ords in range
 //  - runs onEnter() on cell
-bool Board::moveLink(Link& link, std::pair<int, int> coords) {
-    // implement
-    // TODO: implement later
+// coords is [y,x]
+bool Board::moveLink(std::pair<int, int> old_coords,
+                     std::pair<int, int> new_coords) {
     // assuming coords = [x,y]
     // checks x and y coords in range
-    if (coords.second < 0 || coords.second > (int)board.size()) {
+    if (new_coords.first < 0 || new_coords.first > (int)board.size()) {
         throw std::out_of_range("Move is out of bounds");
-    } else if (coords.first < 0 ||
-               coords.first > (int)board[coords.second].size()) {
+    } else if (new_coords.second < 0 ||
+               new_coords.second > (int)board[new_coords.first].size()) {
         throw std::out_of_range("Move is out of bounds");
     }
     try {
-        auto link_ptr = std::make_shared<Link>(link);
-        board[coords.second][coords.first]->onEnter(link_ptr);
-        link.setCoords(coords);
+        board[new_coords.first][new_coords.second]->onEnter(
+            board[old_coords.first][old_coords.second]->getOccupantLink());
+        board[old_coords.first][old_coords.second]
+            ->getOccupantLink()
+            ->setCoords(new_coords);
     } catch (const std::invalid_argument& e) {
         throw;
     }
