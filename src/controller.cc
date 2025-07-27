@@ -1,20 +1,18 @@
 #include "controller.h"
+
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <vector>
-#include <exception>
 
-using std::vector;
 using std::string;
+using std::vector;
 
 namespace po = boost::program_options;
 void Controller::init(int argc, char* argv[]) {
     po::options_description opts("Options");
     opts.add_options()("help,h", "Print help")(
-        "ability1,a1", po::value<std::string>(),
-        "Abilities for player 1.")(
-        "ability2,a2", po::value<std::string>(),
-        "Abilities for player 2.")(
+        "ability1,a1", po::value<std::string>(), "Abilities for player 1.")(
+        "ability2,a2", po::value<std::string>(), "Abilities for player 2.")(
         "link1,l1", po::value<std::string>(),
         "Link placement file for player 1.")(
         "link2,l2", po::value<std::string>(),
@@ -99,7 +97,6 @@ void Controller::init(int argc, char* argv[]) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
         throw std::invalid_argument("");
     }
-
 }
 
 Controller::Controller() {}

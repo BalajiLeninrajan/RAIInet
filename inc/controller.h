@@ -3,11 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "game.h"
-
-// Forward declarations
-class View;
 class Game;
+class View;
 
 // The Controller handles user input and orchestrates the Model and View.
 class Controller {
