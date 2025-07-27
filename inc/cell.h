@@ -29,7 +29,7 @@ class PlayerCell : public BaseCell {
     Player *owner;
 
    public:
-    PlayerCell(std::unique_ptr<BaseCell> base, std::weak_ptr<Player> owner);
+    PlayerCell(std::unique_ptr<BaseCell> base, Player &owner);
     virtual ~PlayerCell();
 };
 
