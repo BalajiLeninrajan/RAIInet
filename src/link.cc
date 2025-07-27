@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "board.h"
+
 // Base Link
 
 Link::Link(std::pair<int, int> startCoords, int strength,
@@ -15,6 +17,8 @@ bool Link::getRevealState() const { return false; }
 std::pair<int, int> Link::getCoords() const { return coords; }
 
 void Link::setCoords(std::pair<int, int> newCoords) { coords = newCoords; }
+
+void Link::requestMove(Link::Direction dir) {}
 
 std::weak_ptr<Player> Link::getOwner() const { return owner; }
 
