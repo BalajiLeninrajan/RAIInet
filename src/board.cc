@@ -28,8 +28,6 @@ Board::Board(int width, int height) : board(height) {
 // coords is [y,x]
 bool Board::moveLink(std::pair<int, int> old_coords,
                      std::pair<int, int> new_coords) {
-    // assuming coords = [x,y]
-    // checks x and y coords in range
     if (new_coords.first < 0 || new_coords.first > (int)board.size()) {
         throw std::out_of_range("Move is out of bounds");
     } else if (new_coords.second < 0 ||
