@@ -5,9 +5,6 @@
 
 class Board;
 
-enum class Direction { NORTH, SOUTH, EAST, WEST };
-enum class LinkType { VIRUS, DATA };
-
 // Abstract base class for player-controlled links (pieces).
 class Link {
    protected:
@@ -15,6 +12,9 @@ class Link {
     int strength;
 
    public:
+    enum class Direction { NORTH, SOUTH, EAST, WEST };
+    enum class LinkType { VIRUS, DATA };
+
     virtual ~Link() = default;
     int getStrength() const;
 
