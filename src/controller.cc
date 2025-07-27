@@ -1,14 +1,64 @@
 #include "controller.h"
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <exception>
+#include <algorithm>
+#include <random>
 
-using std::vector;
 using std::string;
 
 namespace po = boost::program_options;
+
+
+void Controller::readLinkFile(std::string filename, std::vector<std::string> &linkList, int placements) {
+    std::ifstream linkFile(filename);
+
+    if (!linkFile) {
+        throw std::invalid_argument("File " + filename + " not found");
+    } else {
+        for (int i=0; i<placements; ++i) {
+            string placement;
+            if (!(linkFile >> placement)) {
+                throw std::invalid_argument("File " + filename + " does not have enough link placements");
+            }
+            linkList.push_back(placement);
+        }
+    }
+}
+
+void Controller::generateRandomLinks(std::vector<std::string> &linkList, int placements) {
+    std::vector<std::string> link_assignments(placements, "V");
+    for (int i=0; i<placements/2; ++i) {
+        link_assignments[i] = "D";
+    }
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+ 
+    std::shuffle(link_assignments.begin(), link_assignments.end(), g);
+
+    int max_strength = 4;
+    for (int i=0; i<placements; ++i) {
+        link_assignments[i] = link_assignments[i] + (char)('0' + (i%max_strength) - 1);
+    }
+    
+    std::shuffle(link_assignments.begin(), link_assignments.end(), g);
+}
+
 void Controller::init(int argc, char* argv[]) {
+    game = std::make_unique<Game>();
+    // default values
+    string ability1 = "LFDPS";
+    string ability2 = "LFDPS";
+    std::vector<string> links1;
+    std::vector<string> links2;
+    const int expected_link_placements = 8;
+    links1.reserve(expected_link_placements);
+    links2.reserve(expected_link_placements);
+    bool usingGraphics = false;
+
     po::options_description opts("Options");
     opts.add_options()("help,h", "Print help")(
         "ability1,a1", po::value<std::string>(),
@@ -28,6 +78,7 @@ void Controller::init(int argc, char* argv[]) {
         po::command_line_parser(argc, argv).options(opts).style(style).run();
 
     po::variables_map vm;
+
 
     try {
         po::store(parser, vm);
@@ -51,7 +102,7 @@ void Controller::init(int argc, char* argv[]) {
                     po::validation_error::invalid_option_value,
                     "Must provide 5 abilities.", "ability1");
             }
-            // parse player 1 abilities
+            ability1 = abilities;
             std::cout << "player 1 abilities: ";
             for (auto a : abilities) {
                 std::cout << a << " ";
@@ -68,6 +119,7 @@ void Controller::init(int argc, char* argv[]) {
                     "Must provide 5 abilities.", "ability2");
             }
             // parse player 2 abilities
+            ability2 = abilities;
             std::cout << "player 2 abilities: ";
             for (auto a : abilities) {
                 
@@ -79,28 +131,33 @@ void Controller::init(int argc, char* argv[]) {
         if (vm.count("link1")) {
             string filename = vm["link1"].as<string>();
             std::cout << "link 1 file: " << filename << std::endl;
+            readLinkFile(filename, links1, expected_link_placements);
         } else {
             // randomize link placements for player 1
+            generateRandomLinks(links1, expected_link_placements);
         }
 
         // link 2
         if (vm.count("link2")) {
             string filename = vm["link2"].as<string>();
             std::cout << "link 2 file: " << filename << std::endl;
+            readLinkFile(filename, links2, expected_link_placements);
         } else {
             // randomize link placements for player 2
+            generateRandomLinks(links2, expected_link_placements);
         }
 
         // graphics
         if (vm.count("graphics")) {
             std::cout << "Using graphics" << std::endl;
+            usingGraphics = true;
         }
 
     } catch (const po::error& e) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
         throw std::invalid_argument("");
     }
-
+    // create game here
 }
 
 Controller::Controller() {}
