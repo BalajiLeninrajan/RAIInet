@@ -3,9 +3,10 @@
 #include <memory>
 #include <utility>
 
-#include "enums.h"
-
 class Board;
+
+enum class Direction { NORTH, SOUTH, EAST, WEST };
+enum class LinkType { VIRUS, DATA };
 
 // Abstract base class for player-controlled links (pieces).
 class Link {
