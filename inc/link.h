@@ -9,7 +9,7 @@ class Player;
 class Link {
    protected:
     std::pair<int, int> coords;
-    std::shared_ptr<Player> owner;
+    Player* owner;
     int strength;
 
    public:
