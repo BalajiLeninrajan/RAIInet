@@ -7,7 +7,7 @@ class Player;
 
 // Abstract base class for all cells on the board.
 class BaseCell {
-    std::shared_ptr<Link> occupantLink = nullptr;
+    Link *occupantLink = nullptr;
 
    public:
     virtual ~BaseCell() = default;
