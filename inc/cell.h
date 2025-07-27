@@ -40,7 +40,6 @@ class PlayerCell : public BaseCell {
 class Server : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
-    ~Server() = default;
     void onEnter(Link &link) override;
 };
 
@@ -48,7 +47,6 @@ class Server : public PlayerCell {
 class Firewall : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
-    ~Firewall() = default;
     void onEnter(Link &link) override;
 };
 
@@ -56,6 +54,5 @@ class Firewall : public PlayerCell {
 class Goal : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
-    ~Goal() = default;
     void onEnter(Link &link) override;
 };
