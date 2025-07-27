@@ -26,10 +26,10 @@ class BoardCell : public BaseCell {
 class PlayerCell : public BaseCell {
    protected:
     std::unique_ptr<BaseCell> base;
-    std::weak_ptr<Player> owner;
+    Player *owner;
 
    public:
-    PlayerCell(std::unique_ptr<BaseCell> base, std::weak_ptr<Player> owner);
+    PlayerCell(std::unique_ptr<BaseCell> base, Player &owner);
     virtual ~PlayerCell();
 };
 

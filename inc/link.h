@@ -9,7 +9,7 @@ class Player;
 class Link {
    protected:
     std::pair<int, int> coords;
-    std::shared_ptr<Player> owner;
+    Player* owner;
     int strength;
 
    public:
@@ -28,7 +28,7 @@ class Link {
     // The Game class will handle the logic for this.
     virtual void requestMove(Direction dir);
 
-    std::shared_ptr<Player> getOwner() const;
+    Player* getOwner() const;
 };
 
 // A concrete implementation for a Virus link.
