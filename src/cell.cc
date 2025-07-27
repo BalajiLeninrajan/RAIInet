@@ -14,23 +14,22 @@ BoardCell::~BoardCell() {}
 
 // onEnter should check for collision and handle it
 void BoardCell::onEnter(std::shared_ptr<Link>& link) {
+    if (link->getOwner() == occupantLink->getOwner()) {
+        throw std::invalid_argument("Cannot move onto own link");
+    }
     if (occupantLink == nullptr) {
         occupantLink = std::make_shared<Link>(link);
-    } else {
-        if (link->getOwner() == occupantLink->getOwner()) {
-            throw std::invalid_argument("Cannot move onto own link");
-        }
-
-        // handles battle, winner downloads loser and loser gets deleted
-        if (link->getStrength() >= occupantLink->getStrength()) {
-            link->getOwner()->download(*occupantLink);
-            occupantLink->getOwner()->deleteLink(*occupantLink);
-            occupantLink = link;
-        } else {
-            occupantLink->getOwner()->download(*link);
-            link->getOwner()->deleteLink(*link);
-        }
+        return;
     }
+    // handles battle, winner downloads loser and loser gets deleted
+    if (link->getStrength() >= occupantLink->getStrength()) {
+        link->getOwner()->download(*occupantLink);
+        occupantLink->getOwner()->deleteLink(*occupantLink);
+        occupantLink = link;
+        return;
+    }
+    occupantLink->getOwner()->download(*link);
+    link->getOwner()->deleteLink(*link);
 }
 
 PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base,
