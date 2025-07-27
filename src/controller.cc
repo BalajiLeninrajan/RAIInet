@@ -179,8 +179,21 @@ void Controller::parseCommand(const std::string &commandLine) {
     std::stringstream ss(commandLine);
     string command;
     ss >> command;
-    if (command == "exit") {
+
+    if (command == "quit") {
         gameIsRunning = false;
+    } else if (command == "move") {
+        string direction;
+        ss >> direction;
+
+    } else if (command == "abilities") {
+
+    } else if (command == "ability") {
+
+    } else if (command == "board") {
+
+    } else if (command == "sequence") {
+
     }
 }
 Controller::Controller() {}

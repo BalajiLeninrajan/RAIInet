@@ -17,7 +17,6 @@ void Game::startGame(int nPlayers, const std::vector<std::string> &abilities, co
             players[i]->assignAbility(AbilityFactory::createPlayerAbility(ch));
         }
     }
-    
 }
 
 Game::Game() {}
