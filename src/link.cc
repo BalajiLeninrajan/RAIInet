@@ -20,7 +20,9 @@ std::pair<int, int> Link::getCoords() const { return coords; }
 
 void Link::setCoords(std::pair<int, int> newCoords) { coords = newCoords; }
 
-void Link::requestMove(Link::Direction dir) {}
+void Link::requestMove(Link::Direction dir) {
+    // TODO: call move link on board
+}
 
 Player* Link::getOwner() const { return owner; }
 
