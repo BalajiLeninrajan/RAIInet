@@ -3,8 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "cell.h"
-
+class BaseCell;
 class Link;
 
 // Manages the game board, which is a grid of BaseCells.
