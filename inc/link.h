@@ -44,8 +44,7 @@ class DataLink : public Link {
 // Abstract decorator for Links to add abilities.
 class LinkDecorator : public Link {
    protected:
-    std::shared_ptr<Link>
-        base;  // Shared ownership of the link being decorated.
+    std::shared_ptr<Link> base;
 
    public:
     LinkDecorator(std::shared_ptr<Link> base);
@@ -78,8 +77,8 @@ class LagDecorator : public LinkDecorator {
 };
 
 class QuantumEntanglementDecorator : public LinkDecorator {
-    std::shared_ptr<Link>
-        partner;  // Shares ownership with the entangled partner.
+    std::shared_ptr<Link> partner;
+
    public:
     QuantumEntanglementDecorator(std::shared_ptr<Link> base,
                                  std::shared_ptr<Link> partner);

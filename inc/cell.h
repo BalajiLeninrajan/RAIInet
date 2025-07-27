@@ -7,13 +7,11 @@ class Player;
 
 // Abstract base class for all cells on the board.
 class BaseCell {
-    std::shared_ptr<Link> occupantLink =
-        nullptr;  // Non-owning pointer to the link on this cell.
+    std::shared_ptr<Link> occupantLink = nullptr;
 
    public:
     virtual ~BaseCell() = default;
-    virtual void onEnter(
-        Link &link) = 0;  // Action to perform when a link enters.
+    virtual void onEnter(Link &link) = 0;
 };
 
 // A standard, unoccupied cell on the board.
@@ -27,9 +25,8 @@ class BoardCell : public BaseCell {
 // Abstract decorator for cells owned by a player.
 class PlayerCell : public BaseCell {
    protected:
-    std::unique_ptr<BaseCell> base;  // The cell being decorated.
-    std::weak_ptr<Player>
-        owner;  // Non-owning pointer to the player who owns this cell.
+    std::unique_ptr<BaseCell> base;
+    std::weak_ptr<Player> owner;
 
    public:
     PlayerCell(std::unique_ptr<BaseCell> base, std::weak_ptr<Player> owner);

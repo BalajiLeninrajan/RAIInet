@@ -10,7 +10,7 @@ class Link;
 
 // Represents a player in the game.
 class Player {
-    std::pair<int, int> score;  // {data downloaded, viruses downloaded}
+    std::pair<int, int> score;
     std::vector<std::unique_ptr<Ability>> abilities;
     std::vector<std::shared_ptr<Link>> links;
 
@@ -23,6 +23,5 @@ class Player {
 
     void download(Link &link);
     void deleteLink(Link &link);
-    std::weak_ptr<Link> getLink(
-        char linkId);  // Returns a non-owning pointer for temporary access.
+    std::weak_ptr<Link> getLink(char linkId);
 };

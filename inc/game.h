@@ -11,7 +11,7 @@
 class Game {
     std::vector<Player> players;
     int currentPlayerIndex;
-    std::unique_ptr<Board> board;  // Game owns the board.
+    std::unique_ptr<Board> board;
 
    public:
     Game();
