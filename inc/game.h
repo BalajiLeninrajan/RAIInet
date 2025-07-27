@@ -17,7 +17,8 @@ class Game {
     Game();
     ~Game();
 
-    void startGame();
+    void startGame(int nPlayers, const std::vector<std::string> &abilities, const std::vector<std::vector<std::string>> &linkPlacements);
+
     void nextTurn();
     std::weak_ptr<Board> getBoard();
     bool checkWinLoss();

@@ -45,8 +45,8 @@ void Controller::init(int argc, char* argv[]) {
 
         // player 1 abilities
         if (vm.count("ability1")) {
-            auto abilities = vm["ability1"].as<vector<string>>();
-            if (abilities.size() != 5) {
+            auto abilities = vm["ability1"].as<string>();
+            if (abilities.length() != 5) {
                 throw po::validation_error(
                     po::validation_error::invalid_option_value,
                     "Must provide 5 abilities.", "ability1");
@@ -61,8 +61,8 @@ void Controller::init(int argc, char* argv[]) {
 
         // player 2 abilities
         if (vm.count("ability2")) {
-            auto abilities = vm["ability2"].as<vector<string>>();
-            if (abilities.size() != 5) {
+            auto abilities = vm["ability2"].as<string>();
+            if (abilities.length() != 5) {
                 throw po::validation_error(
                     po::validation_error::invalid_option_value,
                     "Must provide 5 abilities.", "ability2");
@@ -70,6 +70,7 @@ void Controller::init(int argc, char* argv[]) {
             // parse player 2 abilities
             std::cout << "player 2 abilities: ";
             for (auto a : abilities) {
+                
                 std::cout << a << " ";
             }
         }
