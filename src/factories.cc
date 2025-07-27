@@ -1,28 +1,29 @@
 #include "factories.h"
 
+#include <memory>
 #include <stdexcept>
 
 #include "ability.h"
 #include "link.h"
 
-std::shared_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
+std::unique_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
     switch (id) {
         case 'F':
-            return std::make_shared<FirewallAbility>();
+            return std::make_unique<FirewallAbility>();
         case 'D':
-            return std::make_shared<DownloadAbility>();
+            return std::make_unique<DownloadAbility>();
         case 'L':
-            return std::make_shared<LinkBoostAbility>();
+            return std::make_unique<LinkBoostAbility>();
         case 'P':
-            return std::make_shared<PolarizeAbility>();
+            return std::make_unique<PolarizeAbility>();
         case 'S':
-            return std::make_shared<ScanAbility>();
+            return std::make_unique<ScanAbility>();
         case 'B':
-            return std::make_shared<BadConnectionAbility>();
+            return std::make_unique<BadConnectionAbility>();
         case 'Q':
-            return std::make_shared<QuantumEntanglementAbility>();
+            return std::make_unique<QuantumEntanglementAbility>();
         case 'p':
-            return std::make_shared<PappleAbility>();
+            return std::make_unique<PappleAbility>();
         default:
             throw std::invalid_argument("Invalid ability id");
     }
