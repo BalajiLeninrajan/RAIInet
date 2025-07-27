@@ -1,9 +1,15 @@
 #pragma once
 #include <memory>
 
-#include "ability.h"
+class Ability;
+class Link;
 
 class AbilityFactory {
    public:
-    std::shared_ptr<Ability> createPlayerAbility(char id);
+    static std::shared_ptr<Ability> createPlayerAbility(char id);
+};
+
+class LinkFactory {
+   public:
+    static std::shared_ptr<Link> createLink(char id);
 };

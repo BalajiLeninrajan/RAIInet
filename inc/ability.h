@@ -41,6 +41,6 @@ class BadConnectionAbility : public Ability {
 class QuantumEntanglementAbility : public Ability {
     void use(const std::vector<std::string> &params) override;
 };
-class NetworkAbility : public Ability {
+class PappleAbility : public Ability {
     void use(const std::vector<std::string> &params) override;
 };

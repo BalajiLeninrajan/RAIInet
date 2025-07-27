@@ -31,14 +31,14 @@ class Link {
 // A concrete implementation for a Virus link.
 class VirusLink : public Link {
    public:
-    VirusLink(std::pair<int, int> startCoords);
+    VirusLink(std::pair<int, int> startCoords, int strength);
     virtual LinkType getType() const override;
 };
 
 // A concrete implementation for a Data link.
 class DataLink : public Link {
    public:
-    DataLink(std::pair<int, int> startCoords);
+    DataLink(std::pair<int, int> startCoords, int strength);
     virtual LinkType getType() const override;
 };
 
