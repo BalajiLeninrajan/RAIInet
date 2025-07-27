@@ -3,8 +3,6 @@
 #include <memory>
 #include <utility>
 
-#include "enums.h"
-
 class Board;
 
 // Abstract base class for player-controlled links (pieces).
@@ -14,6 +12,9 @@ class Link {
     int strength;
 
    public:
+    enum class Direction { NORTH, SOUTH, EAST, WEST };
+    enum class LinkType { VIRUS, DATA };
+
     virtual ~Link() = default;
     int getStrength() const;
 
