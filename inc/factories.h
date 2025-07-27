@@ -2,8 +2,15 @@
 #include <memory>
 
 class Ability;
+class Link;
 
 class AbilityFactory {
    public:
-    std::shared_ptr<Ability> createPlayerAbility(int id);
+    static std::unique_ptr<Ability> createPlayerAbility(char id);
+};
+
+class LinkFactory {
+   public:
+    static std::shared_ptr<Link> createLink(std::string id,
+                                            std::pair<int, int> startCoords);
 };
