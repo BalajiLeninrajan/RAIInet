@@ -4,7 +4,9 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
 class Game;
+class BaseCell;
 
 struct PlayerStats {
     int id;
@@ -18,7 +20,8 @@ class View {
 
    public:
     virtual ~View();
-    virtual void update(const std::unique_ptr<Game> &game) = 0;
+    virtual void update(std::unique_ptr<BaseCell> oldCell,
+                        std::unique_ptr<BaseCell> newCell) = 0;
     virtual void display() const = 0;
 };
 
@@ -26,14 +29,16 @@ class TextView : public View {
     std::vector<std::vector<std::string>> board;
 
    public:
-    TextView(const Game &game);
-    void update(const std::unique_ptr<Game> &game) override;
+    TextView(const std::unique_ptr<Game> &game);
+    void update(std::unique_ptr<BaseCell> oldCell,
+                std::unique_ptr<BaseCell> newCell) override;
     void display() const override;
 };
 
 class GraphicsView : public View {
    public:
-    GraphicsView(const Game &game);
-    void update(const std::unique_ptr<Game> &game) override;
+    GraphicsView(const std::unique_ptr<Game> &game);
+    void update(std::unique_ptr<BaseCell> oldCell,
+                std::unique_ptr<BaseCell> newCell) override;
     void display() const override;
 };
