@@ -54,10 +54,10 @@ class DataLink : public Link {
 // Abstract decorator for Links to add abilities.
 class LinkDecorator : public Link {
    protected:
-    std::unique_ptr<Link> base;
+    std::shared_ptr<Link> base;
 
    public:
-    LinkDecorator(std::unique_ptr<Link> base);
+    LinkDecorator(std::shared_ptr<Link> base);
 };
 
 class LinkBoostDecorator : public LinkDecorator {

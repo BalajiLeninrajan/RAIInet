@@ -22,6 +22,7 @@ Board::Board(int width, int height)
 //  - checks if co-ords in range
 //  - runs onEnter() on cell
 // coords is [y,x]
+//
 void Board::moveLink(std::pair<int, int> old_coords,
                      std::pair<int, int> new_coords) {
     if (new_coords.first < 0 || new_coords.first > (int)board.size()) {
@@ -32,6 +33,7 @@ void Board::moveLink(std::pair<int, int> old_coords,
         throw std::out_of_range("Move is out of bounds");
     }
     try {
+        // TODO: this needs to be fixed
         board[new_coords.first][new_coords.second]->onEnter(
             board[old_coords.first][old_coords.second]->getOccupantLink());
         board[old_coords.first][old_coords.second]
