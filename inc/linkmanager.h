@@ -3,13 +3,21 @@
 #include <vector>
 #include <memory>
 #include <map>
-#include "link.h"
-#include "board.h"
+
+class Player;
+class Link;
+class Board;
 
 class LinkManager {
     std::map<Player*, std::vector<std::unique_ptr<Link>>> linkMap;
 
    public:
+
+    struct LinkKey {
+        Player* player;
+        int id;
+    };
+
     LinkManager();
     void addLinksForPlayer(const std::vector<std::string> &links, Player* player, Board* board);
     bool removeLink(unsigned int linkID); // returns true if link found

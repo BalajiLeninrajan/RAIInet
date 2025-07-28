@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "linkmanager.h"
+
 class Player;
 class Board;
 
@@ -12,6 +14,7 @@ class Game {
     std::vector<std::unique_ptr<Player>> players;
     int currentPlayerIndex;
     std::unique_ptr<Board> board;
+    std::shared_ptr<LinkManager> linkManager;
 
    public:
     Game();

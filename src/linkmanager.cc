@@ -1,4 +1,6 @@
 #include "linkmanager.h"
+#include "link.h"
+#include "board.h"
 
 using std::vector;
 using std::string;
