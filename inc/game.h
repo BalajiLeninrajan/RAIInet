@@ -22,7 +22,7 @@ class Game {
     void nextTurn();
     Board& getBoard();
     bool checkWinLoss();
-    Player& getCurrentPlayer();
+    Player* getCurrentPlayer();
     int getPlayerIndex(const Player& player);
 
     void makeMove(char link, char dir);

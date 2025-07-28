@@ -12,6 +12,7 @@ class Board {
 
    public:
     Board(int width, int height);
-    ~Board() {}
-    bool moveLink(Link &link, std::pair<int, int> coords);
+    ~Board();
+    void moveLink(std::pair<int, int> old_coords,
+                  std::pair<int, int> new_coords);
 };

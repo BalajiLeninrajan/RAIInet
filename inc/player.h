@@ -12,16 +12,16 @@
 class Player {
     std::pair<int, int> score;  // {data, virus}
     std::vector<std::unique_ptr<Ability>> abilities;
-    std::vector<std::shared_ptr<Link>> links;
+    std::vector<std::unique_ptr<Link>> links;
 
    public:
     Player(std::vector<std::unique_ptr<Ability>> abilities,
-           std::vector<std::shared_ptr<Link>> links);
+           std::vector<std::unique_ptr<Link>> links);
 
     std::pair<int, int> getScore() const;
     const std::vector<std::unique_ptr<Ability>> &getAbilities() const;
 
     void download(Link &link);
     void deleteLink(Link &link);
-    std::weak_ptr<Link> getLink(int linkId);
+    std::unique_ptr<Link> &getLink(int linkId);
 };

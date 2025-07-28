@@ -1,11 +1,12 @@
 #include "player.h"
 
 #include <algorithm>
+#include <memory>
 
 #include "link.h"
 
 Player::Player(std::vector<std::unique_ptr<Ability>> abilities,
-               std::vector<std::shared_ptr<Link>> links)
+               std::vector<std::unique_ptr<Link>> links)
     : score({0, 0}), abilities(abilities), links(links) {}
 
 std::pair<int, int> Player::getScore() const { return score; }
@@ -30,4 +31,4 @@ void Player::deleteLink(Link& link) {
     links.erase(std::find(links.begin(), links.end(), link));
 }
 
-std::weak_ptr<Link> Player::getLink(int linkId) { return links[linkId]; }
+std::unique_ptr<Link>& Player::getLink(int linkId) { return links[linkId]; }

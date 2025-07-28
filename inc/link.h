@@ -4,18 +4,22 @@
 #include <utility>
 
 class Player;
+class Board;
 
 // Abstract base class for player-controlled links (pieces).
 class Link {
    protected:
     std::pair<int, int> coords;
-    std::shared_ptr<Player> owner;
+    Player* owner;
+    Board* board;
     int strength;
 
    public:
     enum class Direction { NORTH, SOUTH, EAST, WEST };
     enum class LinkType { VIRUS, DATA };
 
+    Link(std::pair<int, int> startCoords, int strength,
+         std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
     virtual ~Link() = default;
     int getStrength() const;
 
@@ -28,20 +32,22 @@ class Link {
     // The Game class will handle the logic for this.
     virtual void requestMove(Direction dir);
 
-    std::shared_ptr<Player> getOwner() const;
+    Player* getOwner() const;
 };
 
 // A concrete implementation for a Virus link.
 class VirusLink : public Link {
    public:
-    VirusLink(std::pair<int, int> startCoords, int strength);
+    VirusLink(std::pair<int, int> startCoords, int strength,
+              std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
     virtual LinkType getType() const override;
 };
 
 // A concrete implementation for a Data link.
 class DataLink : public Link {
    public:
-    DataLink(std::pair<int, int> startCoords, int strength);
+    DataLink(std::pair<int, int> startCoords, int strength,
+             std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
     virtual LinkType getType() const override;
 };
 
@@ -81,9 +87,9 @@ class LagDecorator : public LinkDecorator {
 };
 
 class QuantumEntanglementDecorator : public LinkDecorator {
-    std::shared_ptr<Link> partner;
+    Link* partner;
 
    public:
-    QuantumEntanglementDecorator(std::shared_ptr<Link> base,
-                                 std::shared_ptr<Link> partner);
+    QuantumEntanglementDecorator(std::unique_ptr<Link> base, Link& partner);
+    void requestMove(Direction dir) override;
 };
