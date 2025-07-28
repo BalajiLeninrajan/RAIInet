@@ -20,6 +20,10 @@ void LinkManager::addLinksForPlayer(const std::vector<std::string> &links, Playe
     } 
 }
 
+Link& LinkManager::getLink(LinkKey key) {
+    return *linkMap[key.player][key.id];
+}
+
 bool LinkManager::removeLink(unsigned int linkID) {
     return false;
 }

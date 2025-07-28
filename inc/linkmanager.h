@@ -21,6 +21,8 @@ class LinkManager {
     LinkManager();
     void addLinksForPlayer(const std::vector<std::string> &links, Player* player, Board* board);
     bool removeLink(unsigned int linkID); // returns true if link found
+
+    Link& getLink(LinkKey key);
     /*
      * Returns an rvalue reference to a link.
      * Used for application of decorators.
