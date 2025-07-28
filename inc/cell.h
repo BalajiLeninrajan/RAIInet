@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include "linkmanager.h"
 
 class Link;
@@ -8,8 +9,7 @@ class Player;
 
 // Abstract base class for all cells on the board.
 class BaseCell {
-    bool occupied;
-    LinkManager::LinkKey linkKey;
+    std::optional<LinkManager::LinkKey> linkKey;
     std::shared_ptr<LinkManager> linkManager;
 
    public:

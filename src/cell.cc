@@ -9,19 +9,22 @@
 void BaseCell::onEnter(Link &link) {}
 
 bool BaseCell::isOccupied() {
-    return occupied;
+    return linkKey.has_value();
 }
 
 LinkManager::LinkKey BaseCell::getOccupantLink() { 
-    if (isOccupied()) return linkKey;
+    if (isOccupied()) return linkKey.value();
     throw std::invalid_argument("Tried to get link from empty cell");
 }
 
 void BaseCell::setOccupantLink(LinkManager::LinkKey new_link) {
     if (!isOccupied()) {
-        occupied = true;
         linkKey = new_link;
     }
+}
+
+void BaseCell::emptyCell() {
+    linkKey.reset(); 
 }
 
 BoardCell::BoardCell(std::shared_ptr<LinkManager> lm): BaseCell(lm) {}
