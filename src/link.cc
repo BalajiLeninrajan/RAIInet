@@ -6,11 +6,13 @@
 
 // Base Link
 Link::Link(std::pair<int, int> startCoords, int strength,
-           std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board)
+           Player* owner, Board* board)
     : coords(startCoords),
-      owner(owner.get()),
-      board(board.get()),
+      owner(owner),
+      board(board),
       strength(strength) {}
+
+Link::~Link() {}
 
 int Link::getStrength() const { return strength; }
 
@@ -29,8 +31,8 @@ Player* Link::getOwner() const { return owner; }
 // VirusLink
 
 VirusLink::VirusLink(std::pair<int, int> startCoords, int strength,
-                     std::unique_ptr<Player>& owner,
-                     std::unique_ptr<Board>& board)
+                     Player* owner,
+                     Board* board)
     : Link(startCoords, strength, owner, board) {}
 
 Link::LinkType VirusLink::getType() const { return Link::LinkType::VIRUS; }
@@ -38,8 +40,10 @@ Link::LinkType VirusLink::getType() const { return Link::LinkType::VIRUS; }
 // DataLink
 
 DataLink::DataLink(std::pair<int, int> startCoords, int strength,
-                   std::unique_ptr<Player>& owner,
-                   std::unique_ptr<Board>& board)
+                   Player* owner,
+                   Board* board)
     : Link(startCoords, strength, owner, board) {}
 
 Link::LinkType DataLink::getType() const { return Link::LinkType::VIRUS; }
+
+DataLink::~DataLink() {}
