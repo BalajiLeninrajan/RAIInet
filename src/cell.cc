@@ -50,7 +50,8 @@ PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player& owner)
 PlayerCell::~PlayerCell() {}
 
 std::shared_ptr<LinkManager> PlayerCell::getLinkManager() {
-    return *(base).getLinkManager();
+    BaseCell& basecell = *base;
+    return basecell.getLinkManager();
 }
 void Server::onEnter(LinkManager::LinkKey link) {
     if (link.player == owner) {
