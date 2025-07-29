@@ -8,11 +8,9 @@
 
 void BaseCell::onEnter(Link &link) {}
 
-bool BaseCell::isOccupied() {
-    return linkKey.has_value();
-}
+bool BaseCell::isOccupied() { return linkKey.has_value(); }
 
-LinkManager::LinkKey BaseCell::getOccupantLink() { 
+LinkManager::LinkKey BaseCell::getOccupantLink() {
     if (isOccupied()) return linkKey.value();
     throw std::invalid_argument("Tried to get link from empty cell");
 }
@@ -23,11 +21,9 @@ void BaseCell::setOccupantLink(LinkManager::LinkKey new_link) {
     }
 }
 
-void BaseCell::emptyCell() {
-    linkKey.reset(); 
-}
+void BaseCell::emptyCell() { linkKey.reset(); }
 
-BoardCell::BoardCell(std::shared_ptr<LinkManager> lm): BaseCell(lm) {}
+BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
 BoardCell::~BoardCell() {}
 
 // onEnter should check for collision and handle it
@@ -50,7 +46,7 @@ void BoardCell::onEnter(Link &link) {
     link->getOwner()->deleteLink(*link);
 }
 
-PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player& owner)
+PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player &owner)
     : base{std::move(base)}, owner{&owner} {}
 
 PlayerCell::~PlayerCell() {}
@@ -71,7 +67,7 @@ void Firewall::onEnter(Link &link) {
     base->onEnter(link);
 }
 
-void Goal::onEnter(std::shared_ptr<Link>& link) {
+void Goal::onEnter(std::shared_ptr<Link> &link) {
     if (link->getOwner() == owner) {
         throw std::invalid_argument("Cannot move onto own server");
     }

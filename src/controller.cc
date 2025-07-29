@@ -1,58 +1,63 @@
 #include "controller.h"
 
-#include <boost/program_options.hpp>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <exception>
 #include <algorithm>
+#include <boost/program_options.hpp>
+#include <exception>
+#include <fstream>
+#include <iostream>
 #include <random>
-#include "player.h"
+#include <vector>
+
 #include "ability.h"
 #include "game.h"
+#include "player.h"
 
 using std::string;
 using std::vector;
 
 namespace po = boost::program_options;
 
-
-void Controller::readLinkFile(string filename, std::vector<string> &linkList, int placements) {
+void Controller::readLinkFile(string filename, std::vector<string> &linkList,
+                              int placements) {
     std::ifstream linkFile(filename);
 
     if (!linkFile) {
         throw std::invalid_argument("File " + filename + " not found");
     } else {
-        for (int i=0; i<placements; ++i) {
+        for (int i = 0; i < placements; ++i) {
             string placement;
             if (!(linkFile >> placement)) {
-                throw std::invalid_argument("File " + filename + " does not have enough link placements");
+                throw std::invalid_argument(
+                    "File " + filename +
+                    " does not have enough link placements");
             }
             linkList.push_back(placement);
         }
     }
 }
 
-void Controller::generateRandomLinks(std::vector<string> &linkList, int placements) {
+void Controller::generateRandomLinks(std::vector<string> &linkList,
+                                     int placements) {
     std::vector<string> link_assignments(placements, "V");
-    for (int i=0; i<placements/2; ++i) {
+    for (int i = 0; i < placements / 2; ++i) {
         link_assignments[i] = "D";
     }
 
     std::random_device rd;
     std::mt19937 g(rd());
- 
+
     std::shuffle(link_assignments.begin(), link_assignments.end(), g);
 
     int max_strength = 4;
-    for (int i=0; i<placements; ++i) {
-        link_assignments[i] = link_assignments[i] + (char)('0' + (i%max_strength) - 1);
+    for (int i = 0; i < placements; ++i) {
+        link_assignments[i] =
+            link_assignments[i] + (char)('0' + (i % max_strength) - 1);
     }
-    
+
     std::shuffle(link_assignments.begin(), link_assignments.end(), g);
 }
 
-void Controller::init(int argc, char* argv[]) {
+void Controller::init(int argc, char *argv[]) {
     game = std::make_unique<Game>();
     // default values
     string ability1 = "LFDPS";
@@ -70,8 +75,7 @@ void Controller::init(int argc, char* argv[]) {
         "ability2,a2", po::value<std::string>(), "Abilities for player 2.")(
         "link1,l1", po::value<std::string>(),
         "Link placement file for player 1.")(
-        "link2,l2", po::value<string>(),
-        "Link placement file for player 2.")(
+        "link2,l2", po::value<string>(), "Link placement file for player 2.")(
         "graphics,g", "Optional flag enabling graphical support.");
 
     auto style = po::command_line_style::default_style |
@@ -81,7 +85,6 @@ void Controller::init(int argc, char* argv[]) {
         po::command_line_parser(argc, argv).options(opts).style(style).run();
 
     po::variables_map vm;
-
 
     try {
         po::store(parser, vm);
@@ -125,7 +128,6 @@ void Controller::init(int argc, char* argv[]) {
             ability2 = abilities;
             std::cout << "player 2 abilities: ";
             for (auto a : abilities) {
-                
                 std::cout << a << " ";
             }
         }
@@ -156,7 +158,7 @@ void Controller::init(int argc, char* argv[]) {
             usingGraphics = true;
         }
 
-    } catch (const po::error& e) {
+    } catch (const po::error &e) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
         throw std::invalid_argument("");
     }
@@ -170,7 +172,8 @@ void Controller::init(int argc, char* argv[]) {
 
 void Controller::runGameLoop() {
     while (gameIsRunning) {
-        string s; std::getline(std::cin, s);
+        string s;
+        std::getline(std::cin, s);
         parseCommand(s);
     }
 }
@@ -187,13 +190,9 @@ void Controller::parseCommand(const std::string &commandLine) {
         ss >> direction;
 
     } else if (command == "abilities") {
-
     } else if (command == "ability") {
-
     } else if (command == "board") {
-
     } else if (command == "sequence") {
-
     }
 }
 Controller::Controller() {}
