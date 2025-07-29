@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 
@@ -69,7 +70,7 @@ Player* Game::checkWinLoss() {
     return nullptr;
 }
 
-int Game::getPlayerIndex(const Player& player) {
+int Game::getPlayerIndex(const Player& player) const {
     for (int i = 0; i < players.size(); ++i) {
         if (players[i].get() == &player) return i;
     }
@@ -90,6 +91,22 @@ void Game::makeMove(int link, char dir) {
 
 void Game::useAbility(int id, const std::vector<std::string>& params) {
     std::cout << "I'm using an ability RAAAHHHHHHH" << "\n";
+}
+
+std::vector<Player*> Game::getPlayers() {
+    std::vector<Player*> result(players.size());
+    std::transform(players.begin(), players.end(), result.begin(),
+                   [](const std::unique_ptr<Player>& p) { return p.get(); });
+    return result;
+}
+
+Board& Game::getBoard() { return *board; }
+
+const std::pair<Link::LinkType, int> Game::getPlayerLink(
+    const int playerId, const int linkId) const {
+    LinkKey linkKey = LinkKey{players[playerId].get(), linkId};
+    const Link& link = linkManager->getLink(linkKey);
+    return {link.getType(), link.getStrength()};
 }
 
 Game::Game() {}

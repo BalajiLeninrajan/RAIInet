@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "linkmanager.h"
+#include "link.h"
 
 class Player;
+class LinkManager;
 class Board;
 
 // Manages the overall game state, players, and turn logic.
@@ -28,9 +29,10 @@ class Game {
     Player* checkWinLoss();
     Player* getCurrentPlayer();
     std::vector<Player*> getPlayers();
-    int getPlayerIndex(const Player& player);
+    int getPlayerIndex(const Player& player) const;
 
-    const std::vector<Link&> getPlayerLinks(const Player& player);
+    const std::pair<Link::LinkType, int> getPlayerLink(const int playerId,
+                                                       const int linkId) const;
 
     void makeMove(int link, char dir);
     std::vector<std::string> showCurrentPlayerAbility();
