@@ -9,9 +9,13 @@
 #include "linkmanager.h"
 
 Board::Board(int width, int height, std::shared_ptr<LinkManager> linkManager)
-    : board(height, std::vector<std::unique_ptr<BaseCell>>(
-                        width, std::make_unique<BoardCell>(linkManager))),
-      linkManager(linkManager) {}
+    : board(height), linkManager(linkManager) {
+    for (int r = 0; r < height; ++r) {
+        for (int c = 0; c < width; ++c) {
+            board[r].push_back(std::make_unique<BoardCell>(linkManager));
+        }
+    }
+}
 
 //  Board checks co-ordinates
 //  - board calls onEnter on cell

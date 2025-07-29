@@ -18,6 +18,8 @@ class Link {
     enum class Direction { NORTH, SOUTH, EAST, WEST };
     enum class LinkType { VIRUS, DATA };
 
+    static Direction charToDirection(char c);
+
     Link(std::pair<int, int> startCoords, int strength, Player* player,
          Board* board);
     virtual ~Link() = 0;

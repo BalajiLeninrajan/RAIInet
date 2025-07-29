@@ -16,11 +16,11 @@ class Player {
     std::shared_ptr<LinkManager> linkManager;
 
    public:
-    Player(std::vector<std::unique_ptr<Ability>> abilities);
+    Player(std::vector<std::unique_ptr<Ability>> abilities,
+           std::shared_ptr<LinkManager> lm);
 
     std::pair<int, int> getScore() const;
     const std::vector<std::unique_ptr<Ability>> &getAbilities() const;
-    void setLinkManager(std::shared_ptr<LinkManager> lm);
 
     void download(LinkManager::LinkKey linkKey);
 };

@@ -1,6 +1,8 @@
 #include "link.h"
 
+#include <format>
 #include <memory>
+#include <stdexcept>
 
 #include "board.h"
 
@@ -36,6 +38,22 @@ void Link::requestMove(Link::Direction dir) {
     }
 }
 
+Link::Direction Link::charToDirection(char c) {
+    switch (c) {
+        case 'N':
+            return Direction::NORTH;
+        case 'S':
+            return Direction::SOUTH;
+        case 'E':
+            return Direction::EAST;
+        case 'W':
+            return Direction::WEST;
+    }
+
+    std::string debugmsg = "No direction associated with char ";
+    debugmsg += c;
+    throw std::invalid_argument(debugmsg);
+}
 Player* Link::getOwner() const { return owner; }
 
 // VirusLink
