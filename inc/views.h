@@ -20,6 +20,7 @@ class View {
     std::vector<PlayerStats> players;
 
    public:
+    View(const std::unique_ptr<Game> &game);
     virtual ~View();
     virtual void update(std::pair<int, int> old_coords,
                         std::pair<int, int> new_coords) = 0;

@@ -2,30 +2,47 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
+#include "board.h"
 #include "game.h"
-#include "player.h"
+
+View::View(const std::unique_ptr<Game> &game) : players() {
+    for (int id = 0; id < game->getPlayers().size(); ++id) {
+        players.push_back({id++, 5, {0, 0}});
+    }
+}
 
 View::~View() {}
+
 void View::update(std::pair<int, int> old_coords,
                   std::pair<int, int> new_coords) {}
 void View::display() const {}
 
 TextView::TextView(const std::unique_ptr<Game> &game, int playerId)
-    : playerId{playerId} {
-    for (auto player : game->getPlayers()) {
-        // TODO: figure out how to get links
-        std::unordered_map<std::string, std::string> links;
-        if (playerId == game->getPlayerIndex(*player)) {
-            for (auto link : game->getPlayerLinks(*player)) {
-                links[link]
+    : View(game),
+      board(
+          game->getBoard().getBoard().size(),
+          std::vector<std::string>(game->getBoard().getBoard()[0].size(), ".")),
+      playerId{playerId} {
+    for (auto &player : players) {
+        char base = 'a' + (8 * (player.id / 2)) - (32 * (player.id % 2));
+        if (playerId != player.id) {
+            for (int i = 0; i < 8; ++i) {
+                player.links[std::string(1, base + i)] = "??";
             }
-        } else {
+            continue;
         }
-        players.push_back({game->getPlayerIndex(*player),
-                           (int)player->getAbilities().size(),
-                           player->getScore(), links});
+
+        for (int i = 0; i < 8; ++i) {
+            const auto &link = game->getPlayerLink(playerId, i);
+            player.links[std::string(1, base + i)] =
+                (link.first == Link::LinkType::DATA ? "D" : "V") +
+                std::to_string(link.second);
+        }
     }
 }
+
+void TextView::update(std::pair<int, int> old_coords,
+                      std::pair<int, int> new_coords) {}
+void TextView::display() const {}
