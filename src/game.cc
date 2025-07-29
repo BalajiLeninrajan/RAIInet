@@ -8,8 +8,8 @@
 #include "player.h"
 
 void Game::startGame(
-    int nPlayers, const std::vector<std::string> &abilities,
-    const std::vector<std::vector<std::string>> &linkPlacements) {
+    int nPlayers, const std::vector<std::string>& abilities,
+    const std::vector<std::vector<std::string>>& linkPlacements) {
     // create board
     board = std::make_unique<Board>(8, 8);
 
@@ -35,6 +35,36 @@ void Game::startGame(
     }
     // create board and cells
     // add board
+}
+
+Player* Game::checkWinLoss() {
+    // count players
+    int activePlayerCount = 0;
+    Player* p = nullptr;
+    for (const auto& it : players) {
+        if (it != nullptr) {
+            activePlayerCount++;
+            p = it.get();
+            // downloaded 4 links
+            // implicit assertion: only 1 player can reach 4 links before this
+            // is called (does not handle winning ties)
+            if (p->getScore().first >= 4) {
+                return p;
+            }
+        }
+    }
+
+    if (activePlayerCount == 1) {
+        return p;
+    }
+    return nullptr;
+}
+
+int Game::getPlayerIndex(const Player& player) {
+    for (int i = 0; i < players.size(); ++i) {
+        if (players[i].get() == &player) return i;
+    }
+    return -1;
 }
 
 Game::Game() {}

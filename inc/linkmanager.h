@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -27,4 +28,8 @@ class LinkManager {
     bool hasLink(LinkKey key);
 
     Link& getLink(LinkKey key);
+
+    bool applyDecorator(
+        LinkKey key,
+        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)>& decorator);
 };
