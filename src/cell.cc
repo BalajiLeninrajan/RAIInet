@@ -43,11 +43,11 @@ void BoardCell::onEnter(LinkManager::LinkKey link) {
     // handles battle, winner downloads loser and loser gets deleted
     if (getLink(link).getStrength() >=
         getLink(getOccupantLink()).getStrength()) {
-        link.player->download(getLink(getOccupantLink()));
+        link.player->download(getOccupantLink());
         setOccupantLink(link);
         return;
     }
-    getOccupantLink().player->download(getLink(link));
+    getOccupantLink().player->download(link);
 }
 
 PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player& owner)
@@ -61,7 +61,7 @@ void Server::onEnter(LinkManager::LinkKey link) {
     }
     // download + delete
     // assuming player does not deal with deleting when downloading
-    owner->download(getLink(link));
+    owner->download(link);
 }
 
 void Firewall::onEnter(LinkManager::LinkKey link) {
@@ -80,5 +80,5 @@ void Goal::onEnter(LinkManager::LinkKey link) {
     if (link.player == owner) {
         throw std::invalid_argument("Cannot move onto own server");
     }
-    link.player->download(getLink(link));
+    link.player->download(link);
 }

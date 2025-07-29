@@ -13,13 +13,15 @@ class BaseCell {
     std::optional<LinkManager::LinkKey> linkKey;
     std::shared_ptr<LinkManager> linkManager;
 
+   protected:
+    virtual Link &getLink(LinkManager::LinkKey link);
+
    public:
     BaseCell(std::shared_ptr<LinkManager> lm) : linkManager{lm} {}
     virtual ~BaseCell() = default;
     virtual void onEnter(LinkManager::LinkKey link) = 0;
     virtual LinkManager::LinkKey getOccupantLink();
     virtual void setOccupantLink(LinkManager::LinkKey new_link);
-    virtual Link &getLink(LinkManager::LinkKey link);
     virtual bool isOccupied();
     virtual void emptyCell();
 };
