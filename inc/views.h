@@ -1,8 +1,8 @@
 #pragma once
 
+#include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 class Game;
@@ -12,7 +12,7 @@ struct PlayerStats {
     unsigned id;
     int abilities;
     std::pair<int, int> score;
-    std::unordered_map<std::string, std::string> links;
+    std::map<std::string, std::string> links;
 };
 
 class View {
@@ -30,6 +30,9 @@ class View {
 class TextView : public View {
     std::vector<std::vector<std::string>> board;
     unsigned playerId;
+    const std::unique_ptr<Game> &game;
+    void setCoords(std::pair<int, int> coords);
+    void printPlayer(PlayerStats player);
 
    public:
     TextView(const std::unique_ptr<Game> &game, unsigned playerId);

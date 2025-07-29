@@ -1,11 +1,16 @@
 #include "views.h"
 
+#include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "board.h"
+#include "cell.h"
 #include "game.h"
+#include "link.h"
+#include "player.h"
 
 View::View(const std::unique_ptr<Game> &game) : players() {
     for (unsigned id = 0; id < game->getPlayers().size(); ++id) {
@@ -43,6 +48,42 @@ TextView::TextView(const std::unique_ptr<Game> &game, unsigned playerId)
     }
 }
 
+// how to best approach this?
+// I want to either get the cell or get the thing on top of the cell
+// how to update link state? are we handling this in coords as well to check the
+// link too?
 void TextView::update(std::pair<int, int> old_coords,
-                      std::pair<int, int> new_coords) {}
-void TextView::display() const {}
+                      std::pair<int, int> new_coords) {
+    // TODO: fix fetching cell
+    // wait if we have an old_coords, is it guaranteed to be empty?
+    // oh no how do we tell if it is special cell?
+    //
+    // BaseCell* old_cell = game->getBoard()->getC(old_coords);
+    // BaseCell*
+}
+
+void TextView::display() const {
+    // print other players
+    for (auto player : players) {
+        if (player.id != playerId) {
+            std::cout << "Player " << player.id + 1 << ":" << std::endl;
+            std::cout << "Downloaded: " << player.score.first << ", "
+                      << player.score.second << std::endl;
+            std::cout << "Abilities: " << player.abilities << std::endl;
+            // print links
+        }
+    }
+    // print the board
+    for (auto line : board) {
+        for (auto tile : line) {
+            std::cout << tile;
+        }
+        std::cout << std::endl;
+    }
+    //  assuming players gets each player in proper order
+    std::cout << "Player " << playerId + 1 << ":" << std::endl;
+    std::cout << "Downloaded: " << players[playerId].score.first << ", "
+              << players[playerId].score.second << std::endl;
+    std::cout << "Abilities: " << players[playerId].abilities << std::endl;
+    // print links
+}
