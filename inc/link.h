@@ -18,7 +18,8 @@ class Link {
     enum class Direction { NORTH, SOUTH, EAST, WEST };
     enum class LinkType { VIRUS, DATA };
 
-    Link(std::pair<int, int> startCoords, int strength, Player* player, Board* board);
+    Link(std::pair<int, int> startCoords, int strength, Player* player,
+         Board* board);
     virtual ~Link() = 0;
     int getStrength() const;
 
@@ -37,16 +38,16 @@ class Link {
 // A concrete implementation for a Virus link.
 class VirusLink : public Link {
    public:
-    VirusLink(std::pair<int, int> startCoords, int strength,
-              Player* owner, Board* board);
+    VirusLink(std::pair<int, int> startCoords, int strength, Player* owner,
+              Board* board);
     virtual LinkType getType() const override;
 };
 
 // A concrete implementation for a Data link.
 class DataLink : public Link {
    public:
-    DataLink(std::pair<int, int> startCoords, int strength,
-             Player* owner, Board* board);
+    DataLink(std::pair<int, int> startCoords, int strength, Player* owner,
+             Board* board);
     virtual LinkType getType() const override;
     virtual ~DataLink() override;
 };

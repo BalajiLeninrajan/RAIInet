@@ -5,12 +5,9 @@
 #include "board.h"
 
 // Base Link
-Link::Link(std::pair<int, int> startCoords, int strength,
-           Player* owner, Board* board)
-    : coords(startCoords),
-      owner(owner),
-      board(board),
-      strength(strength) {}
+Link::Link(std::pair<int, int> startCoords, int strength, Player* owner,
+           Board* board)
+    : coords(startCoords), owner(owner), board(board), strength(strength) {}
 
 Link::~Link() {}
 
@@ -31,16 +28,14 @@ Player* Link::getOwner() const { return owner; }
 // VirusLink
 
 VirusLink::VirusLink(std::pair<int, int> startCoords, int strength,
-                     Player* owner,
-                     Board* board)
+                     Player* owner, Board* board)
     : Link(startCoords, strength, owner, board) {}
 
 Link::LinkType VirusLink::getType() const { return Link::LinkType::VIRUS; }
 
 // DataLink
 
-DataLink::DataLink(std::pair<int, int> startCoords, int strength,
-                   Player* owner,
+DataLink::DataLink(std::pair<int, int> startCoords, int strength, Player* owner,
                    Board* board)
     : Link(startCoords, strength, owner, board) {}
 

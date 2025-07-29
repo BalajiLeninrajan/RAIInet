@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <optional>
+
 #include "linkmanager.h"
 
 class Link;
@@ -13,7 +14,7 @@ class BaseCell {
     std::shared_ptr<LinkManager> linkManager;
 
    public:
-    BaseCell(std::shared_ptr<LinkManager> lm): linkManager{lm} {}
+    BaseCell(std::shared_ptr<LinkManager> lm) : linkManager{lm} {}
     virtual ~BaseCell() = default;
     virtual void onEnter(Link &link) = 0;
     virtual LinkManager::LinkKey getOccupantLink();
@@ -27,17 +28,17 @@ class BoardCell : public BaseCell {
    public:
     BoardCell(std::shared_ptr<LinkManager> lm);
     ~BoardCell();
-    void onEnter(Link& link) override;
+    void onEnter(Link &link) override;
 };
 
 // Abstract decorator for cells owned by a player.
 class PlayerCell : public BaseCell {
    protected:
     std::unique_ptr<BaseCell> base;
-    Player* owner;
+    Player *owner;
 
    public:
-    PlayerCell(std::unique_ptr<BaseCell> base, Player& owner);
+    PlayerCell(std::unique_ptr<BaseCell> base, Player &owner);
     virtual ~PlayerCell();
 };
 

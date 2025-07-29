@@ -3,6 +3,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+
 #include "ability.h"
 #include "link.h"
 #include "linkmanager.h"
