@@ -17,4 +17,7 @@ class Board {
     ~Board();
     void moveLink(std::pair<int, int> old_coords,
                   std::pair<int, int> new_coords);
+
+    std::vector<std::vector<std::unique_ptr<BaseCell>>>& getBoard();
+    BaseCell& getCell(std::pair<int, int> coords);
 };

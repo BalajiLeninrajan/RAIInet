@@ -50,3 +50,11 @@ void Board::moveLink(std::pair<int, int> old_coords,
 
     board[old_coords.first][old_coords.second]->emptyCell();
 }
+
+std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
+    return board;
+}
+
+BaseCell& Board::getCell(std::pair<int, int> coords) {
+    return *board[coords.first][coords.second];
+}
