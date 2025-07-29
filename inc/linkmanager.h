@@ -20,7 +20,7 @@ class LinkManager {
     LinkManager();
     void addLinksForPlayer(const std::vector<std::string>& links,
                            Player* player, Board* board);
-    bool removeLink(unsigned int linkID);  // returns true if link found
+    bool removeLink(LinkKey key);  // returns true if link found
 
     Link& getLink(LinkKey key);
 };
