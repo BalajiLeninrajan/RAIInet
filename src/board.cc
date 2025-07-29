@@ -34,17 +34,13 @@ void Board::moveLink(std::pair<int, int> old_coords,
         new_coords.second > (int)board[new_coords.first].size()) {
         throw std::out_of_range("Move is out of bounds");
     }
-    try {
-        LinkManager::LinkKey link =
-            board[old_coords.first][old_coords.second]->getOccupantLink();
 
-        board[new_coords.first][new_coords.second]->onEnter(link);
+    LinkManager::LinkKey link =
+        board[old_coords.first][old_coords.second]->getOccupantLink();
 
-        linkManager->getLink(link).setCoords(new_coords);
+    board[new_coords.first][new_coords.second]->onEnter(link);
 
-        board[old_coords.first][old_coords.second]->emptyCell();
+    linkManager->getLink(link).setCoords(new_coords);
 
-    } catch (const std::invalid_argument& e) {
-        throw;
-    }
+    board[old_coords.first][old_coords.second]->emptyCell();
 }
