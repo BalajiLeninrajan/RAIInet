@@ -28,13 +28,16 @@ class Link {
     virtual LinkType getType() const = 0;
     virtual bool getRevealState() const;
 
-    std::pair<int, int> getCoords() const;
-    void setCoords(std::pair<int, int> newCoords);
+    virtual std::pair<int, int> getCoords() const;
+    virtual void setCoords(std::pair<int, int> newCoords);
 
     // The Game class will handle the logic for this.
     virtual void requestMove(Direction dir);
 
-    Player* getOwner() const;
+    virtual Player* getOwner() const;
+
+    virtual std::pair<int, int> getNewCoords(std::pair<int, int> coords,
+                                             Link::Direction dir);
 };
 
 // A concrete implementation for a Virus link.
@@ -57,16 +60,29 @@ class DataLink : public Link {
 // Abstract decorator for Links to add abilities.
 class LinkDecorator : public Link {
    protected:
-    std::shared_ptr<Link> base;
+    std::unique_ptr<Link> base;
 
    public:
-    LinkDecorator(std::shared_ptr<Link> base);
+    LinkDecorator(std::unique_ptr<Link> base);
+
+    LinkType getType() const override;
+    bool getRevealState() const override;
+
+    std::pair<int, int> getCoords() const override;
+    void setCoords(std::pair<int, int> newCoords) override;
+
+    Player* getOwner() const override;
+
+    virtual std::pair<int, int> getNewCoords(std::pair<int, int> coords,
+                                             Link::Direction dir) override;
 };
 
 class LinkBoostDecorator : public LinkDecorator {
    public:
     using LinkDecorator::LinkDecorator;
-    void requestMove(Direction dir) override;
+
+    std::pair<int, int> getNewCoords(std::pair<int, int> coords,
+                                     Link::Direction dir) override;
 };
 
 class PolarizeDecorator : public LinkDecorator {
@@ -93,6 +109,6 @@ class QuantumEntanglementDecorator : public LinkDecorator {
     Link* partner;
 
    public:
-    QuantumEntanglementDecorator(std::unique_ptr<Link> base, Link& partner);
+    QuantumEntanglementDecorator(std::unique_ptr<Link> base, Link* partner);
     void requestMove(Direction dir) override;
 };
