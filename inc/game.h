@@ -20,7 +20,8 @@ class Game {
     Game();
     ~Game();
 
-    void startGame(int nPlayers, const std::vector<std::string> &abilities, const std::vector<std::vector<std::string>> &linkPlacements);
+    void startGame(int nPlayers, const std::vector<std::string>& abilities,
+                   const std::vector<std::vector<std::string>>& linkPlacements);
 
     void nextTurn();
     Board& getBoard();
