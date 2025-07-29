@@ -27,6 +27,7 @@ class Game {
     Board& getBoard();
     bool checkWinLoss();
     Player* getCurrentPlayer();
+    std::vector<Player*> getPlayers();
     int getPlayerIndex(const Player& player);
 
     void makeMove(char link, char dir);
