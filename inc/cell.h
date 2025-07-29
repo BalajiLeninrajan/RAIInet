@@ -11,9 +11,10 @@ class Player;
 // Abstract base class for all cells on the board.
 class BaseCell {
     std::optional<LinkManager::LinkKey> linkKey;
+    std::shared_ptr<LinkManager> linkManager;
 
    protected:
-    std::shared_ptr<LinkManager> linkManager;
+    virtual std::shared_ptr<LinkManager> getLinkManager();
 
    public:
     BaseCell(std::shared_ptr<LinkManager> lm) : linkManager{lm} {}
@@ -23,6 +24,7 @@ class BaseCell {
     virtual void setOccupantLink(LinkManager::LinkKey new_link);
     virtual bool isOccupied();
     virtual void emptyCell();
+    friend class PlayerCell;
 };
 
 // A standard, unoccupied cell on the board.
@@ -38,10 +40,10 @@ class PlayerCell : public BaseCell {
    protected:
     std::unique_ptr<BaseCell> base;
     Player *owner;
+    std::shared_ptr<LinkManager> getLinkManager() override;
 
    public:
-    PlayerCell(std::shared_ptr<LinkManager> lm, std::unique_ptr<BaseCell> base,
-               Player &owner);
+    PlayerCell(std::unique_ptr<BaseCell> base, Player &owner);
     virtual ~PlayerCell();
 };
 

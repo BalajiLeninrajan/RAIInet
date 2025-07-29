@@ -35,8 +35,8 @@ void BoardCell::onEnter(LinkManager::LinkKey link) {
         throw std::invalid_argument("Cannot move onto own link");
     }
     // handles battle, winner downloads loser and loser gets deleted
-    if (linkManager->getLink(link).getStrength() >=
-        linkManager->getLink(getOccupantLink()).getStrength()) {
+    if (getLinkManager()->getLink(link).getStrength() >=
+        getLinkManager()->getLink(getOccupantLink()).getStrength()) {
         link.player->download(getOccupantLink());
         setOccupantLink(link);
         return;
@@ -44,12 +44,14 @@ void BoardCell::onEnter(LinkManager::LinkKey link) {
     getOccupantLink().player->download(link);
 }
 
-PlayerCell::PlayerCell(std::shared_ptr<LinkManager> lm,
-                       std::unique_ptr<BaseCell> base, Player& owner)
-    : BaseCell{lm}, base{std::move(base)}, owner{&owner} {}
+PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player& owner)
+    : BaseCell{nullptr}, base{std::move(base)}, owner{&owner} {}
 
 PlayerCell::~PlayerCell() {}
 
+std::shared_ptr<LinkManager> PlayerCell::getLinkManager() {
+    return *(base).getLinkManager();
+}
 void Server::onEnter(LinkManager::LinkKey link) {
     if (link.player == owner) {
         throw std::invalid_argument("Cannot move onto own server");
