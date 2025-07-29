@@ -23,10 +23,4 @@ class LinkManager {
     bool removeLink(unsigned int linkID);  // returns true if link found
 
     Link& getLink(LinkKey key);
-    /*
-     * Returns an rvalue reference to a link.
-     * Used for application of decorators.
-     * As a side effect, sets the selected link to NULL.
-     */
-    bool moveLink(unsigned int linkID);
 };
