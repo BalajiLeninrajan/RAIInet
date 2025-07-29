@@ -21,7 +21,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cc
 
 .PHONY: clean debug
 clean:
-	rm ${EXEC} ${OBJECTS} ${DEPENDS}
+	rm -f ${EXEC} ${OBJECTS} ${DEPENDS}
 
 debug:
 	@echo ${CCFiles}
