@@ -17,6 +17,8 @@ Board::Board(int width, int height, std::shared_ptr<LinkManager> linkManager)
     }
 }
 
+Board::~Board() {}
+
 //  Board checks co-ordinates
 //  - board calls onEnter on cell
 //  onEnter could throw

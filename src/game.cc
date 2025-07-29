@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "ability.h"
 #include "board.h"
 #include "cell.h"
 #include "factories.h"

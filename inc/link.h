@@ -25,7 +25,7 @@ class Link {
     virtual ~Link() = 0;
     int getStrength() const;
 
-    virtual LinkType getType() const;
+    virtual LinkType getType() const = 0;
     virtual bool getRevealState() const;
 
     std::pair<int, int> getCoords() const;

@@ -20,6 +20,8 @@ void BaseCell::setOccupantLink(LinkManager::LinkKey new_link) {
     }
 }
 
+std::shared_ptr<LinkManager> BaseCell::getLinkManager() { return linkManager; }
+
 void BaseCell::emptyCell() { linkKey.reset(); }
 
 BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
@@ -64,12 +66,12 @@ void Server::onEnter(LinkManager::LinkKey link) {
 void Firewall::onEnter(LinkManager::LinkKey link) {
     if (link.player != owner) {
         // TODO: implement firewall + add decorator using method later
-        void Firewall::onEnter(Link & link) {
-            if (link.player != owner) {
-                link = std::make_shared<Link>(new RevealDecorator(link));
-            }
-            base->onEnter(link);
-        }
+        // void Firewall::onEnter(Link & link) {
+        //     if (link.player != owner) {
+        //         link = std::make_shared<Link>(new RevealDecorator(link));
+        //     }
+        //     base->onEnter(link);
+        // }
     }
 }
 

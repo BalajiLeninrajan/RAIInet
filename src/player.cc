@@ -2,11 +2,12 @@
 
 #include <memory>
 
+#include "ability.h"
 #include "link.h"
 
 Player::Player(std::vector<std::unique_ptr<Ability>> abilities,
                std::shared_ptr<LinkManager> lm)
-    : abilities{abilities}, linkManager{lm} {}
+    : abilities{std::move(abilities)}, linkManager{lm} {}
 
 std::pair<int, int> Player::getScore() const { return score; }
 

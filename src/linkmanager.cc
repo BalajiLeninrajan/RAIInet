@@ -57,3 +57,5 @@ bool LinkManager::removeLink(LinkKey key) {
     linkMap[key.player][key.id] = nullptr;
     return true;
 }
+
+LinkManager::LinkManager() {}
