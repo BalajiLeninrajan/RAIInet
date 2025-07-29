@@ -1,12 +1,13 @@
 CXX=g++
-CXXFLAGS=-std=c++17 -Wall -g -MMD
+CXXFLAGS=-std=c++23 -Wall -g -MMD
 DEPFLAGS:=-MMD -MP -Iinc
 EXEC=RAIInet
 
 SRC_DIR:=src
 OBJ_DIR:=build
 
-CCFiles=$(wildcard ${SRC_DIR}/*.cc)
+CCFiles=$(filter-out $(SRC_DIR)/views.cc, $(wildcard ${SRC_DIR}/*.cc))
+
 OBJECTS=${CCFiles:${SRC_DIR}/%.cc=${OBJ_DIR}/%.o}
 DEPENDS=${OBJECTS:.o=.d}
 LIBS:=-lboost_program_options
@@ -21,7 +22,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cc
 
 .PHONY: clean debug
 clean:
-	rm ${EXEC} ${OBJECTS} ${DEPENDS}
+	rm -f ${EXEC} ${OBJECTS} ${DEPENDS}
 
 debug:
 	@echo ${CCFiles}

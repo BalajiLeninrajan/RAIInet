@@ -1,23 +1,30 @@
 #include "game.h"
 
+#include <iostream>
 #include <stdexcept>
 
+#include "ability.h"
 #include "board.h"
 #include "cell.h"
 #include "factories.h"
+#include "link.h"
 #include "player.h"
+
+using LinkKey = LinkManager::LinkKey;
 
 void Game::startGame(
     int nPlayers, const std::vector<std::string>& abilities,
     const std::vector<std::vector<std::string>>& linkPlacements) {
+    linkManager = std::make_shared<LinkManager>();
     // create board
-    board = std::make_unique<Board>(8, 8);
+    board = std::make_unique<Board>(8, 8, linkManager);
 
     // create player objects
     if (abilities.size() != nPlayers || linkPlacements.size() != nPlayers) {
         throw std::invalid_argument(
             "Incorrect number of abilities/link placements.");
     }
+
     players.clear();
 
     for (int i = 0; i < nPlayers; ++i) {
@@ -25,16 +32,17 @@ void Game::startGame(
         for (auto ch : abilities[i]) {
             p_abilities.push_back(AbilityFactory::createPlayerAbility(ch));
         }
-        players.push_back(std::make_unique<Player>(std::move(p_abilities)));
+        players.push_back(
+            std::make_unique<Player>(std::move(p_abilities), linkManager));
+        linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
+                                       board.get());
     }
 
-    linkManager = std::make_shared<LinkManager>();
     for (int i = 0; i < nPlayers; ++i) {
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
-    // create board and cells
-    // add board
+    currentPlayerIndex = 0;
 }
 
 Player* Game::checkWinLoss() {
@@ -67,5 +75,22 @@ int Game::getPlayerIndex(const Player& player) {
     return -1;
 }
 
+void Game::nextTurn() {
+    do {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    } while (players[currentPlayerIndex] != nullptr);
+}
+
+void Game::makeMove(int link, char dir) {
+    LinkKey linkKey = LinkKey{players[currentPlayerIndex].get(), link};
+    linkManager->getLink(linkKey).requestMove(Link::charToDirection(dir));
+    nextTurn();
+}
+
+void Game::useAbility(int id, const std::vector<std::string>& params) {
+    std::cout << "I'm using an ability RAAAHHHHHHH" << "\n";
+}
+
 Game::Game() {}
+
 Game::~Game() {}

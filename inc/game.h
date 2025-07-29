@@ -32,7 +32,7 @@ class Game {
 
     const std::vector<Link&> getPlayerLinks(const Player& player);
 
-    void makeMove(char link, char dir);
+    void makeMove(int link, char dir);
     std::vector<std::string> showCurrentPlayerAbility();
     void useAbility(int id, const std::vector<std::string>& params);
 };

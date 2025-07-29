@@ -186,13 +186,25 @@ void Controller::parseCommand(const std::string &commandLine) {
     if (command == "quit") {
         gameIsRunning = false;
     } else if (command == "move") {
-        string direction;
-        ss >> direction;
+        char link, direction;
+        ss >> link >> direction;
+        int id;
+        if (link <= 'z') {
+            id = link - 'a';
+        } else {
+            id = link - 'A';
+        }
+
+        game->makeMove(id, direction);
 
     } else if (command == "abilities") {
+        std::cout << "go away this ain't implemented\n";
     } else if (command == "ability") {
+        std::cout << "go away this ain't implemented\n";
     } else if (command == "board") {
+        std::cout << "go away this ain't implemented\n";
     } else if (command == "sequence") {
+        std::cout << "SUCK BALLS this ain't implemented\n";
     }
 }
 Controller::Controller() {}
