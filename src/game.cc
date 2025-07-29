@@ -129,7 +129,9 @@ void Game::printGameInfo() {
             int strength = linkManager->getLink(k).getStrength();
 
             char type = linkManager->getLink(k).getType() == Link::LinkType::VIRUS ? 'V' : 'D';
-            std::cout << " strength " << strength << " type " << type << "\n";
+            std::cout << " strength " << strength << " type " << type << " ";
+            auto [linkr, linkc] = linkManager->getLink(k).getCoords();
+            std::cout << "location (" << linkr << ", " << linkc << ")\n";
         }
         std::cout << "\n";
     }
