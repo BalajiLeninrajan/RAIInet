@@ -11,10 +11,9 @@ class Player;
 // Abstract base class for all cells on the board.
 class BaseCell {
     std::optional<LinkManager::LinkKey> linkKey;
-    std::shared_ptr<LinkManager> linkManager;
 
    protected:
-    virtual Link &getLink(LinkManager::LinkKey link);
+    std::shared_ptr<LinkManager> linkManager;
 
    public:
     BaseCell(std::shared_ptr<LinkManager> lm) : linkManager{lm} {}
