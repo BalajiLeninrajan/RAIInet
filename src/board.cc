@@ -6,10 +6,12 @@
 
 #include "cell.h"
 #include "link.h"
+#include "linkmanager.h"
 
-Board::Board(int width, int height)
+Board::Board(int width, int height, std::shared_ptr<LinkManager> linkManager)
     : board(height, std::vector<std::unique_ptr<BaseCell>>(
-                        width, std::make_unique<BoardCell>())) {}
+                        width, std::make_unique<BoardCell>(linkManager))),
+      linkManager(linkManager) {}
 
 //  Board checks co-ordinates
 //  - board calls onEnter on cell
@@ -32,14 +34,13 @@ void Board::moveLink(std::pair<int, int> old_coords,
         new_coords.second > (int)board[new_coords.first].size()) {
         throw std::out_of_range("Move is out of bounds");
     }
-    try {
-        // TODO: this needs to be fixed
-        board[new_coords.first][new_coords.second]->onEnter(
-            board[old_coords.first][old_coords.second]->getOccupantLink());
-        board[old_coords.first][old_coords.second]
-            ->getOccupantLink()
-            ->setCoords(new_coords);
-    } catch (const std::invalid_argument& e) {
-        throw;
-    }
+
+    LinkManager::LinkKey link =
+        board[old_coords.first][old_coords.second]->getOccupantLink();
+
+    board[new_coords.first][new_coords.second]->onEnter(link);
+
+    linkManager->getLink(link).setCoords(new_coords);
+
+    board[old_coords.first][old_coords.second]->emptyCell();
 }
