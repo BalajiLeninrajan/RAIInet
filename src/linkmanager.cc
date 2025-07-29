@@ -26,3 +26,8 @@ void LinkManager::addLinksForPlayer(const std::vector<std::string>& links,
 Link& LinkManager::getLink(LinkKey key) { return *linkMap[key.player][key.id]; }
 
 bool LinkManager::removeLink(unsigned int linkID) { return false; }
+
+void LinkManager::applyDecorator(LinkKey key, 
+                        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> &decorator) {
+    
+}

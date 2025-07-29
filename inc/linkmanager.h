@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <functional>
 
 class Player;
 class Link;
@@ -29,4 +30,9 @@ class LinkManager {
      * As a side effect, sets the selected link to NULL.
      */
     bool moveLink(unsigned int linkID);
+
+    void applyDecorator(LinkKey key, 
+                        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> &decorator);
+
+    
 };
