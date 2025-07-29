@@ -1,13 +1,11 @@
 #include "player.h"
 
-#include <algorithm>
 #include <memory>
 
 #include "link.h"
 
-Player::Player(std::vector<std::unique_ptr<Ability>> abilities,
-               std::vector<std::unique_ptr<Link>> links)
-    : score({0, 0}), abilities(abilities), links(links) {}
+Player::Player(std::vector<std::unique_ptr<Ability>> abilities)
+    : abilities{abilities} {}
 
 std::pair<int, int> Player::getScore() const { return score; }
 
@@ -15,7 +13,12 @@ const std::vector<std::unique_ptr<Ability>>& Player::getAbilities() const {
     return abilities;
 }
 
-void Player::download(Link& link) {
+void Player::setLinkManager(std::shared_ptr<LinkManager> lm) {
+    linkManager = lm;
+}
+
+void Player::download(LinkManager::LinkKey linkKey) {
+    Link& link = linkManager->getLink(linkKey);
     switch (link.getType()) {
         case Link::LinkType::DATA:
             ++score.first;
@@ -24,11 +27,5 @@ void Player::download(Link& link) {
             ++score.second;
             break;
     }
-    link.getOwner()->deleteLink(link);
+    linkManager->removeLink(linkKey);
 }
-
-void Player::deleteLink(Link& link) {
-    links.erase(std::find(links.begin(), links.end(), link));
-}
-
-std::unique_ptr<Link>& Player::getLink(int linkId) { return links[linkId]; }
