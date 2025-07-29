@@ -27,9 +27,12 @@ class Game {
     Board& getBoard();
     Player* checkWinLoss();
     Player* getCurrentPlayer();
+    std::vector<Player*> getPlayers();
     int getPlayerIndex(const Player& player);
 
+    const std::vector<Link&> getPlayerLinks(const Player& player);
+
     void makeMove(char link, char dir);
-    void showCurrentPlayerAbility();
+    std::vector<std::string> showCurrentPlayerAbility();
     void useAbility(int id, const std::vector<std::string>& params);
 };
