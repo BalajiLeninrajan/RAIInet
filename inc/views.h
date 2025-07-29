@@ -32,7 +32,7 @@ class TextView : public View {
     unsigned playerId;
     const std::unique_ptr<Game> &game;
     void setCoords(std::pair<int, int> coords);
-    void printPlayer(PlayerStats player);
+    void printPlayer(PlayerStats player) const;
 
    public:
     TextView(const std::unique_ptr<Game> &game, unsigned playerId);

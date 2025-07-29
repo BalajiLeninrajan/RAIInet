@@ -82,17 +82,41 @@ void TextView::update(std::pair<int, int> old_coords,
     //
     // BaseCell* old_cell = game->getBoard()->getC(old_coords);
     // BaseCell*
+    // std::string top = sdjfksi.cellRepresentation(playerId)
+    std::string top;
+    if (top == "?") {
+        board[old_coords.first][old_coords.second] = ".";
+    } else if (top.size() == 1) {
+        // find the id
+        //
+    } else {
+        // assumes we have "D1"
+    }
 }
 
+// should linkKey also take in value to update it with?
+// if we use linkKey, we need to figure out how to get actual link
+// if we just have int playerId, int linkId, and string value, we can easily
+// update
+void TextView::update(LinkManager::LinkKey linkKey) {
+    int index = game->getPlayerIndex(*linkKey.player);
+    std::string value = ;
+}
+
+void TextView::printPlayer(PlayerStats player) const {
+    std::cout << "Player " << player.id + 1 << ":" << std::endl;
+    std::cout << "Downloaded: " << player.score.first << ", "
+              << player.score.second << std::endl;
+    std::cout << "Abilities: " << player.abilities << std::endl;
+    for (auto link : player.links) {
+        std::cout << link.first << ": " << link.second;
+    }
+}
 void TextView::display() const {
     // print other players
     for (auto player : players) {
         if (player.id != playerId) {
-            std::cout << "Player " << player.id + 1 << ":" << std::endl;
-            std::cout << "Downloaded: " << player.score.first << ", "
-                      << player.score.second << std::endl;
-            std::cout << "Abilities: " << player.abilities << std::endl;
-            // print links
+            printPlayer(player);
         }
     }
     // print the board

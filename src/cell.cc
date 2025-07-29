@@ -3,6 +3,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include "game.h"
 #include "link.h"
 #include "linkmanager.h"
 #include "player.h"
@@ -23,6 +24,17 @@ void BaseCell::setOccupantLink(LinkManager::LinkKey new_link) {
 std::shared_ptr<LinkManager> BaseCell::getLinkManager() { return linkManager; }
 
 void BaseCell::emptyCell() { linkKey.reset(); }
+
+std::string BaseCell::cellRepresentation(Player& player,
+                                         const std::unique_ptr<Game>& game) {
+    if (!isOccupied()) {
+        return ".";
+    }
+    int index = game->getPlayerIndex(player);
+    char base =
+        'a' + (8 * (index / 2)) - (32 * (index % 2)) + linkKey.value().id;
+    return std::string(1, base);
+}
 
 BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
 BoardCell::~BoardCell() {}

@@ -3,6 +3,7 @@
 #include <memory>
 #include <optional>
 
+#include "game.h"
 #include "linkmanager.h"
 
 class Link;
@@ -24,6 +25,8 @@ class BaseCell {
     virtual void setOccupantLink(LinkManager::LinkKey new_link);
     virtual bool isOccupied();
     virtual void emptyCell();
+    virtual std::string cellRepresentation(Player &player,
+                                           const std::unique_ptr<Game> &game);
     friend class PlayerCell;
 };
 
