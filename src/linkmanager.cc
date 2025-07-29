@@ -1,5 +1,7 @@
 #include "linkmanager.h"
 
+#include <stdexcept>
+
 #include "board.h"
 #include "link.h"
 
@@ -23,6 +25,25 @@ void LinkManager::addLinksForPlayer(const std::vector<std::string>& links,
     }
 }
 
-Link& LinkManager::getLink(LinkKey key) { return *linkMap[key.player][key.id]; }
+Link& LinkManager::getLink(LinkKey key) {
+    if (!hasLink(key)) throw std::invalid_argument("Link does not exist");
+    return *linkMap[key.player][key.id];
+}
 
-bool LinkManager::removeLink(LinkKey key) { return false; }
+bool LinkManager::hasLink(LinkKey key) {
+    if (linkMap.find(key.player) == linkMap.end()) {
+        return false;
+    }
+
+    if (key.id >= linkMap[key.player].size() || key.id < 0) {
+        return false;
+    }
+
+    return linkMap[key.player][key.id] != nullptr;
+}
+
+bool LinkManager::removeLink(LinkKey key) {
+    if (!hasLink(key)) return false;
+    linkMap[key.player][key.id] = nullptr;
+    return true;
+}
