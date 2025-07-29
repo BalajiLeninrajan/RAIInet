@@ -5,26 +5,9 @@
 #include "board.h"
 
 // Base Link
-<<<<<<< HEAD
-Link::Link(std::pair<int, int> startCoords, int strength,
-<<<<<<< HEAD
-           std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board)
-    : coords(startCoords),
-      owner(owner.get()),
-      board(board.get()),
-      strength(strength) {}
-
-=======
-           Player* owner, Board* board)
-    : coords(startCoords),
-      owner(owner),
-      board(board),
-      strength(strength) {}
-=======
 Link::Link(std::pair<int, int> startCoords, int strength, Player* owner,
            Board* board)
     : coords(startCoords), owner(owner), board(board), strength(strength) {}
->>>>>>> origin/main
 
 Link::~Link() {}
 
@@ -64,8 +47,7 @@ VirusLink::VirusLink(std::pair<int, int> startCoords, int strength,
                      std::unique_ptr<Player>& owner,
                      std::unique_ptr<Board>& board)
 =======
-                     Player* owner,
-                     Board* board)
+                     Player* owner, Board* board)
 >>>>>>> origin/main
 =======
                      Player* owner, Board* board)
@@ -92,7 +74,9 @@ DataLink::DataLink(std::pair<int, int> startCoords, int strength, Player* owner,
                    Board* board)
     : Link(startCoords, strength, owner, board) {}
 
-Link::LinkType DataLink::getType() const { return Link::LinkType::VIRUS; }
+                   Link::LinkType DataLink::getType() const {
+                       return Link::LinkType::VIRUS;
+                   }
 
-DataLink::~DataLink() {}
+                   DataLink::~DataLink() {}
 >>>>>>> origin/main

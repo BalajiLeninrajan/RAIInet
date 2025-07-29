@@ -17,9 +17,15 @@ TextView::TextView(const std::unique_ptr<Game> &game, int playerId)
     : playerId{playerId} {
     for (auto player : game->getPlayers()) {
         // TODO: figure out how to get links
+        std::unordered_map<std::string, std::string> links;
+        if (playerId == game->getPlayerIndex(*player)) {
+            for (auto link : game->getPlayerLinks(*player)) {
+                links[link]
+            }
+        } else {
+        }
         players.push_back({game->getPlayerIndex(*player),
                            (int)player->getAbilities().size(),
-                           player->getScore(),
-                           {}});
+                           player->getScore(), links});
     }
 }
