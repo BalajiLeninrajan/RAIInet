@@ -1,9 +1,9 @@
 #pragma once
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-#include <functional>
 
 class Player;
 class Link;
@@ -29,7 +29,7 @@ class LinkManager {
 
     Link& getLink(LinkKey key);
 
-    bool applyDecorator(LinkKey key, 
-                        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> &decorator);
-
+    bool applyDecorator(
+        LinkKey key,
+        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)>& decorator);
 };

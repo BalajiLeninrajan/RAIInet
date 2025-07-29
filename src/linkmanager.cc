@@ -30,15 +30,16 @@ Link& LinkManager::getLink(LinkKey key) {
     return *linkMap[key.player][key.id];
 }
 
-
-bool LinkManager::applyDecorator(LinkKey key, 
-                        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> &decorator) {
+bool LinkManager::applyDecorator(
+    LinkKey key,
+    std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)>& decorator) {
     if (!hasLink(key)) return false;
 
-    linkMap[key.player][key.id] = decorator(std::move(linkMap[key.player][key.id]));
+    linkMap[key.player][key.id] =
+        decorator(std::move(linkMap[key.player][key.id]));
     return true;
 }
-    
+
 bool LinkManager::hasLink(LinkKey key) {
     if (linkMap.find(key.player) == linkMap.end()) {
         return false;
