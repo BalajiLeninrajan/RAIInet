@@ -35,15 +35,13 @@ void Game::startGame(
         }
         players.push_back(
             std::make_unique<Player>(std::move(p_abilities), linkManager));
+        std::cout << "Create player at " << players[i].get() << "\n";
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
 
-    for (unsigned i = 0; i < nPlayers; ++i) {
-        linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
-                                       board.get());
-    }
     currentPlayerIndex = 0;
+    printGameInfo();
 }
 
 Player* Game::getCurrentPlayer() { return players[currentPlayerIndex].get(); }
@@ -115,8 +113,29 @@ void Game::printGameInfo() {
     std::cout << "Player info:\n";
     for (unsigned i = 0; i < players.size(); ++i) {
         std::cout << "Info for player " << i + 1 << "\n";
+        if (players[i].get() == nullptr) {
+            std::cout << "This player is COOKED\n";
+            continue;
+        }
+
         std::cout << "Links:\n";
+        for (unsigned j=0; j<8; ++j) {
+            LinkManager::LinkKey k{players[i].get(), j};
+            std::cout << "Link " << j << " ";
+            if (!linkManager->hasLink(k)) {
+                std::cout << "is COOKED\n";
+                continue;
+            }
+            int strength = linkManager->getLink(k).getStrength();
+
+            char type = linkManager->getLink(k).getType() == Link::LinkType::VIRUS ? 'V' : 'D';
+            std::cout << " strength " << strength << " type " << type << "\n";
+        }
+        std::cout << "\n";
     }
+
+    std::cout << "Board state:\n";
+    
 }
 
 Game::Game() {}

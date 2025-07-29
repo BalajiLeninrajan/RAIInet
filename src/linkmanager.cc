@@ -1,6 +1,7 @@
 #include "linkmanager.h"
 
 #include <stdexcept>
+#include <iostream>
 
 #include "board.h"
 #include "link.h"
@@ -10,7 +11,8 @@ using std::vector;
 
 void LinkManager::addLinksForPlayer(const std::vector<std::string>& links,
                                     Player* player, Board* board) {
-    linkMap[player] = vector<std::unique_ptr<Link>>();
+    linkMap[player] = vector<std::unique_ptr<Link>>(links.size());
+    unsigned i = 0;
     for (auto s : links) {
         // assume placement is of format DX or VX, where D/V indicates data
         // or virus, X is strength.
@@ -18,10 +20,13 @@ void LinkManager::addLinksForPlayer(const std::vector<std::string>& links,
         int strength = s[1] - '0';
         if (s[0] == 'D') {
             std::pair<int, int> sentinel = {0, 0};
-            auto k =
-                std::make_unique<DataLink>(sentinel, strength, player, board);
-            linkMap[player].emplace_back(std::move(k));
+            linkMap[player][i] = std::make_unique<DataLink>(sentinel, strength, player, board);
+        } else {
+            std::pair<int, int> sentinel = {0, 0};
+            linkMap[player][i] = std::make_unique<VirusLink>(sentinel, strength, player, board);
         }
+
+        i++;
     }
 }
 
