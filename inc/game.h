@@ -21,7 +21,7 @@ class Game {
     Game();
     ~Game();
 
-    void startGame(int nPlayers, const std::vector<std::string>& abilities,
+    void startGame(unsigned nPlayers, const std::vector<std::string>& abilities,
                    const std::vector<std::vector<std::string>>& linkPlacements);
 
     void nextTurn();
@@ -31,10 +31,11 @@ class Game {
     std::vector<Player*> getPlayers();
     int getPlayerIndex(const Player& player) const;
 
-    const std::pair<Link::LinkType, int> getPlayerLink(const int playerId,
-                                                       const int linkId) const;
+    const std::pair<Link::LinkType, int> getPlayerLink(
+        const int playerId, const unsigned linkId) const;
 
-    void makeMove(int link, char dir);
+    void makeMove(unsigned link, char dir);
     std::vector<std::string> showCurrentPlayerAbility();
     void useAbility(int id, const std::vector<std::string>& params);
+    void printGameInfo();  // for debugging with no view
 };

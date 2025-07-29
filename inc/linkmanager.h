@@ -15,7 +15,7 @@ class LinkManager {
    public:
     struct LinkKey {
         Player* player;
-        int id;
+        unsigned id;
     };
 
     LinkManager();
