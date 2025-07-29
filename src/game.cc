@@ -84,7 +84,11 @@ void Game::nextTurn() {
     } while (players[currentPlayerIndex] != nullptr);
 }
 
+<<<<<<< HEAD
 void Game::makeMove(unsigned link, char dir) {
+=======
+void Game::makeMove(int link, char dir) {
+>>>>>>> 2bd1496 (it compiles (#23))
     LinkKey linkKey = LinkKey{players[currentPlayerIndex].get(), link};
     linkManager->getLink(linkKey).requestMove(Link::charToDirection(dir));
     nextTurn();
