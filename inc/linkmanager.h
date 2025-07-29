@@ -29,8 +29,6 @@ class LinkManager {
 
     Link& getLink(LinkKey key);
 
-    const std::vector<Link&> getPlayerLinks(Player* player);
-
     bool applyDecorator(
         LinkKey key,
         std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)>& decorator);

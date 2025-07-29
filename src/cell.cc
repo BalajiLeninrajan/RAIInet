@@ -7,8 +7,6 @@
 #include "linkmanager.h"
 #include "player.h"
 
-void BaseCell::onEnter(LinkManager::LinkKey link) {}
-
 bool BaseCell::isOccupied() { return linkKey.has_value(); }
 
 LinkManager::LinkKey BaseCell::getOccupantLink() {
@@ -46,8 +44,9 @@ void BoardCell::onEnter(LinkManager::LinkKey link) {
     getOccupantLink().player->download(link);
 }
 
-PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player& owner)
-    : BaseCell{*base}, base{std::move(base)}, owner{&owner} {}
+PlayerCell::PlayerCell(std::shared_ptr<LinkManager> lm,
+                       std::unique_ptr<BaseCell> base, Player& owner)
+    : BaseCell{lm}, base{std::move(base)}, owner{&owner} {}
 
 PlayerCell::~PlayerCell() {}
 

@@ -40,7 +40,8 @@ class PlayerCell : public BaseCell {
     Player *owner;
 
    public:
-    PlayerCell(std::unique_ptr<BaseCell> base, Player &owner);
+    PlayerCell(std::shared_ptr<LinkManager> lm, std::unique_ptr<BaseCell> base,
+               Player &owner);
     virtual ~PlayerCell();
 };
 
