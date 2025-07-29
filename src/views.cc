@@ -43,6 +43,11 @@ TextView::TextView(const std::unique_ptr<Game> &game, unsigned playerId)
       playerId{playerId},
       game{game} {
     for (auto &player : players) {
+        // player index starts at 0
+        // even index is lowercase, odd index is uppercase
+        // if we have more than 2 players, e.g. player 3 (index 2) takes letters
+        // 'h' to 'o'
+        // assume we don't get past 'z'/'Z'
         char base = 'a' + (8 * (player.id / 2)) - (32 * (player.id % 2));
         if (playerId != player.id) {
             for (int i = 0; i < 8; ++i) {
@@ -56,6 +61,11 @@ TextView::TextView(const std::unique_ptr<Game> &game, unsigned playerId)
             player.links[std::string(1, base + i)] =
                 (link.first == Link::LinkType::DATA ? "D" : "V") +
                 std::to_string(link.second);
+            // std::string type =
+            //     playerLinks[i].getType() == Link::LinkType::DATA ? "D"
+            //                                                      : "V";
+            // links[std::string(1, base + i)] =
+            //     type + std::to_string(playerLinks[i].getStrength());
         }
     }
 }
