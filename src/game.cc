@@ -14,7 +14,7 @@
 using LinkKey = LinkManager::LinkKey;
 
 void Game::startGame(
-    int nPlayers, const std::vector<std::string>& abilities,
+    unsigned nPlayers, const std::vector<std::string>& abilities,
     const std::vector<std::vector<std::string>>& linkPlacements) {
     linkManager = std::make_shared<LinkManager>();
     // create board
@@ -28,7 +28,7 @@ void Game::startGame(
 
     players.clear();
 
-    for (int i = 0; i < nPlayers; ++i) {
+    for (unsigned i = 0; i < nPlayers; ++i) {
         std::vector<std::unique_ptr<Ability>> p_abilities;
         for (auto ch : abilities[i]) {
             p_abilities.push_back(AbilityFactory::createPlayerAbility(ch));
@@ -39,12 +39,14 @@ void Game::startGame(
                                        board.get());
     }
 
-    for (int i = 0; i < nPlayers; ++i) {
+    for (unsigned i = 0; i < nPlayers; ++i) {
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
     currentPlayerIndex = 0;
 }
+
+Player* Game::getCurrentPlayer() { return players[currentPlayerIndex].get(); }
 
 Player* Game::checkWinLoss() {
     // count players
@@ -70,7 +72,7 @@ Player* Game::checkWinLoss() {
 }
 
 int Game::getPlayerIndex(const Player& player) const {
-    for (int i = 0; i < players.size(); ++i) {
+    for (unsigned i = 0; i < players.size(); ++i) {
         if (players[i].get() == &player) return i;
     }
     return -1;
@@ -82,7 +84,7 @@ void Game::nextTurn() {
     } while (players[currentPlayerIndex] != nullptr);
 }
 
-void Game::makeMove(int link, char dir) {
+void Game::makeMove(unsigned link, char dir) {
     LinkKey linkKey = LinkKey{players[currentPlayerIndex].get(), link};
     linkManager->getLink(linkKey).requestMove(Link::charToDirection(dir));
     nextTurn();
@@ -102,10 +104,19 @@ std::vector<Player*> Game::getPlayers() {
 Board& Game::getBoard() { return *board; }
 
 const std::pair<Link::LinkType, int> Game::getPlayerLink(
-    const int playerId, const int linkId) const {
+    const int playerId, const unsigned linkId) const {
     LinkKey linkKey = LinkKey{players[playerId].get(), linkId};
     const Link& link = linkManager->getLink(linkKey);
     return {link.getType(), link.getStrength()};
+}
+
+void Game::printGameInfo() {
+    // print board info, cell info, link info, player info.
+    std::cout << "Player info:\n";
+    for (unsigned i = 0; i < players.size(); ++i) {
+        std::cout << "Info for player " << i + 1 << "\n";
+        std::cout << "Links:\n";
+    }
 }
 
 Game::Game() {}

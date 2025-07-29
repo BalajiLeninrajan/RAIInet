@@ -188,7 +188,7 @@ void Controller::parseCommand(const std::string &commandLine) {
     } else if (command == "move") {
         char link, direction;
         ss >> link >> direction;
-        int id;
+        unsigned id;
         if (link <= 'z') {
             id = link - 'a';
         } else {

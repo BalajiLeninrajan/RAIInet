@@ -8,7 +8,7 @@
 #include "game.h"
 
 View::View(const std::unique_ptr<Game> &game) : players() {
-    for (int id = 0; id < game->getPlayers().size(); ++id) {
+    for (unsigned id = 0; id < game->getPlayers().size(); ++id) {
         players.push_back({id++, 5, {0, 0}});
     }
 }
