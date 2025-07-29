@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -20,7 +21,15 @@ class LinkManager {
     LinkManager();
     void addLinksForPlayer(const std::vector<std::string>& links,
                            Player* player, Board* board);
-    bool removeLink(unsigned int linkID);  // returns true if link found
+
+    // returns true if link found
+    bool removeLink(LinkKey key);
+
+    bool hasLink(LinkKey key);
 
     Link& getLink(LinkKey key);
+
+    bool applyDecorator(
+        LinkKey key,
+        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)>& decorator);
 };

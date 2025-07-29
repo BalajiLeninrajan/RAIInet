@@ -25,7 +25,7 @@ class Game {
 
     void nextTurn();
     Board& getBoard();
-    bool checkWinLoss();
+    Player* checkWinLoss();
     Player* getCurrentPlayer();
     std::vector<Player*> getPlayers();
     int getPlayerIndex(const Player& player);
