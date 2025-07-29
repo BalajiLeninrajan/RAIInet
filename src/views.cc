@@ -9,7 +9,7 @@
 
 View::View(const std::unique_ptr<Game> &game) : players() {
     for (unsigned id = 0; id < game->getPlayers().size(); ++id) {
-        players.push_back({id++, 5, {0, 0}});
+        players.push_back({id, 5, {0, 0}});
     }
 }
 
@@ -19,7 +19,7 @@ void View::update(std::pair<int, int> old_coords,
                   std::pair<int, int> new_coords) {}
 void View::display() const {}
 
-TextView::TextView(const std::unique_ptr<Game> &game, int playerId)
+TextView::TextView(const std::unique_ptr<Game> &game, unsigned playerId)
     : View(game),
       board(
           game->getBoard().getBoard().size(),

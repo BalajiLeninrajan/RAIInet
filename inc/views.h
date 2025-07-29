@@ -9,7 +9,7 @@ class Game;
 class BaseCell;
 
 struct PlayerStats {
-    int id;
+    unsigned id;
     int abilities;
     std::pair<int, int> score;
     std::unordered_map<std::string, std::string> links;
@@ -29,10 +29,10 @@ class View {
 
 class TextView : public View {
     std::vector<std::vector<std::string>> board;
-    int playerId;
+    unsigned playerId;
 
    public:
-    TextView(const std::unique_ptr<Game> &game, int playerId);
+    TextView(const std::unique_ptr<Game> &game, unsigned playerId);
     void update(std::pair<int, int> old_coords,
                 std::pair<int, int> new_coords) override;
     void display() const override;
