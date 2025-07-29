@@ -38,7 +38,6 @@ void Game::startGame(
                                        board.get());
     }
 
-    linkManager = std::make_shared<LinkManager>();
     for (int i = 0; i < nPlayers; ++i) {
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
