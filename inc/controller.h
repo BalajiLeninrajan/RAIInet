@@ -10,6 +10,9 @@ class View;
 class Controller {
     std::unique_ptr<Game> game;
     std::vector<std::shared_ptr<View>> views;
+    void readLinkFile(std::string filename, std::vector<std::string> &linkList, int placements);
+    void generateRandomLinks(std::vector<std::string> &linkList, int placements);
+    bool gameIsRunning = false;
 
    public:
     Controller();

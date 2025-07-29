@@ -18,9 +18,8 @@ class Link {
     enum class Direction { NORTH, SOUTH, EAST, WEST };
     enum class LinkType { VIRUS, DATA };
 
-    Link(std::pair<int, int> startCoords, int strength,
-         std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
-    virtual ~Link() = default;
+    Link(std::pair<int, int> startCoords, int strength, Player* player, Board* board);
+    virtual ~Link() = 0;
     int getStrength() const;
 
     virtual LinkType getType() const;
@@ -39,7 +38,7 @@ class Link {
 class VirusLink : public Link {
    public:
     VirusLink(std::pair<int, int> startCoords, int strength,
-              std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
+              Player* owner, Board* board);
     virtual LinkType getType() const override;
 };
 
@@ -47,8 +46,9 @@ class VirusLink : public Link {
 class DataLink : public Link {
    public:
     DataLink(std::pair<int, int> startCoords, int strength,
-             std::unique_ptr<Player>& owner, std::unique_ptr<Board>& board);
+             Player* owner, Board* board);
     virtual LinkType getType() const override;
+    virtual ~DataLink() override;
 };
 
 // Abstract decorator for Links to add abilities.
