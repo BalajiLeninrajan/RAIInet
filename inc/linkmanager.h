@@ -21,18 +21,15 @@ class LinkManager {
     LinkManager();
     void addLinksForPlayer(const std::vector<std::string>& links,
                            Player* player, Board* board);
-    bool removeLink(unsigned int linkID);  // returns true if link found
+
+    // returns true if link found
+    bool removeLink(LinkKey key);
+
+    bool hasLink(LinkKey key);
 
     Link& getLink(LinkKey key);
-    /*
-     * Returns an rvalue reference to a link.
-     * Used for application of decorators.
-     * As a side effect, sets the selected link to NULL.
-     */
-    bool moveLink(unsigned int linkID);
 
-    void applyDecorator(LinkKey key, 
+    bool applyDecorator(LinkKey key, 
                         std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> &decorator);
 
-    
 };
