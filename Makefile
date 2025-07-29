@@ -6,8 +6,7 @@ EXEC=RAIInet
 SRC_DIR:=src
 OBJ_DIR:=build
 
-CCFiles=$(filter-out $(SRC_DIR)/views.cc, $(wildcard ${SRC_DIR}/*.cc))
-
+CCFiles=$(wildcard ${SRC_DIR}/*.cc)
 OBJECTS=${CCFiles:${SRC_DIR}/%.cc=${OBJ_DIR}/%.o}
 DEPENDS=${OBJECTS:.o=.d}
 LIBS:=-lboost_program_options
