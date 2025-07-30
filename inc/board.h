@@ -23,9 +23,6 @@ class Board {
     BaseCell& getCell(std::pair<int, int> coords);
     void placePlayerCells(const std::vector<std::pair<int, int>> placements,
                           Player* player, unsigned row, Game* game);
-
-    void addFirewall(std::pair<int, int> coords, Player* player);
-    // clear a player's cells. Assumes all player's links are deleted already
     void removePlayerCells(Player* player);
 
     void undecorateCell(std::unique_ptr<BaseCell> &cell, Player *p);

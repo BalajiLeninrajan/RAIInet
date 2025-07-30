@@ -176,8 +176,6 @@ void Controller::init(int argc, char *argv[]) {
         auto text_view = std::make_unique<TextView>(game.get(), player);
         views[player].push_back(std::move(text_view));
     }
-    Player *currentPlayer = game->getCurrentPlayer();
-    game->getBoard().addFirewall({4, 4}, currentPlayer);
     gameIsRunning = true;
     std::cout << "Starting game\n";
     std::cout << "Player 1's turn. Waiting for command...\n";
@@ -241,8 +239,8 @@ void Controller::parseCommand(const std::string &commandLine) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }
     } else if (command == "board") {
-        //display();
-        game->printGameInfo();
+        display();
+        // game->printGameInfo();
     } else if (command == "sequence") {
         string file;
         ss >> file;
@@ -266,8 +264,8 @@ void Controller::parseCommand(const std::string &commandLine) {
     if (game->checkWinLoss()) {
         auto playerid = game->getPlayerIndex(*game->getCurrentPlayer()) + 1;
         std::cout << "Player " << playerid << " Wins!\n";
-        game->printGameInfo();
-        //display();
+        // game->printGameInfo();
+        display();
         gameIsRunning = false;
     }
 }
