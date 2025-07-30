@@ -1,7 +1,7 @@
 #include "linkmanager.h"
 
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 #include "board.h"
 #include "link.h"
@@ -20,10 +20,12 @@ void LinkManager::addLinksForPlayer(const std::vector<std::string>& links,
         int strength = s[1] - '0';
         if (s[0] == 'D') {
             std::pair<int, int> sentinel = {0, 0};
-            linkMap[player][i] = std::make_unique<DataLink>(sentinel, strength, player, board);
+            linkMap[player][i] =
+                std::make_unique<DataLink>(sentinel, strength, player, board);
         } else {
             std::pair<int, int> sentinel = {0, 0};
-            linkMap[player][i] = std::make_unique<VirusLink>(sentinel, strength, player, board);
+            linkMap[player][i] =
+                std::make_unique<VirusLink>(sentinel, strength, player, board);
         }
 
         i++;
