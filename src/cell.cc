@@ -66,8 +66,6 @@ void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     owner->download(link);
 }
 
-// Always true to prevent decorating
-bool Server::isOccupied() const { return false; }
 bool Server::canDecorate() const { return false; }
 
 std::string Server::cellRepresentation(const Game* game) const { return "S"; }
