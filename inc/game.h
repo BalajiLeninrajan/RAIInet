@@ -35,7 +35,9 @@ class Game {
     Player* checkWinLoss();
     Player* getCurrentPlayer();
     std::vector<Player*> getPlayers() const;
-    int getPlayerIndex(const Player& player) const;
+    unsigned getPlayerIndex(const Player& player) const;
+    LinkManager& getLinkManager() const;
+
     void addUpdate(std::pair<int, int> coords);
     void addUpdate(int playerId, int linkId, std::string value);
     std::queue<update_type> flushUpdates();

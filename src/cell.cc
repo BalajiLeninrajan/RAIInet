@@ -1,6 +1,5 @@
 #include "cell.h"
 
-#include <filesystem>
 #include <memory>
 #include <stdexcept>
 
@@ -23,8 +22,6 @@ void BaseCell::setOccupantLink(LinkManager::LinkKey new_link) {
     }
 }
 
-std::shared_ptr<LinkManager> BaseCell::getLinkManager() { return linkManager; }
-
 void BaseCell::emptyCell() { linkKey.reset(); }
 
 std::string BaseCell::cellRepresentation(const Game* game) const {
@@ -36,7 +33,6 @@ std::string BaseCell::cellRepresentation(const Game* game) const {
     return std::string(1, link_char);
 }
 
-BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
 BoardCell::~BoardCell() {}
 
 // onEnter should check for collision and handle it
@@ -49,8 +45,8 @@ void BoardCell::onEnter(LinkManager::LinkKey link, Game* game) {
         throw std::invalid_argument("Cannot move onto own link");
     }
     // handles battle, winner downloads loser and loser gets deleted
-    if (getLinkManager()->getLink(link).getStrength() >=
-        getLinkManager()->getLink(getOccupantLink()).getStrength()) {
+    if (game->getLinkManager().getLink(link).getStrength() >=
+        game->getLinkManager().getLink(getOccupantLink()).getStrength()) {
         link.player->download(getOccupantLink());
         setOccupantLink(link);
         return;
@@ -59,11 +55,8 @@ void BoardCell::onEnter(LinkManager::LinkKey link, Game* game) {
 }
 
 PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player* owner)
-    : BaseCell{nullptr}, base{std::move(base)}, owner{owner} {}
+    : base{std::move(base)}, owner{owner} {}
 
-std::shared_ptr<LinkManager> PlayerCell::getLinkManager() {
-    return base->getLinkManager();
-}
 void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player == owner) {
         throw std::invalid_argument("Cannot move onto own server");
@@ -73,24 +66,29 @@ void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     owner->download(link);
 }
 
+// Always true to prevent decorating
+bool Server::isOccupied() const { return true; }
+
+std::string Server::cellRepresentation(const Game* game) const { return "S"; }
+
 void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player != owner) {
-        if (!getLinkManager()->getLink(link).getRevealState()) {
+        if (!game->getLinkManager().getLink(link).getRevealState()) {
             std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> fcn =
                 [](std::unique_ptr<Link> p) {
                     return std::make_unique<RevealDecorator>(std::move(p));
                 };
-            getLinkManager()->applyDecorator(link, fcn);
-            std::string type = getLinkManager()->getLink(link).getType() ==
+            game->getLinkManager().applyDecorator(link, fcn);
+            std::string type = game->getLinkManager().getLink(link).getType() ==
                                        Link::LinkType::DATA
                                    ? "D"
                                    : "V";
-            std::string strength =
-                std::to_string(getLinkManager()->getLink(link).getStrength());
+            std::string strength = std::to_string(
+                game->getLinkManager().getLink(link).getStrength());
             game->addUpdate(game->getPlayerIndex(*owner), link.id,
                             type + strength);
         }
-        if (getLinkManager()->getLink(link).getType() ==
+        if (game->getLinkManager().getLink(link).getType() ==
             Link::LinkType::VIRUS) {
             owner->download(link);
         }
@@ -109,7 +107,7 @@ std::string Firewall::cellRepresentation(const Game* game) const {
             case 2:
                 return "3";
             case 3:
-                return "5";
+                return "4";
             default:
                 throw std::invalid_argument("invalid index");
         }
@@ -125,3 +123,5 @@ void Goal::onEnter(LinkManager::LinkKey link, Game* game) {
     }
     link.player->download(link);
 }
+
+std::string Goal::cellRepresentation(const Game* game) const { return "="; }

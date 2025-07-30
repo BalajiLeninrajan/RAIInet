@@ -22,7 +22,7 @@ void Game::startGame(
     const std::vector<std::vector<std::string>>& linkPlacements) {
     linkManager = std::make_shared<LinkManager>();
     // create board
-    board = std::make_unique<Board>(10, 8, linkManager);
+    board = std::make_unique<Board>(10, 8);
 
     // create player objects
     if (abilities.size() != nPlayers || linkPlacements.size() != nPlayers) {
@@ -87,12 +87,14 @@ Player* Game::checkWinLoss() {
     return nullptr;
 }
 
-int Game::getPlayerIndex(const Player& player) const {
+unsigned Game::getPlayerIndex(const Player& player) const {
     for (unsigned i = 0; i < players.size(); ++i) {
         if (players[i].get() == &player) return i;
     }
     return -1;
 }
+
+LinkManager& Game::getLinkManager() const { return *linkManager; }
 
 void Game::nextTurn() {
     do {

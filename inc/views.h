@@ -1,11 +1,11 @@
 #pragma once
 
 #include <map>
-#include <memory>
 #include <string>
 #include <vector>
 
 class Game;
+class Player;
 class BaseCell;
 
 struct PlayerStats {
@@ -18,9 +18,11 @@ struct PlayerStats {
 class View {
    protected:
     std::vector<PlayerStats> players;
+    const Player *viewer;
+    const Game *game;
 
    public:
-    View(const Game *game);
+    View(const Game *game, const Player *viewer);
     static char findBase(int index);
     virtual ~View();
     /*
@@ -38,13 +40,12 @@ class View {
 
 class TextView : public View {
     std::vector<std::vector<std::string>> board;
-    unsigned currentPlayer;
-    const Game *game;
+
     void setCoords(std::pair<int, int> coords);
     void printPlayer(PlayerStats player) const;
 
    public:
-    TextView(const Game *game, unsigned currentPlayer);
+    TextView(const Game *game, const Player *viewer);
     void update(std::pair<int, int> coords) override;
     void update(int playerId, int linkId, std::string value) override;
     void display() const override;
@@ -52,7 +53,8 @@ class TextView : public View {
 
 class GraphicsView : public View {
    public:
-    GraphicsView(const Game *game);
+    GraphicsView(const Game *game, const Player *viewer);
     void update(std::pair<int, int> coords) override;
+    void update(int playerId, int linkId, std::string value) override;
     void display() const override;
 };

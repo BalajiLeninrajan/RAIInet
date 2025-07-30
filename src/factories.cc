@@ -18,8 +18,6 @@ std::unique_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
             return std::make_unique<PolarizeAbility>();
         case 'S':
             return std::make_unique<ScanAbility>();
-        case 'B':
-            return std::make_unique<BadConnectionAbility>();
         case 'Q':
             return std::make_unique<QuantumEntanglementAbility>();
         case 'p':

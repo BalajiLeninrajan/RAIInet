@@ -171,9 +171,9 @@ void Controller::init(int argc, char *argv[]) {
 
     game->startGame(nPlayers, allAbilities, allLinkPlacements);
 
-    for (unsigned i = 0; i < nPlayers; ++i) {
-        auto text_view = std::make_unique<TextView>(game.get(), i);
-        views.push_back(std::move(text_view));
+    for (auto player : game->getPlayers()) {
+        auto text_view = std::make_unique<TextView>(game.get(), player);
+        views[player].push_back(std::move(text_view));
     }
     gameIsRunning = true;
     std::cout << "Starting game\n";
@@ -185,6 +185,7 @@ void Controller::runGameLoop() {
         string s;
         std::getline(std::cin, s);
         parseCommand(s);
+        updateViews();
     }
 }
 
@@ -225,47 +226,62 @@ void Controller::parseCommand(const std::string &commandLine) {
             ss >> arg;
             params.push_back(arg);
         }
-        
+
         auto &abilities = game->getCurrentPlayer()->getAbilities();
         try {
-            abilities.at(abilityID)->use(params);
+            abilities.at(abilityID)->use(*game, params);
         } catch (std::exception &e) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }
     } else if (command == "board") {
         std::cout << "go away this ain't implemented\n";
+        for (const auto &view : views[game->getCurrentPlayer()]) {
+            view->display();
+        }
     } else if (command == "sequence") {
-        string file; ss >> file;
+        string file;
+        ss >> file;
         std::ifstream commandFile(file);
         if (!commandFile) {
             std::cout << "Command file not found.\n";
         } else {
             while (commandFile) {
-                string line; std::getline(commandFile, line);
+                string line;
+                std::getline(commandFile, line);
                 parseCommand(line);
             }
         }
     }
 }
 
-
 void Controller::updateViews() {
     auto q = game->flushUpdates();
+
     while (!q.empty()) {
-        std::visit([this](auto&& x){
-            using T = std::decay_t<decltype(x)>;
-            if constexpr (std::is_same_v<T, std::pair<int, int>>) {
-                for (auto &view: views) {
-                    view->update(x);
+        std::visit(
+            [this](auto &&x) {
+                using T = std::decay_t<decltype(x)>;
+
+                if constexpr (std::is_same_v<T, std::pair<int, int>>) {
+                    for (const auto &[_, playerViews] : views) {
+                        for (const auto &view : playerViews) {
+                            view->update(x);
+                        }
+                    }
+
                 }
-            }
-            else if constexpr (std::is_same_v<T, std::tuple<int, int, string>>) {
-                for (auto &view: views) {
+
+                else if constexpr (std::is_same_v<
+                                       T, std::tuple<int, int, string>>) {
                     auto &[player, link, val] = x;
-                    view->update(player, link, val);
+                    for (const auto &[_, playerViews] : views) {
+                        for (const auto &view : playerViews) {
+                            view->update(player, link, val);
+                        }
+                    }
                 }
-            }
-        }, q.front());
+            },
+            q.front());
         q.pop();
     }
 }

@@ -3,14 +3,23 @@
 #include <string>
 #include <vector>
 
+#include "linkmanager.h"
+
+class Game;
+
 // Abstract base class for all player abilities (Strategy interface).
 class Ability {
+   protected:
     std::string name;
     bool used = false;
 
+    static LinkManager::LinkKey getLinkKeyFromId(const Game &game,
+                                                 const char &linkId);
+
    public:
+    Ability(std::string name);
     virtual ~Ability() = default;
-    virtual void use(const std::vector<std::string> &params) = 0;
+    virtual void use(Game &game, const std::vector<std::string> &params) = 0;
 
     bool isUsed() const;
     void markUsed();
@@ -19,28 +28,43 @@ class Ability {
 
 // Concrete ability implementations
 class FirewallAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    FirewallAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 class DownloadAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    DownloadAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 class LinkBoostAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    LinkBoostAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 class PolarizeAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    PolarizeAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 class ScanAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    ScanAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 
 // Our custom abilities
 class BadConnectionAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 class QuantumEntanglementAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    QuantumEntanglementAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };
 class PappleAbility : public Ability {
-    void use(const std::vector<std::string> &params) override;
+   public:
+    PappleAbility();
+    void use(Game &game, const std::vector<std::string> &params) override;
 };

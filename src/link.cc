@@ -1,6 +1,5 @@
 #include "link.h"
 
-#include <format>
 #include <memory>
 #include <stdexcept>
 
