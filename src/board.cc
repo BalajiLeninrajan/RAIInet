@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <vector>
@@ -20,6 +21,10 @@ Board::Board(unsigned rows, unsigned cols)
     }
 }
 
+void Board::addFirewall(std::pair<int, int> coords, Player* player) {
+    board[coords.first][coords.second] = std::make_unique<Firewall>(
+        std::move(board[coords.first][coords.second]), player);
+}
 void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
                              Player* player, unsigned goalRow, Game* game) {
     for (int i = 0; i < 2; ++i) {
@@ -71,6 +76,7 @@ void Board::moveLink(std::pair<int, int> old_coords,
         throw std::out_of_range("Move is out of bounds");
     }
 
+    std::cout << "yaya";
     LinkManager::LinkKey link =
         board[old_coords.first][old_coords.second]->getOccupantLink();
 

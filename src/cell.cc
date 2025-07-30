@@ -71,6 +71,8 @@ bool Server::isOccupied() const { return true; }
 
 std::string Server::cellRepresentation(const Game* game) const { return "S"; }
 
+Firewall::~Firewall() = default;
+
 void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player != owner) {
         if (!game->getLinkManager().getLink(link).getRevealState()) {
@@ -91,9 +93,17 @@ void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
         if (game->getLinkManager().getLink(link).getType() ==
             Link::LinkType::VIRUS) {
             owner->download(link);
+            BaseCell::emptyCell();
+            return;
         }
     }
     base->onEnter(link, game);
+    setOccupantLink(base->getOccupantLink());
+}
+
+void Firewall::emptyCell() {
+    BaseCell::emptyCell();
+    base->emptyCell();
 }
 
 std::string Firewall::cellRepresentation(const Game* game) const {
