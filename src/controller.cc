@@ -171,8 +171,7 @@ void Controller::init(int argc, char *argv[]) {
 
     game->startGame(nPlayers, allAbilities, allLinkPlacements);
 
-    for (unsigned i = 0; i < nPlayers; ++i) {
-        Player *player = game->getPlayers()[i];
+    for (auto player : game->getPlayers()) {
         auto text_view = std::make_unique<TextView>(game.get(), player);
         views[player].push_back(std::move(text_view));
     }
@@ -186,6 +185,7 @@ void Controller::runGameLoop() {
         string s;
         std::getline(std::cin, s);
         parseCommand(s);
+        updateViews();
     }
 }
 
@@ -235,6 +235,9 @@ void Controller::parseCommand(const std::string &commandLine) {
         }
     } else if (command == "board") {
         std::cout << "go away this ain't implemented\n";
+        for (const auto &view : views[game->getCurrentPlayer()]) {
+            view->display();
+        }
     } else if (command == "sequence") {
         string file;
         ss >> file;
@@ -248,6 +251,39 @@ void Controller::parseCommand(const std::string &commandLine) {
                 parseCommand(line);
             }
         }
+    }
+}
+
+void Controller::updateViews() {
+    auto q = game->flushUpdates();
+
+    while (!q.empty()) {
+        std::visit(
+            [this](auto &&x) {
+                using T = std::decay_t<decltype(x)>;
+
+                if constexpr (std::is_same_v<T, std::pair<int, int>>) {
+                    for (const auto &[_, playerViews] : views) {
+                        for (const auto &view : playerViews) {
+                            view->update(x);
+                        }
+                    }
+
+                }
+
+                else if constexpr (std::is_same_v<
+                                       T, std::tuple<int, int, string>>) {
+                    auto &[player, link, val] = x;
+                    for (const auto &[_, playerViews] : views) {
+                        for (const auto &view : playerViews) {
+                            view->update(player, link, val);
+                        }
+                    }
+                }
+            },
+            q.front());
+
+        q.pop();
     }
 }
 

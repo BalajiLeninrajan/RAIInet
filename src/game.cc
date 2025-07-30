@@ -48,11 +48,11 @@ void Game::startGame(
     // and that the 1st and last rows are goal rows.
     // first 2 placements are server ports.
     std::vector<std::pair<int, int>> p1placements = {
-        {8, 3}, {8, 4}, {1, 0}, {8, 1}, {8, 2},
+        {8, 3}, {8, 4}, {8, 0}, {8, 1}, {8, 2},
         {7, 3}, {7, 4}, {8, 5}, {8, 6}, {8, 7}};
 
     std::vector<std::pair<int, int>> p2placements = {
-        {1, 3}, {1, 4}, {2, 0}, {1, 1}, {1, 2},
+        {1, 3}, {1, 4}, {1, 0}, {1, 1}, {1, 2},
         {2, 3}, {2, 4}, {1, 5}, {1, 6}, {1, 7}};
 
     board->placePlayerCells(p1placements, players[0].get(), 9, this);  // p1
@@ -87,7 +87,7 @@ Player* Game::checkWinLoss() {
     return nullptr;
 }
 
-int Game::getPlayerIndex(const Player& player) const {
+unsigned Game::getPlayerIndex(const Player& player) const {
     for (unsigned i = 0; i < players.size(); ++i) {
         if (players[i].get() == &player) return i;
     }

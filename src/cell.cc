@@ -69,6 +69,8 @@ void Server::onEnter(LinkManager::LinkKey link, Game* game) {
 // Always true to prevent decorating
 bool Server::isOccupied() const { return true; }
 
+std::string Server::cellRepresentation(const Game* game) const { return "S"; }
+
 void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player != owner) {
         if (!game->getLinkManager().getLink(link).getRevealState()) {
@@ -105,7 +107,7 @@ std::string Firewall::cellRepresentation(const Game* game) const {
             case 2:
                 return "3";
             case 3:
-                return "5";
+                return "4";
             default:
                 throw std::invalid_argument("invalid index");
         }
@@ -121,3 +123,5 @@ void Goal::onEnter(LinkManager::LinkKey link, Game* game) {
     }
     link.player->download(link);
 }
+
+std::string Goal::cellRepresentation(const Game* game) const { return "="; }

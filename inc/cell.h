@@ -48,6 +48,7 @@ class Server : public PlayerCell {
     using PlayerCell::PlayerCell;
     void onEnter(LinkManager::LinkKey link, Game *game) override;
     bool isOccupied() const override;
+    std::string cellRepresentation(const Game *game) const override;
 };
 
 // Represents a player's Firewall.
@@ -63,4 +64,5 @@ class Goal : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
     void onEnter(LinkManager::LinkKey link, Game *game) override;
+    std::string cellRepresentation(const Game *game) const override;
 };

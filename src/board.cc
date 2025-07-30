@@ -11,7 +11,8 @@
 #include "linkmanager.h"
 #include "player.h"
 
-Board::Board(unsigned r, unsigned c) : board(r), rows{r}, cols{c} {
+Board::Board(unsigned rows, unsigned cols)
+    : board(rows), rows{rows}, cols{cols} {
     for (unsigned r = 0; r < rows; ++r) {
         for (unsigned c = 0; c < cols; ++c) {
             board[r].push_back(std::make_unique<BoardCell>());
