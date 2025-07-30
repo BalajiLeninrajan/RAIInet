@@ -180,7 +180,7 @@ void Controller::init(int argc, char *argv[]) {
     game->getBoard().addFirewall({4, 4}, currentPlayer);
     gameIsRunning = true;
     std::cout << "Starting game\n";
-    std::cout << "\n\n Player 1's turn. Waiting for command...\n";
+    std::cout << "Player 1's turn. Waiting for command...\n";
 
     runGameLoop();
 }
@@ -241,7 +241,8 @@ void Controller::parseCommand(const std::string &commandLine) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }
     } else if (command == "board") {
-        display();
+        //display();
+        game->printGameInfo();
     } else if (command == "sequence") {
         string file;
         ss >> file;
@@ -255,6 +256,19 @@ void Controller::parseCommand(const std::string &commandLine) {
                 parseCommand(line);
             }
         }
+    } else if (command == "comment") {
+        // do nothing; this simply allows for comments in test files run by
+        // sequence.
+    } else {
+        std::cout << "Command not found.\n";
+    }
+
+    if (game->checkWinLoss()) {
+        auto playerid = game->getPlayerIndex(*game->getCurrentPlayer()) + 1;
+        std::cout << "Player " << playerid << " Wins!\n";
+        game->printGameInfo();
+        //display();
+        gameIsRunning = false;
     }
 }
 
