@@ -86,9 +86,10 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
         throw std::invalid_argument("You can't downlaod a link you own");
     }
 
-    game.getCurrentPlayer()->download(key);
-
     const auto& link = game.getLinkManager().getLink(key);
+
+    View::CellUpdate cellUpdate{link.getCoords().first,
+                                link.getCoords().second};
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
@@ -101,6 +102,8 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
     unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
+    game.getCurrentPlayer()->download(key);
+    game.addUpdate(cellUpdate);
     game.addUpdate(scoreUpdate);
     game.addUpdate(abilityCountUpdate);
 
