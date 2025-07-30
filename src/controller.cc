@@ -204,6 +204,9 @@ void Controller::runGameLoop() {
         parseCommand(s);
         updateViews();
     }
+    if (app) {
+        app->quit();
+    }
 }
 
 void Controller::parseCommand(const std::string &commandLine) {
