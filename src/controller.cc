@@ -260,31 +260,12 @@ void Controller::updateViews() {
     auto q = game->flushUpdates();
 
     while (!q.empty()) {
-        std::visit(
-            [this](auto &&x) {
-                using T = std::decay_t<decltype(x)>;
-
-                if constexpr (std::is_same_v<T, std::pair<int, int>>) {
-                    for (const auto &[_, playerViews] : views) {
-                        for (const auto &view : playerViews) {
-                            view->update(x);
-                        }
-                    }
-
-                }
-
-                else if constexpr (std::is_same_v<
-                                       T, std::tuple<int, int, string>>) {
-                    auto &[player, link, val] = x;
-                    for (const auto &[_, playerViews] : views) {
-                        for (const auto &view : playerViews) {
-                            view->update(player, link, val);
-                        }
-                    }
-                }
-            },
-            q.front());
-
+        const auto &update = q.front();
+        for (const auto &[_, playerViews] : views) {
+            for (const auto &view : playerViews) {
+                std::visit([&](auto &&x) { view->update(x); }, update);
+            }
+        }
         q.pop();
     }
 }
