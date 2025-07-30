@@ -1,17 +1,207 @@
 #include "ability.h"
 
-void FirewallAbility::use(const std::vector<std::string> &params) {}
+#include <memory>
+#include <stdexcept>
 
-void DownloadAbility::use(const std::vector<std::string> &params) {}
+#include "board.h"
+#include "cell.h"
+#include "game.h"
+#include "link.h"
+#include "linkmanager.h"
+#include "player.h"
 
-void LinkBoostAbility::use(const std::vector<std::string> &params) {}
+Ability::Ability(std::string name) : name(name), used(false) {}
 
-void PolarizeAbility::use(const std::vector<std::string> &params) {}
+LinkManager::LinkKey Ability::getLinkKeyFromId(const Game& game,
+                                               const char& linkId) {
+    if ('a' <= linkId && linkId < 'a' + 8) {
+        return {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
+    } else if ('A' <= linkId && linkId < 'A' + 8) {
+        return {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
+    } else if ('h' <= linkId && linkId < 'h' + 8) {
+        return {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
+    } else if ('H' <= linkId && linkId < 'H' + 8) {
+        return {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
+    } else {
+        throw std::invalid_argument("Invalid link id");
+    }
+}
 
-void ScanAbility::use(const std::vector<std::string> &params) {}
+// FirewallAbility
 
-void BadConnectionAbility::use(const std::vector<std::string> &params) {}
+FirewallAbility::FirewallAbility() : Ability("Firewall") {}
 
-void QuantumEntanglementAbility::use(const std::vector<std::string> &p) {}
+void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
+    std::pair<int, int> coords;
+    if (params.size() != 2) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
 
-void PappleAbility::use(const std::vector<std::string> &params) {}
+    std::unique_ptr<BaseCell> baseCell;
+    try {
+        coords.first = std::stoi(params[0]);
+        coords.second = std::stoi(params[1]);
+        baseCell =
+            std::move(game.getBoard().getBoard()[coords.first][coords.second]);
+    } catch (const std::invalid_argument& e) {
+        throw std::invalid_argument("Invalid coordinates");
+    }
+
+    if (baseCell->isOccupied()) {
+        throw std::invalid_argument("Cell is occupied or is a server");
+    }
+
+    game.getBoard().getBoard()[coords.first][coords.second] =
+        std::make_unique<Firewall>(std::move(baseCell),
+                                   game.getCurrentPlayer());
+
+    used = true;
+}
+
+// DownloadAbility
+
+DownloadAbility::DownloadAbility() : Ability("Download") {}
+
+void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
+    if (params.size() != 1) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
+    char linkId = params[0][0];
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player == game.getCurrentPlayer()) {
+        throw std::invalid_argument("You can't downlaod a link you own");
+    }
+
+    // TODO: figure out reveal
+
+    game.getCurrentPlayer()->download(key);
+
+    used = true;
+}
+
+// LinkBoostAbility
+
+LinkBoostAbility::LinkBoostAbility() : Ability("LinkBoost") {}
+
+void LinkBoostAbility::use(Game& game, const std::vector<std::string>& params) {
+    if (params.size() != 1) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
+    char linkId = params[0][0];
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You can only boost links you own");
+    }
+
+    std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
+        [](std::unique_ptr<Link> p) {
+            return std::make_unique<LinkBoostDecorator>(std::move(p));
+        };
+    game.getLinkManager().applyDecorator(key, lambda);
+
+    used = true;
+}
+
+// PolarizeAbility
+
+PolarizeAbility::PolarizeAbility() : Ability("Polarize") {}
+
+void PolarizeAbility::use(Game& game, const std::vector<std::string>& params) {
+    if (params.size() != 1) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
+    char linkId = params[0][0];
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You can only polarize links you own");
+    }
+
+    std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
+        [](std::unique_ptr<Link> p) {
+            return std::make_unique<PolarizeDecorator>(std::move(p));
+        };
+    game.getLinkManager().applyDecorator(key, lambda);
+    used = true;
+}
+
+// ScanAbility
+
+ScanAbility::ScanAbility() : Ability("Scan") {}
+
+void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
+    if (params.size() != 1) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
+    char linkId = params[0][0];
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player == game.getCurrentPlayer()) {
+        throw std::invalid_argument("Bro, why are you scanning your own links");
+    }
+
+    std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
+        [](std::unique_ptr<Link> p) {
+            return std::make_unique<RevealDecorator>(std::move(p));
+        };
+    game.getLinkManager().applyDecorator(key, lambda);
+    used = true;
+}
+
+// BadConnectionAbility
+
+void BadConnectionAbility::use(Game& game,
+                               const std::vector<std::string>& params) {
+    used = true;
+}
+
+// QuantumEntanglement
+
+QuantumEntanglementAbility::QuantumEntanglementAbility()
+    : Ability("QuantumEntanglement") {}
+
+void QuantumEntanglementAbility::use(Game& game,
+                                     const std::vector<std::string>& params) {
+    if (params.size() != 2) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
+    char linkId = params[0][0];
+    char partnerId = params[1][0];
+    auto link = Ability::getLinkKeyFromId(game, linkId);
+    auto partner = Ability::getLinkKeyFromId(game, partnerId);
+    if (partner.player != link.player &&
+        link.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You must own both links to entangle them");
+    }
+
+    std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
+        [&](std::unique_ptr<Link> p) {
+            return std::make_unique<QuantumEntanglementDecorator>(
+                std::move(p), &game.getLinkManager().getLink(partner));
+        };
+    game.getLinkManager().applyDecorator(link, lambda);
+    used = true;
+}
+
+// PappleAbility
+
+PappleAbility::PappleAbility() : Ability("Papple") {}
+
+void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
+    // TODO: DESHITTIFY
+    const auto& board = game.getBoard().getBoard();
+    Player* currentPlayer = game.getCurrentPlayer();
+    bool topLeft = board[1][1]->getOccupantLink().player == currentPlayer;
+    bool bottomLeft =
+        board[board.size() - 2][1]->getOccupantLink().player == currentPlayer;
+    bool topRight = board[1][board[0].size() - 2]->getOccupantLink().player ==
+                    currentPlayer;
+    bool bottomRight = board[board.size() - 2][board[0].size() - 2]
+                           ->getOccupantLink()
+                           .player == currentPlayer;
+    if (!(topLeft && bottomLeft && topRight && bottomRight)) {
+        throw std::runtime_error("YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
+    }
+
+    game.getCurrentPlayer()->setScore({69, 0});
+
+    used = true;
+}

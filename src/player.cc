@@ -15,6 +15,8 @@ const std::vector<std::unique_ptr<Ability>>& Player::getAbilities() const {
     return abilities;
 }
 
+void Player::setScore(std::pair<int, int> newScore) { score = newScore; }
+
 void Player::download(LinkManager::LinkKey linkKey) {
     Link& link = linkManager->getLink(linkKey);
     switch (link.getType()) {

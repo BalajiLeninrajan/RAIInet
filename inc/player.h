@@ -20,6 +20,7 @@ class Player {
            std::shared_ptr<LinkManager> lm);
 
     std::pair<int, int> getScore() const;
+    void setScore(std::pair<int, int> newScore);
     const std::vector<std::unique_ptr<Ability>> &getAbilities() const;
 
     void download(LinkManager::LinkKey linkKey);

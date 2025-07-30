@@ -1,6 +1,5 @@
 #include "cell.h"
 
-#include <filesystem>
 #include <memory>
 #include <stdexcept>
 
@@ -72,6 +71,9 @@ void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     // assuming player does not deal with deleting when downloading
     owner->download(link);
 }
+
+// Always true to prevent decorating
+bool Server::isOccupied() const { return true; }
 
 void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player != owner) {
