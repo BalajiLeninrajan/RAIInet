@@ -48,7 +48,6 @@ class Server : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
     void onEnter(LinkManager::LinkKey link, Game *game) override;
-    bool isOccupied() const override;
     std::string cellRepresentation(const Game *game) const override;
     bool canDecorate() const override;
 };
