@@ -14,9 +14,6 @@ class BaseCell {
     std::optional<LinkManager::LinkKey> linkKey;
     std::shared_ptr<LinkManager> linkManager;
 
-   protected:
-    virtual std::shared_ptr<LinkManager> getLinkManager();
-
    public:
     BaseCell(std::shared_ptr<LinkManager> lm) : linkManager{lm} {}
     virtual ~BaseCell() = default;
@@ -42,7 +39,6 @@ class PlayerCell : public BaseCell {
    protected:
     std::unique_ptr<BaseCell> base;
     Player *owner;
-    std::shared_ptr<LinkManager> getLinkManager() override;
 
    public:
     PlayerCell(std::unique_ptr<BaseCell> base, Player *owner);
