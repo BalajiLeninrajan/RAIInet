@@ -31,8 +31,7 @@ LinkManager::LinkKey Ability::getLinkKeyFromId(const Game& game,
 
 FirewallAbility::FirewallAbility() : Ability("Firewall") {}
 
-void FirewallAbility::use(Game& game, LinkManager& linkManager,
-                          const std::vector<std::string>& params) {
+void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
     std::pair<int, int> coords;
     if (params.size() != 2) {
         throw std::invalid_argument("Invalid number of parameters");
@@ -63,8 +62,7 @@ void FirewallAbility::use(Game& game, LinkManager& linkManager,
 
 DownloadAbility::DownloadAbility() : Ability("Download") {}
 
-void DownloadAbility::use(Game& game, LinkManager& linkManager,
-                          const std::vector<std::string>& params) {
+void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
     if (params.size() != 1) {
         throw std::invalid_argument("Invalid number of parameters");
     }
@@ -85,8 +83,7 @@ void DownloadAbility::use(Game& game, LinkManager& linkManager,
 
 LinkBoostAbility::LinkBoostAbility() : Ability("LinkBoost") {}
 
-void LinkBoostAbility::use(Game& game, LinkManager& linkManager,
-                           const std::vector<std::string>& params) {
+void LinkBoostAbility::use(Game& game, const std::vector<std::string>& params) {
     if (params.size() != 1) {
         throw std::invalid_argument("Invalid number of parameters");
     }
@@ -100,7 +97,7 @@ void LinkBoostAbility::use(Game& game, LinkManager& linkManager,
         [](std::unique_ptr<Link> p) {
             return std::make_unique<LinkBoostDecorator>(std::move(p));
         };
-    linkManager.applyDecorator(key, lambda);
+    game.getLinkManager().applyDecorator(key, lambda);
 
     used = true;
 }
@@ -109,8 +106,7 @@ void LinkBoostAbility::use(Game& game, LinkManager& linkManager,
 
 PolarizeAbility::PolarizeAbility() : Ability("Polarize") {}
 
-void PolarizeAbility::use(Game& game, LinkManager& linkManager,
-                          const std::vector<std::string>& params) {
+void PolarizeAbility::use(Game& game, const std::vector<std::string>& params) {
     if (params.size() != 1) {
         throw std::invalid_argument("Invalid number of parameters");
     }
@@ -124,7 +120,7 @@ void PolarizeAbility::use(Game& game, LinkManager& linkManager,
         [](std::unique_ptr<Link> p) {
             return std::make_unique<PolarizeDecorator>(std::move(p));
         };
-    linkManager.applyDecorator(key, lambda);
+    game.getLinkManager().applyDecorator(key, lambda);
     used = true;
 }
 
@@ -132,8 +128,7 @@ void PolarizeAbility::use(Game& game, LinkManager& linkManager,
 
 ScanAbility::ScanAbility() : Ability("Scan") {}
 
-void ScanAbility::use(Game& game, LinkManager& linkManager,
-                      const std::vector<std::string>& params) {
+void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
     if (params.size() != 1) {
         throw std::invalid_argument("Invalid number of parameters");
     }
@@ -147,13 +142,13 @@ void ScanAbility::use(Game& game, LinkManager& linkManager,
         [](std::unique_ptr<Link> p) {
             return std::make_unique<RevealDecorator>(std::move(p));
         };
-    linkManager.applyDecorator(key, lambda);
+    game.getLinkManager().applyDecorator(key, lambda);
     used = true;
 }
 
 // BadConnectionAbility
 
-void BadConnectionAbility::use(Game& game, LinkManager& linkManager,
+void BadConnectionAbility::use(Game& game,
                                const std::vector<std::string>& params) {
     used = true;
 }
@@ -163,7 +158,7 @@ void BadConnectionAbility::use(Game& game, LinkManager& linkManager,
 QuantumEntanglementAbility::QuantumEntanglementAbility()
     : Ability("QuantumEntanglement") {}
 
-void QuantumEntanglementAbility::use(Game& game, LinkManager& linkManager,
+void QuantumEntanglementAbility::use(Game& game,
                                      const std::vector<std::string>& params) {
     if (params.size() != 2) {
         throw std::invalid_argument("Invalid number of parameters");
@@ -180,9 +175,9 @@ void QuantumEntanglementAbility::use(Game& game, LinkManager& linkManager,
     std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
         [&](std::unique_ptr<Link> p) {
             return std::make_unique<QuantumEntanglementDecorator>(
-                std::move(p), &linkManager.getLink(partner));
+                std::move(p), &game.getLinkManager().getLink(partner));
         };
-    linkManager.applyDecorator(link, lambda);
+    game.getLinkManager().applyDecorator(link, lambda);
     used = true;
 }
 
@@ -190,8 +185,7 @@ void QuantumEntanglementAbility::use(Game& game, LinkManager& linkManager,
 
 PappleAbility::PappleAbility() : Ability("Papple") {}
 
-void PappleAbility::use(Game& game, LinkManager& linkManager,
-                        const std::vector<std::string>& params) {
+void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
     // TODO: DESHITTIFY
     const auto& board = game.getBoard().getBoard();
     Player* currentPlayer = game.getCurrentPlayer();

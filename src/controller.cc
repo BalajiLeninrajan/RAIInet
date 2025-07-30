@@ -225,23 +225,25 @@ void Controller::parseCommand(const std::string &commandLine) {
             ss >> arg;
             params.push_back(arg);
         }
-        
+
         auto &abilities = game->getCurrentPlayer()->getAbilities();
         try {
-            abilities.at(abilityID)->use(params);
+            abilities.at(abilityID)->use(*game, params);
         } catch (std::exception &e) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }
     } else if (command == "board") {
         std::cout << "go away this ain't implemented\n";
     } else if (command == "sequence") {
-        string file; ss >> file;
+        string file;
+        ss >> file;
         std::ifstream commandFile(file);
         if (!commandFile) {
             std::cout << "Command file not found.\n";
         } else {
             while (commandFile) {
-                string line; std::getline(commandFile, line);
+                string line;
+                std::getline(commandFile, line);
                 parseCommand(line);
             }
         }

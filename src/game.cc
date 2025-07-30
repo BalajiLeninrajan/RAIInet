@@ -94,6 +94,8 @@ int Game::getPlayerIndex(const Player& player) const {
     return -1;
 }
 
+LinkManager& Game::getLinkManager() const { return *linkManager; }
+
 void Game::nextTurn() {
     do {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
