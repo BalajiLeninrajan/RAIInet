@@ -199,7 +199,7 @@ void Controller::parseCommand(const std::string &commandLine) {
         char link, direction;
         ss >> link >> direction;
         unsigned id;
-        if (link <= 'A') {
+        if (link <= 'Z') {
             id = link - 'A';
         } else {
             id = link - 'a';
@@ -209,13 +209,13 @@ void Controller::parseCommand(const std::string &commandLine) {
         game->printGameInfo();
 
     } else if (command == "abilities") {
-        auto &abilities = game->getCurrentPlayer()->getAbilities();
-        std::cout << "Available abilities:\n";
-        for (auto &ability: abilities) {
-            if (!ability->isUsed()) {
-                std::cout << ability->getName() << "\n";
-            }
-        }
+        // auto &abilities = game->getCurrentPlayer()->getAbilities();
+        // std::cout << "Available abilities:\n";
+        // for (auto &ability: abilities) {
+        //     if (!ability->isUsed()) {
+        //         std::cout << ability->getName() << "\n";
+        //     }
+        // }
     } else if (command == "ability") {
         vector<string> params;
         string arg;
