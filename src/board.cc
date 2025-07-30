@@ -1,5 +1,7 @@
 #include "board.h"
 
+#include <assert.h>
+
 #include <algorithm>
 #include <iostream>
 #include <memory>
@@ -76,7 +78,6 @@ void Board::moveLink(std::pair<int, int> old_coords,
         throw std::out_of_range("Move is out of bounds");
     }
 
-    std::cout << "yaya";
     LinkManager::LinkKey link =
         board[old_coords.first][old_coords.second]->getOccupantLink();
 
@@ -85,19 +86,18 @@ void Board::moveLink(std::pair<int, int> old_coords,
     // onEnter may delete the link
     if (game->getLinkManager().hasLink(link)) {
         game->getLinkManager().getLink(link).setCoords(new_coords);
+
+        board[old_coords.first][old_coords.second]->emptyCell();
+        game->addUpdate(old_coords);
+        game->addUpdate(new_coords);
     }
 
-    board[old_coords.first][old_coords.second]->emptyCell();
-    game->addUpdate(old_coords);
-    game->addUpdate(new_coords);
-}
+    std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
+        return board;
+    }
 
-std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
-    return board;
-}
+    BaseCell& Board::getCell(std::pair<int, int> coords) {
+        return *board[coords.first][coords.second];
+    }
 
-BaseCell& Board::getCell(std::pair<int, int> coords) {
-    return *board[coords.first][coords.second];
-}
-
-PlayerCell::~PlayerCell() {}
+    PlayerCell::~PlayerCell() {}

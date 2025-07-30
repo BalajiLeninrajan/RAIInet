@@ -58,6 +58,9 @@ class Firewall : public PlayerCell {
     ~Firewall();
     void onEnter(LinkManager::LinkKey link, Game *game) override;
     std::string cellRepresentation(const Game *game) const override;
+    LinkManager::LinkKey getOccupantLink() const override;
+    void setOccupantLink(LinkManager::LinkKey new_link) override;
+    bool isOccupied() const override;
     void emptyCell() override;
 };
 

@@ -39,6 +39,7 @@ class Link {
 
     virtual std::pair<int, int> getNewCoords(std::pair<int, int> coords,
                                              Link::Direction dir);
+    friend class LinkDecorator;
 };
 
 // A concrete implementation for a Virus link.
@@ -71,6 +72,7 @@ class LinkDecorator : public Link {
 
     std::pair<int, int> getCoords() const override;
     void setCoords(std::pair<int, int> newCoords) override;
+    void requestMove(Link::Direction dir, Game* game) override;
 
     Player* getOwner() const override;
 
