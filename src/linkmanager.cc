@@ -64,4 +64,18 @@ bool LinkManager::removeLink(LinkKey key) {
     return true;
 }
 
+bool LinkManager::cleanPlayer(Player *p) {
+    if (linkMap.find(p) == linkMap.end()) return false;
+    linkMap[p].clear();
+    linkMap.erase(p);
+    return true;
+}
+
+bool LinkManager::playerIsEmpty(Player *p) {
+    for (auto &v: linkMap[p]) {
+        if (v != nullptr) return false;
+    }
+    return true;
+}
+
 LinkManager::LinkManager() {}

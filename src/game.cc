@@ -39,7 +39,6 @@ void Game::startGame(
         }
         players.push_back(
             std::make_unique<Player>(std::move(p_abilities), linkManager));
-        std::cout << "Create player at " << players[i].get() << "\n";
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
@@ -59,7 +58,7 @@ void Game::startGame(
     board->placePlayerCells(p2placements, players[1].get(), 0, this);  // p2
 
     currentPlayerIndex = 0;
-    printGameInfo();
+    // printGameInfo();
 }
 
 Player* Game::getCurrentPlayer() { return players[currentPlayerIndex].get(); }
@@ -97,6 +96,7 @@ unsigned Game::getPlayerIndex(const Player& player) const {
 LinkManager& Game::getLinkManager() const { return *linkManager; }
 
 void Game::nextTurn() {
+    cleanPlayers();
     do {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     } while (players[currentPlayerIndex] == nullptr);
@@ -112,7 +112,7 @@ void Game::makeMove(unsigned link, char dir) {
     } catch (std::exception& e) {
         std::cout << "Invalid command: " << e.what() << std::endl;
         // comment this out for final build
-        // throw e;
+        throw e;
     }
 }
 
@@ -133,6 +133,27 @@ std::vector<Player*> Game::getPlayers() const {
     std::transform(players.begin(), players.end(), result.begin(),
                    [](const std::unique_ptr<Player>& p) { return p.get(); });
     return result;
+}
+
+void Game::cleanPlayers() {
+    for (auto &pl: players) {
+        if (pl != nullptr) {
+            // loss condition 1: player has 4 viruses
+            bool has4virus = pl->getScore().second >= 4;
+            // loss condition 2: player has no links
+            bool noLinks = linkManager->playerIsEmpty(pl.get());
+            std::cout << has4virus << " " << "bongo2\n";
+            if (has4virus || noLinks) {
+                // clear board
+                board->removePlayerCells(pl.get());
+                // clean link manager
+                linkManager->cleanPlayer(pl.get());
+                // set to nullptr
+                pl = nullptr;
+            }
+
+        }
+    }
 }
 
 Board& Game::getBoard() const { return *board; }

@@ -1,0 +1,52 @@
+comment moves all cells to center of board.
+move a N
+move A S
+move a N
+move A S
+move a N
+move A S
+
+move b N
+move B S
+move b N
+move B S
+move b N
+move B S
+
+move c N
+move C S
+move c N
+move C S
+move c N
+move C S
+
+move d N
+move D S
+move d N
+move D S
+
+move e N
+move E S
+move e N
+move E S
+
+move f N
+move F S
+move f N
+move F S
+move f N
+move F S
+
+move g N
+move G S
+move g N
+move G S
+move g N
+move G S
+
+move h N
+move H S
+move h N
+move H S
+move h N
+move H S

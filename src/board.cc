@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 #include <vector>
 
 #include "cell.h"
@@ -39,6 +40,35 @@ void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
     for (unsigned c = 0; c < cols; ++c) {
         board[goalRow][c] =
             std::make_unique<Goal>(std::move(board[goalRow][c]), player);
+    }
+}
+
+void Board::removePlayerCells(Player *player) {
+    for (unsigned r=0; r<rows; ++r) {
+        for (unsigned c=0; c<cols; ++c) {
+            undecorateCell(board[r][c], player);
+            if (board[r][c]->isOccupied()) {
+                std::cout << r << " " << c << "\n";
+                auto lk = board[r][c]->getOccupantLink();
+                if (lk.player == player) {
+                    board[r][c]->emptyCell();
+                }
+            }
+        }
+    }
+}
+
+
+void Board::undecorateCell(std::unique_ptr<BaseCell> &cell, Player *p) {
+    if (cell == nullptr) {
+        throw std::invalid_argument("Attempted to undecorate nullptr");
+    }
+
+    if (auto playercell = dynamic_cast<PlayerCell*>(cell.get())) {
+        undecorateCell(playercell->base, p);
+        if (playercell->owner == p) {
+            cell = std::move(playercell->base);
+        }
     }
 }
 

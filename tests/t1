@@ -1,0 +1,11 @@
+comment This file moves all links to center and then has p1 capture all of p2's links on the left.
+sequence tests/center
+
+move a N
+move H N 
+move b N
+move H S
+move c N
+move H N
+move d N
+move H S

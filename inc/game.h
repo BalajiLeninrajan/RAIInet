@@ -33,6 +33,11 @@ class Game {
 
     void nextTurn();
     Board& getBoard() const;
+
+    /*
+    * Clean players that have lost all their links.
+    */
+    void cleanPlayers();
     Player* checkWinLoss();
     Player* getCurrentPlayer();
     std::vector<Player*> getPlayers() const;

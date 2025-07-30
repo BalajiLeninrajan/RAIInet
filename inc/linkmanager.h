@@ -29,6 +29,16 @@ class LinkManager {
 
     Link& getLink(LinkKey key);
 
+    /*
+     * returns true if the player p existed.
+     */
+    bool cleanPlayer(Player* p);
+
+    /*
+    * returns true if all of player p's links are deleted.
+    */
+    bool playerIsEmpty(Player* p);
+
     bool applyDecorator(
         LinkKey key,
         std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)>& decorator);

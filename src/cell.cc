@@ -101,17 +101,17 @@ void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
     setOccupantLink(base->getOccupantLink());
 }
 
-void Firewall::emptyCell() { base->emptyCell(); }
+void PlayerCell::emptyCell() { base->emptyCell(); }
 
-LinkManager::LinkKey Firewall::getOccupantLink() const {
+LinkManager::LinkKey PlayerCell::getOccupantLink() const {
     return base->getOccupantLink();
 }
 
-void Firewall::setOccupantLink(LinkManager::LinkKey new_link) {
+void PlayerCell::setOccupantLink(LinkManager::LinkKey new_link) {
     base->setOccupantLink(new_link);
 }
 
-bool Firewall::isOccupied() const { return base->isOccupied(); }
+bool PlayerCell::isOccupied() const { return base->isOccupied(); }
 
 std::string Firewall::cellRepresentation(const Game* game) const {
     if (!isOccupied()) {

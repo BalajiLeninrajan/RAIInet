@@ -23,4 +23,7 @@ class Board {
     BaseCell& getCell(std::pair<int, int> coords);
     void placePlayerCells(const std::vector<std::pair<int, int>> placements,
                           Player* player, unsigned row, Game* game);
+    void removePlayerCells(Player* player);
+
+    void undecorateCell(std::unique_ptr<BaseCell> &cell, Player *p);
 };

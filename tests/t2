@@ -1,0 +1,12 @@
+comment This file does the same as t1 but instead p1 captures all of p2's links on the right.
+comment with the default link placements file this should test p2 winning after p1 captures all their viruses.
+sequence tests/center
+
+move e N
+move A N 
+move f N
+move A S
+move g N
+move A N
+move h N
+move A S

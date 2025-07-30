@@ -22,6 +22,7 @@ class BaseCell {
     virtual void emptyCell();
     virtual std::string cellRepresentation(const Game *game) const;
     friend class PlayerCell;
+    friend class Board;
     virtual bool canDecorate() const;
 };
 
@@ -41,6 +42,12 @@ class PlayerCell : public BaseCell {
    public:
     PlayerCell(std::unique_ptr<BaseCell> base, Player *owner);
     virtual ~PlayerCell() = 0;
+    LinkManager::LinkKey getOccupantLink() const override;
+    void setOccupantLink(LinkManager::LinkKey new_link) override;
+    bool isOccupied() const override;
+    void emptyCell() override;
+
+    friend class Board;
 };
 
 // Represents a player's Server Port.
@@ -59,10 +66,6 @@ class Firewall : public PlayerCell {
     ~Firewall();
     void onEnter(LinkManager::LinkKey link, Game *game) override;
     std::string cellRepresentation(const Game *game) const override;
-    LinkManager::LinkKey getOccupantLink() const override;
-    void setOccupantLink(LinkManager::LinkKey new_link) override;
-    bool isOccupied() const override;
-    void emptyCell() override;
 };
 
 // Represents the opponent's goal area (Server Ports).
