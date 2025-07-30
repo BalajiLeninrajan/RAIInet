@@ -171,15 +171,9 @@ void Controller::init(int argc, char *argv[]) {
 
     game->startGame(nPlayers, allAbilities, allLinkPlacements);
 
-    for (unsigned i = 0; i < nPlayers; ++i) {
-        Player *player = game->getPlayers()[i];
+    for (auto player : game->getPlayers()) {
         auto text_view = std::make_unique<TextView>(game.get(), player);
         views[player].push_back(std::move(text_view));
-        if (usingGraphics) {
-            auto graphic_view =
-                std::make_unique<GraphicsView>(game.get(), player);
-            views[player].push_back(std::move(graphic_view));
-        }
     }
     gameIsRunning = true;
     std::cout << "Starting game\n";
