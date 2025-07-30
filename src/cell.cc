@@ -87,8 +87,10 @@ void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
                                    : "V";
             std::string strength = std::to_string(
                 game->getLinkManager().getLink(link).getStrength());
-            game->addUpdate(game->getPlayerIndex(*owner), link.id,
-                            type + strength);
+
+            View::RevealLinkUpdate update{game->getPlayerIndex(*owner), link.id,
+                                          type + strength};
+            game->addUpdate(update);
         }
         if (game->getLinkManager().getLink(link).getType() ==
             Link::LinkType::VIRUS) {

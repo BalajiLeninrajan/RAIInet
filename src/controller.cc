@@ -213,26 +213,25 @@ void Controller::parseCommand(const std::string &commandLine) {
         game->printGameInfo();
 
     } else if (command == "abilities") {
-        // auto &abilities = game->getCurrentPlayer()->getAbilities();
-        // std::cout << "Available abilities:\n";
-        // for (auto &ability: abilities) {
-        //     if (!ability->isUsed()) {
-        //         std::cout << ability->getName() << "\n";
-        //     }
-        // }
+        auto &abilities = game->getCurrentPlayer()->getAbilities();
+        std::cout << "Available abilities:\n";
+        for (auto &ability : abilities) {
+            if (!ability->isUsed()) {
+                std::cout << ability->getName() << std::endl;
+            }
+        }
     } else if (command == "ability") {
         vector<string> params;
         string arg;
         int abilityID;
         ss >> abilityID;
-        while (ss) {
-            ss >> arg;
+        while (ss >> arg) {
             params.push_back(arg);
         }
 
         auto &abilities = game->getCurrentPlayer()->getAbilities();
         try {
-            abilities.at(abilityID)->use(*game, params);
+            abilities.at(abilityID - 1)->use(*game, params);
         } catch (std::exception &e) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }
@@ -261,31 +260,12 @@ void Controller::updateViews() {
     auto q = game->flushUpdates();
 
     while (!q.empty()) {
-        std::visit(
-            [this](auto &&x) {
-                using T = std::decay_t<decltype(x)>;
-
-                if constexpr (std::is_same_v<T, std::pair<int, int>>) {
-                    for (const auto &[_, playerViews] : views) {
-                        for (const auto &view : playerViews) {
-                            view->update(x);
-                        }
-                    }
-
-                }
-
-                else if constexpr (std::is_same_v<
-                                       T, std::tuple<int, int, string>>) {
-                    auto &[player, link, val] = x;
-                    for (const auto &[_, playerViews] : views) {
-                        for (const auto &view : playerViews) {
-                            view->update(player, link, val);
-                        }
-                    }
-                }
-            },
-            q.front());
-
+        const auto &update = q.front();
+        for (const auto &[_, playerViews] : views) {
+            for (const auto &view : playerViews) {
+                std::visit([&](auto &&x) { view->update(x); }, update);
+            }
+        }
         q.pop();
     }
 }
