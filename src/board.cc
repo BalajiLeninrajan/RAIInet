@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "cell.h"
+#include "game.h"
 #include "link.h"
 #include "linkmanager.h"
 #include "player.h"
@@ -20,7 +21,7 @@ Board::Board(unsigned r, unsigned c, std::shared_ptr<LinkManager> linkManager)
 }
 
 void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
-                             Player* player, unsigned goalRow) {
+                             Player* player, unsigned goalRow, Game* game) {
     for (int i = 0; i < 2; ++i) {
         auto& [r, c] = placements[i];
         board[r][c] = std::make_unique<Server>(std::move(board[r][c]), player);
@@ -30,7 +31,7 @@ void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
         auto& [r, c] = placements[i];
         LinkManager::LinkKey k{player, i - 2};
         linkManager->getLink(k).setCoords(placements[i]);
-        board[r][c]->onEnter(k);
+        board[r][c]->onEnter(k, game);
     }
 
     for (unsigned c = 0; c < cols; ++c) {
@@ -55,7 +56,7 @@ Board::~Board() {}
 //
 
 void Board::moveLink(std::pair<int, int> old_coords,
-                     std::pair<int, int> new_coords) {
+                     std::pair<int, int> new_coords, Game* game) {
     // we truncate the y-coordinate as moving past the edge is represented by
     // moving into one of the "goal" cells.
     // Relies on the assertion that a cell on the top/bottom edges is always a
@@ -73,7 +74,7 @@ void Board::moveLink(std::pair<int, int> old_coords,
     LinkManager::LinkKey link =
         board[old_coords.first][old_coords.second]->getOccupantLink();
 
-    board[new_coords.first][new_coords.second]->onEnter(link);
+    board[new_coords.first][new_coords.second]->onEnter(link, game);
 
     // onEnter may delete the link
     if (linkManager->hasLink(link)) {
@@ -81,6 +82,8 @@ void Board::moveLink(std::pair<int, int> old_coords,
     }
 
     board[old_coords.first][old_coords.second]->emptyCell();
+    game->addUpdate(old_coords);
+    game->addUpdate(new_coords);
 }
 
 std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {

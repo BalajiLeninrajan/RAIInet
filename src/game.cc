@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
+#include <tuple>
 
 #include "ability.h"
 #include "board.h"
@@ -13,6 +14,8 @@
 #include "player.h"
 
 using LinkKey = LinkManager::LinkKey;
+typedef std::variant<std::pair<int, int>, std::tuple<int, int, std::string>>
+    update_type;
 
 void Game::startGame(
     unsigned nPlayers, const std::vector<std::string>& abilities,
@@ -52,8 +55,8 @@ void Game::startGame(
         {1, 3}, {1, 4}, {2, 0}, {1, 1}, {1, 2},
         {2, 3}, {2, 4}, {1, 5}, {1, 6}, {1, 7}};
 
-    board->placePlayerCells(p1placements, players[0].get(), 9);  // p1
-    board->placePlayerCells(p2placements, players[1].get(), 0);  // p2
+    board->placePlayerCells(p1placements, players[0].get(), 9, this);  // p1
+    board->placePlayerCells(p2placements, players[1].get(), 0, this);  // p2
 
     currentPlayerIndex = 0;
     printGameInfo();
@@ -101,13 +104,25 @@ void Game::nextTurn() {
 void Game::makeMove(unsigned link, char dir) {
     try {
         LinkKey linkKey = LinkKey{players[currentPlayerIndex].get(), link};
-        linkManager->getLink(linkKey).requestMove(Link::charToDirection(dir));
+        linkManager->getLink(linkKey).requestMove(Link::charToDirection(dir),
+                                                  this);
         nextTurn();
     } catch (std::exception& e) {
         std::cout << "Invalid command: " << e.what() << "\n";
         // comment this out for final build
         throw e;
     }
+}
+
+void Game::addUpdate(std::pair<int, int> coords) { queue.push(coords); }
+void Game::addUpdate(int playerId, int linkId, std::string value) {
+    queue.push(std::tuple<int, int, std::string>(playerId, linkId, value));
+}
+
+std::queue<update_type> Game::flushUpdates() {
+    std::queue<update_type> temp = std::move(queue);
+    queue = {};
+    return temp;
 }
 
 void Game::useAbility(int id, const std::vector<std::string>& params) {
