@@ -57,7 +57,7 @@ void BoardCell::onEnter(LinkManager::LinkKey link) {
     getOccupantLink().player->download(link);
 }
 
-PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player *owner)
+PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player* owner)
     : BaseCell{nullptr}, base{std::move(base)}, owner{owner} {}
 
 std::shared_ptr<LinkManager> PlayerCell::getLinkManager() {

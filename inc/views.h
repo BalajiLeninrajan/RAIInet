@@ -20,10 +20,18 @@ class View {
     std::vector<PlayerStats> players;
 
    public:
-    View(const std::unique_ptr<Game> &game);
+    View(const Game *game);
     static char findBase(int index);
     virtual ~View();
+    /*
+     * Notify view that the coordinate [r, c] has changed.
+     */
     virtual void update(std::pair<int, int> coords) = 0;
+    /*
+     * For revealing links:
+     * Tell views to reveal playerid's link at linkid should be revealed
+     * as value.
+     */
     virtual void update(int playerId, int linkId, std::string value) = 0;
     virtual void display() const = 0;
 };
@@ -31,12 +39,12 @@ class View {
 class TextView : public View {
     std::vector<std::vector<std::string>> board;
     unsigned currentPlayer;
-    const std::unique_ptr<Game> &game;
+    const Game *game;
     void setCoords(std::pair<int, int> coords);
     void printPlayer(PlayerStats player) const;
 
    public:
-    TextView(const std::unique_ptr<Game> &game, unsigned currentPlayer);
+    TextView(const Game *game, unsigned currentPlayer);
     void update(std::pair<int, int> coords) override;
     void update(int playerId, int linkId, std::string value) override;
     void display() const override;
@@ -44,7 +52,7 @@ class TextView : public View {
 
 class GraphicsView : public View {
    public:
-    GraphicsView(const std::unique_ptr<Game> &game);
+    GraphicsView(const Game *game);
     void update(std::pair<int, int> coords) override;
     void display() const override;
 };

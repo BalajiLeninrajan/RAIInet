@@ -1,9 +1,9 @@
 #include "board.h"
 
+#include <algorithm>
 #include <memory>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
 
 #include "cell.h"
 #include "link.h"
@@ -34,7 +34,8 @@ void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
     }
 
     for (unsigned c = 0; c < cols; ++c) {
-        board[goalRow][c] = std::make_unique<Goal>(std::move(board[goalRow][c]), player);
+        board[goalRow][c] =
+            std::make_unique<Goal>(std::move(board[goalRow][c]), player);
     }
 }
 
@@ -57,8 +58,9 @@ void Board::moveLink(std::pair<int, int> old_coords,
                      std::pair<int, int> new_coords) {
     // we truncate the y-coordinate as moving past the edge is represented by
     // moving into one of the "goal" cells.
-    // Relies on the assertion that a cell on the top/bottom edges is always a goal.
-    new_coords.first = std::min(new_coords.first, (int)rows-1);
+    // Relies on the assertion that a cell on the top/bottom edges is always a
+    // goal.
+    new_coords.first = std::min(new_coords.first, (int)rows - 1);
     new_coords.first = std::max(new_coords.first, 0);
     if (new_coords.first < 0 || new_coords.first > (int)board.size()) {
         throw std::out_of_range("Move is out of bounds");
@@ -72,7 +74,7 @@ void Board::moveLink(std::pair<int, int> old_coords,
         board[old_coords.first][old_coords.second]->getOccupantLink();
 
     board[new_coords.first][new_coords.second]->onEnter(link);
-    
+
     // onEnter may delete the link
     if (linkManager->hasLink(link)) {
         linkManager->getLink(link).setCoords(new_coords);

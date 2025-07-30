@@ -11,6 +11,7 @@
 #include "ability.h"
 #include "game.h"
 #include "player.h"
+#include "views.h"
 
 using std::string;
 using std::vector;
@@ -162,9 +163,18 @@ void Controller::init(int argc, char *argv[]) {
         std::cerr << "Error: " << e.what() << "\nTry --help\n";
         throw std::invalid_argument("");
     }
+
+    const unsigned nPlayers = 2;
+
     std::vector<string> allAbilities = {ability1, ability2};
     std::vector<std::vector<string>> allLinkPlacements = {links1, links2};
-    game->startGame(2, allAbilities, allLinkPlacements);
+
+    game->startGame(nPlayers, allAbilities, allLinkPlacements);
+
+    for (unsigned i = 0; i < nPlayers; ++i) {
+        auto text_view = std::make_unique<TextView>(game.get(), i);
+        views.push_back(std::move(text_view));
+    }
     gameIsRunning = true;
     std::cout << "Starting game\n";
     runGameLoop();

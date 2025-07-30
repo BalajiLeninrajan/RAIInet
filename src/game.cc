@@ -9,6 +9,7 @@
 #include "cell.h"
 #include "factories.h"
 #include "link.h"
+#include "linkmanager.h"
 #include "player.h"
 
 using LinkKey = LinkManager::LinkKey;
@@ -102,7 +103,7 @@ void Game::makeMove(unsigned link, char dir) {
         LinkKey linkKey = LinkKey{players[currentPlayerIndex].get(), link};
         linkManager->getLink(linkKey).requestMove(Link::charToDirection(dir));
         nextTurn();
-    } catch (std::exception &e) {
+    } catch (std::exception& e) {
         std::cout << "Invalid command: " << e.what() << "\n";
         // comment this out for final build
         throw e;
@@ -113,14 +114,14 @@ void Game::useAbility(int id, const std::vector<std::string>& params) {
     std::cout << "I'm using an ability RAAAHHHHHHH" << "\n";
 }
 
-std::vector<Player*> Game::getPlayers() {
+std::vector<Player*> Game::getPlayers() const {
     std::vector<Player*> result(players.size());
     std::transform(players.begin(), players.end(), result.begin(),
                    [](const std::unique_ptr<Player>& p) { return p.get(); });
     return result;
 }
 
-Board& Game::getBoard() { return *board; }
+Board& Game::getBoard() const { return *board; }
 
 const std::pair<Link::LinkType, int> Game::getPlayerLink(
     const int playerId, const unsigned linkId) const {
@@ -163,6 +164,14 @@ void Game::printGameInfo() {
     }
 
     std::cout << "Board state:\n";
+    auto& b = board->getBoard();
+    for (unsigned r = 1; r < b.size() - 1; ++r) {
+        std::string s = "";
+        for (unsigned c = 0; c < b[0].size(); ++c) {
+            s += b[r][c]->cellRepresentation(this);
+        }
+        std::cout << s << "\n";
+    }
 }
 
 Game::Game() {}

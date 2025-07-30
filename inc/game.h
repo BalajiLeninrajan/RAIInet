@@ -25,10 +25,10 @@ class Game {
                    const std::vector<std::vector<std::string>>& linkPlacements);
 
     void nextTurn();
-    Board& getBoard();
+    Board& getBoard() const;
     Player* checkWinLoss();
     Player* getCurrentPlayer();
-    std::vector<Player*> getPlayers();
+    std::vector<Player*> getPlayers() const;
     int getPlayerIndex(const Player& player) const;
 
     const std::pair<Link::LinkType, int> getPlayerLink(

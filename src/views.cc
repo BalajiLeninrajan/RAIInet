@@ -12,7 +12,7 @@
 #include "game.h"
 #include "link.h"
 
-View::View(const std::unique_ptr<Game> &game) : players() {
+View::View(const Game *game) : players() {
     for (unsigned id = 0; id < game->getPlayers().size(); ++id) {
         players.push_back({id, 5, {0, 0}});
     }
@@ -37,7 +37,7 @@ char View::findBase(int index) {
             throw std::invalid_argument("not a valid index");
     }
 }
-TextView::TextView(const std::unique_ptr<Game> &game, unsigned currentPlayer)
+TextView::TextView(const Game *game, unsigned currentPlayer)
     : View(game),
       board(
           game->getBoard().getBoard().size(),
@@ -65,7 +65,7 @@ TextView::TextView(const std::unique_ptr<Game> &game, unsigned currentPlayer)
 
 void TextView::update(std::pair<int, int> coords) {
     BaseCell &cell = game->getBoard().getCell(coords);
-    board[coords.first][coords.second] = cell.cellRepresentation(game.get());
+    board[coords.first][coords.second] = cell.cellRepresentation(game);
 }
 
 void TextView::update(int currentPlayer, int linkId, std::string value) {
