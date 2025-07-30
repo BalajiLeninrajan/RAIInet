@@ -18,7 +18,7 @@ void Game::startGame(
     const std::vector<std::vector<std::string>>& linkPlacements) {
     linkManager = std::make_shared<LinkManager>();
     // create board
-    board = std::make_unique<Board>(8, 8, linkManager);
+    board = std::make_unique<Board>(10, 8, linkManager);
 
     // create player objects
     if (abilities.size() != nPlayers || linkPlacements.size() != nPlayers) {
@@ -35,15 +35,45 @@ void Game::startGame(
         }
         players.push_back(
             std::make_unique<Player>(std::move(p_abilities), linkManager));
+        std::cout << "Create player at " << players[i].get() << "\n";
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
+    
+    // for now, assume the board is 10 rows x 8 cols
+    // and that the 1st and last rows are goal rows.
+    // first 2 placements are server ports.
+    std::vector<std::pair<int, int>> p1placements = {
+        {8, 3},
+        {8, 4},
+        {8, 0},
+        {8, 1},
+        {8, 2},
+        {7, 3},
+        {7, 4},
+        {8, 5},
+        {8, 6},
+        {8, 7}
+    };
 
-    for (unsigned i = 0; i < nPlayers; ++i) {
-        linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
-                                       board.get());
-    }
+    std::vector<std::pair<int, int>> p2placements = {
+        {1, 3},
+        {1, 4},
+        {1, 0},
+        {1, 1},
+        {1, 2},
+        {2, 3},
+        {2, 4},
+        {1, 5},
+        {1, 6},
+        {1, 7}
+    };
+
+    board->placePlayerCells(p1placements, players[0].get()); // p1
+    board->placePlayerCells(p2placements, players[1].get()); // p2
+
     currentPlayerIndex = 0;
+    printGameInfo();
 }
 
 Player* Game::getCurrentPlayer() { return players[currentPlayerIndex].get(); }
@@ -115,8 +145,31 @@ void Game::printGameInfo() {
     std::cout << "Player info:\n";
     for (unsigned i = 0; i < players.size(); ++i) {
         std::cout << "Info for player " << i + 1 << "\n";
+        if (players[i].get() == nullptr) {
+            std::cout << "This player is COOKED\n";
+            continue;
+        }
+
         std::cout << "Links:\n";
+        for (unsigned j=0; j<8; ++j) {
+            LinkManager::LinkKey k{players[i].get(), j};
+            std::cout << "Link " << j << " ";
+            if (!linkManager->hasLink(k)) {
+                std::cout << "is COOKED\n";
+                continue;
+            }
+            int strength = linkManager->getLink(k).getStrength();
+
+            char type = linkManager->getLink(k).getType() == Link::LinkType::VIRUS ? 'V' : 'D';
+            std::cout << " strength " << strength << " type " << type << " ";
+            auto [linkr, linkc] = linkManager->getLink(k).getCoords();
+            std::cout << "location (" << linkr << ", " << linkc << ")\n";
+        }
+        std::cout << "\n";
     }
+
+    std::cout << "Board state:\n";
+    
 }
 
 Game::Game() {}

@@ -7,13 +7,30 @@
 #include "cell.h"
 #include "link.h"
 #include "linkmanager.h"
+#include "player.h"
+#include <iostream>
 
-Board::Board(int width, int height, std::shared_ptr<LinkManager> linkManager)
-    : board(height), linkManager(linkManager) {
-    for (int r = 0; r < height; ++r) {
-        for (int c = 0; c < width; ++c) {
+Board::Board(int rows, int cols, std::shared_ptr<LinkManager> linkManager)
+    : board(rows), linkManager(linkManager) {
+    for (int r = 0; r < rows; ++r) {
+        for (int c = 0; c < cols; ++c) {
             board[r].push_back(std::make_unique<BoardCell>(linkManager));
         }
+    }
+}
+
+void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements, Player* player) {
+    for (int i=0; i<2; ++i) {
+        auto &[r, c] = placements[i];
+        std::cout << r << " " << c << std::endl;
+        
+        board[r][c] = std::make_unique<Server>(std::move(board[r][c]), player);
+    }
+
+    for (unsigned i=2; i<placements.size(); ++i) {
+        auto &[r, c] = placements[i];
+        LinkManager::LinkKey k{player, i-2};
+        board[r][c]->onEnter(k);
     }
 }
 
@@ -31,6 +48,7 @@ Board::~Board() {}
 //  - runs onEnter() on cell
 // coords is [y,x]
 //
+
 void Board::moveLink(std::pair<int, int> old_coords,
                      std::pair<int, int> new_coords) {
     if (new_coords.first < 0 || new_coords.first > (int)board.size()) {
@@ -58,3 +76,5 @@ std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
 BaseCell& Board::getCell(std::pair<int, int> coords) {
     return *board[coords.first][coords.second];
 }
+
+PlayerCell::~PlayerCell() {}

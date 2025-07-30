@@ -76,7 +76,7 @@ DataLink::DataLink(std::pair<int, int> startCoords, int strength, Player* owner,
                    Board* board)
     : Link(startCoords, strength, owner, board) {}
 
-Link::LinkType DataLink::getType() const { return Link::LinkType::VIRUS; }
+Link::LinkType DataLink::getType() const { return Link::LinkType::DATA; }
 
 DataLink::~DataLink() {}
 
@@ -116,7 +116,7 @@ Link::LinkType PolarizeDecorator::getType() const {
     switch (base->getType()) {
         case Link::LinkType::VIRUS:
             return Link::LinkType::DATA;
-        case Link::LinkType::DATA:
+        default:
             return Link::LinkType::VIRUS;
     }
 }

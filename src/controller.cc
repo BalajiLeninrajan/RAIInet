@@ -46,15 +46,16 @@ void Controller::generateRandomLinks(std::vector<string> &linkList,
     std::random_device rd;
     std::mt19937 g(rd());
 
-    std::shuffle(link_assignments.begin(), link_assignments.end(), g);
-
     int max_strength = 4;
     for (int i = 0; i < placements; ++i) {
         link_assignments[i] =
-            link_assignments[i] + (char)('0' + (i % max_strength) - 1);
+            link_assignments[i] + (char)('0' + ((i % max_strength) + 1));
     }
 
     std::shuffle(link_assignments.begin(), link_assignments.end(), g);
+
+    linkList = std::move(link_assignments);
+
 }
 
 void Controller::init(int argc, char *argv[]) {
