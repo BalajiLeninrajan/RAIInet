@@ -107,7 +107,7 @@ std::string Firewall::cellRepresentation(const Game* game) const {
 
 void Goal::onEnter(LinkManager::LinkKey link) {
     if (link.player == owner) {
-        throw std::invalid_argument("Cannot move onto own server");
+        throw std::invalid_argument("Cannot move onto own goal");
     }
     link.player->download(link);
 }

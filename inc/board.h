@@ -12,9 +12,11 @@ class Player;
 class Board {
     std::vector<std::vector<std::unique_ptr<BaseCell>>> board;
     std::shared_ptr<LinkManager> linkManager;
+    unsigned rows;
+    unsigned cols;
 
    public:
-    Board(int width, int height, std::shared_ptr<LinkManager> lm);
+    Board(unsigned width, unsigned height, std::shared_ptr<LinkManager> lm);
     ~Board();
     void moveLink(std::pair<int, int> old_coords,
                   std::pair<int, int> new_coords);
@@ -22,5 +24,5 @@ class Board {
     std::vector<std::vector<std::unique_ptr<BaseCell>>>& getBoard();
     BaseCell& getCell(std::pair<int, int> coords);
     void placePlayerCells(const std::vector<std::pair<int, int>> placements,
-                          Player* player);
+                          Player* player, unsigned row);
 };
