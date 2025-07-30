@@ -1,5 +1,6 @@
 #include "cell.h"
 
+#include <filesystem>
 #include <memory>
 #include <stdexcept>
 
@@ -57,7 +58,7 @@ void BoardCell::onEnter(LinkManager::LinkKey link) {
     getOccupantLink().player->download(link);
 }
 
-PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player *owner)
+PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player* owner)
     : BaseCell{nullptr}, base{std::move(base)}, owner{owner} {}
 
 std::shared_ptr<LinkManager> PlayerCell::getLinkManager() {
@@ -74,14 +75,19 @@ void Server::onEnter(LinkManager::LinkKey link) {
 
 void Firewall::onEnter(LinkManager::LinkKey link) {
     if (link.player != owner) {
-        // TODO: implement firewall + add decorator using method later
-        // void Firewall::onEnter(Link & link) {
-        //     if (link.player != owner) {
-        //         link = std::make_shared<Link>(new RevealDecorator(link));
-        //     }
-        //     base->onEnter(link);
-        // }
+        if (!getLinkManager()->getLink(link).getRevealState()) {
+            std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> fcn =
+                [](std::unique_ptr<Link> p) {
+                    return std::make_unique<RevealDecorator>(std::move(p));
+                };
+            getLinkManager()->applyDecorator(link, fcn);
+        }
+        if (getLinkManager()->getLink(link).getType() ==
+            Link::LinkType::VIRUS) {
+            owner->download(link);
+        }
     }
+    base->onEnter(link);
 }
 
 std::string Firewall::cellRepresentation(const Game* game) const {
