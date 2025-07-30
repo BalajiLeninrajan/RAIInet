@@ -87,7 +87,7 @@ Player* Game::checkWinLoss() {
     return nullptr;
 }
 
-int Game::getPlayerIndex(const Player& player) const {
+unsigned Game::getPlayerIndex(const Player& player) const {
     for (unsigned i = 0; i < players.size(); ++i) {
         if (players[i].get() == &player) return i;
     }
