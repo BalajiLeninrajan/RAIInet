@@ -22,7 +22,7 @@ void Game::startGame(
     const std::vector<std::vector<std::string>>& linkPlacements) {
     linkManager = std::make_shared<LinkManager>();
     // create board
-    board = std::make_unique<Board>(10, 8, linkManager);
+    board = std::make_unique<Board>(10, 8);
 
     // create player objects
     if (abilities.size() != nPlayers || linkPlacements.size() != nPlayers) {

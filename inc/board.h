@@ -4,7 +4,6 @@
 #include <vector>
 
 class BaseCell;
-class Link;
 class Player;
 class Game;
 
