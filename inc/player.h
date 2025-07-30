@@ -8,7 +8,6 @@
 
 // Forward declarations to avoid circular includes
 class Ability;
-class PappleAbility;
 
 // Represents a player in the game.
 class Player {
@@ -21,9 +20,8 @@ class Player {
            std::shared_ptr<LinkManager> lm);
 
     std::pair<int, int> getScore() const;
+    void setScore(std::pair<int, int> newScore);
     const std::vector<std::unique_ptr<Ability>> &getAbilities() const;
 
     void download(LinkManager::LinkKey linkKey);
-
-    friend class PappleAbility;
 };

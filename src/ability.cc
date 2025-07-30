@@ -316,7 +316,7 @@ void PappleAbility::use(Game& game, LinkManager& linkManager,
         throw std::runtime_error("YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
     }
 
-    game.getCurrentPlayer()->score = {69, 0};
+    game.getCurrentPlayer()->setScore({69, 0});
 
     used = true;
 }
