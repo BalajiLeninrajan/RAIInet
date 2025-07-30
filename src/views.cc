@@ -22,17 +22,6 @@ View::~View() {}
 
 void View::display() const {}
 
-// player index starts at 0
-// even index is lowercase, odd index is uppercase
-// if we have more than 2 players, e.g. player 3 (index 2) takes letters
-// 'h' to 'o'
-// assume we don't get past 'z'/'Z'
-
-// std::string type =
-//     playerLinks[i].getType() == Link::LinkType::DATA ? "D"
-//                                                      : "V";
-// links[std::string(1, base + i)] =
-//     type + std::to_string(playerLinks[i].getStrength());
 char TextView::findBase(int index) {
     switch (index) {
         case 0:
