@@ -40,6 +40,7 @@ class View {
 
 class TextView : public View {
     std::vector<std::vector<std::string>> board;
+
     void setCoords(std::pair<int, int> coords);
     void printPlayer(PlayerStats player) const;
 
