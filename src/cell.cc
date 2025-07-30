@@ -40,7 +40,7 @@ BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
 BoardCell::~BoardCell() {}
 
 // onEnter should check for collision and handle it
-void BoardCell::onEnter(LinkManager::LinkKey link) {
+void BoardCell::onEnter(LinkManager::LinkKey link, Game* game) {
     if (!isOccupied()) {
         setOccupantLink(link);
         return;
@@ -64,7 +64,7 @@ PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player* owner)
 std::shared_ptr<LinkManager> PlayerCell::getLinkManager() {
     return base->getLinkManager();
 }
-void Server::onEnter(LinkManager::LinkKey link) {
+void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player == owner) {
         throw std::invalid_argument("Cannot move onto own server");
     }
@@ -73,7 +73,7 @@ void Server::onEnter(LinkManager::LinkKey link) {
     owner->download(link);
 }
 
-void Firewall::onEnter(LinkManager::LinkKey link) {
+void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player != owner) {
         if (!getLinkManager()->getLink(link).getRevealState()) {
             std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> fcn =
@@ -81,13 +81,21 @@ void Firewall::onEnter(LinkManager::LinkKey link) {
                     return std::make_unique<RevealDecorator>(std::move(p));
                 };
             getLinkManager()->applyDecorator(link, fcn);
+            std::string type = getLinkManager()->getLink(link).getType() ==
+                                       Link::LinkType::DATA
+                                   ? "D"
+                                   : "V";
+            std::string strength =
+                std::to_string(getLinkManager()->getLink(link).getStrength());
+            game->addUpdate(game->getPlayerIndex(*owner), link.id,
+                            type + strength);
         }
         if (getLinkManager()->getLink(link).getType() ==
             Link::LinkType::VIRUS) {
             owner->download(link);
         }
     }
-    base->onEnter(link);
+    base->onEnter(link, game);
 }
 
 std::string Firewall::cellRepresentation(const Game* game) const {
@@ -111,7 +119,7 @@ std::string Firewall::cellRepresentation(const Game* game) const {
     return std::string(1, link_char);
 }
 
-void Goal::onEnter(LinkManager::LinkKey link) {
+void Goal::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player == owner) {
         throw std::invalid_argument("Cannot move onto own goal");
     }

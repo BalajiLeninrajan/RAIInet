@@ -1,7 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <queue>
 #include <string>
+#include <tuple>
+#include <variant>
 #include <vector>
 
 #include "link.h"
@@ -12,10 +15,13 @@ class Board;
 
 // Manages the overall game state, players, and turn logic.
 class Game {
+    typedef std::variant<std::pair<int, int>, std::tuple<int, int, std::string>>
+        update_type;
     std::vector<std::unique_ptr<Player>> players;
     int currentPlayerIndex;
     std::unique_ptr<Board> board;
     std::shared_ptr<LinkManager> linkManager;
+    std::queue<update_type> queue;
 
    public:
     Game();
@@ -30,6 +36,9 @@ class Game {
     Player* getCurrentPlayer();
     std::vector<Player*> getPlayers() const;
     int getPlayerIndex(const Player& player) const;
+    void addUpdate(std::pair<int, int> coords);
+    void addUpdate(int playerId, int linkId, std::string value);
+    std::queue<update_type> flushUpdates();
 
     const std::pair<Link::LinkType, int> getPlayerLink(
         const int playerId, const unsigned linkId) const;

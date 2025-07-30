@@ -20,7 +20,7 @@ class BaseCell {
    public:
     BaseCell(std::shared_ptr<LinkManager> lm) : linkManager{lm} {}
     virtual ~BaseCell() = default;
-    virtual void onEnter(LinkManager::LinkKey link) = 0;
+    virtual void onEnter(LinkManager::LinkKey link, Game *game) = 0;
     virtual LinkManager::LinkKey getOccupantLink() const;
     virtual void setOccupantLink(LinkManager::LinkKey new_link);
     virtual bool isOccupied() const;
@@ -34,7 +34,7 @@ class BoardCell : public BaseCell {
    public:
     BoardCell(std::shared_ptr<LinkManager> lm);
     ~BoardCell();
-    void onEnter(LinkManager::LinkKey link) override;
+    void onEnter(LinkManager::LinkKey link, Game *game) override;
 };
 
 // Abstract decorator for cells owned by a player.
@@ -53,14 +53,14 @@ class PlayerCell : public BaseCell {
 class Server : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
-    void onEnter(LinkManager::LinkKey link) override;
+    void onEnter(LinkManager::LinkKey link, Game *game) override;
 };
 
 // Represents a player's Firewall.
 class Firewall : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
-    void onEnter(LinkManager::LinkKey link) override;
+    void onEnter(LinkManager::LinkKey link, Game *game) override;
     std::string cellRepresentation(const Game *game) const override;
 };
 
@@ -68,5 +68,5 @@ class Firewall : public PlayerCell {
 class Goal : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
-    void onEnter(LinkManager::LinkKey link) override;
+    void onEnter(LinkManager::LinkKey link, Game *game) override;
 };

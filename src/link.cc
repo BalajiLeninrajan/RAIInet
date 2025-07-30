@@ -41,8 +41,8 @@ std::pair<int, int> Link::getNewCoords(std::pair<int, int> coords,
     return coords;
 }
 
-void Link::requestMove(Link::Direction dir) {
-    board->moveLink(coords, getNewCoords(coords, dir));
+void Link::requestMove(Link::Direction dir, Game* game) {
+    board->moveLink(coords, getNewCoords(coords, dir), game);
 }
 
 Link::Direction Link::charToDirection(char c) {
@@ -133,10 +133,10 @@ QuantumEntanglementDecorator::QuantumEntanglementDecorator(
     std::unique_ptr<Link> base, Link* partner)
     : LinkDecorator(std::move(base)), partner(partner) {}
 
-void QuantumEntanglementDecorator::requestMove(Direction dir) {
-    base->requestMove(dir);
+void QuantumEntanglementDecorator::requestMove(Direction dir, Game* game) {
+    base->requestMove(dir, game);
     try {
-        partner->requestMove(dir);
+        partner->requestMove(dir, game);
     } catch (...) {
     }
 }

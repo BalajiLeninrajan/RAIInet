@@ -5,6 +5,7 @@
 
 class Player;
 class Board;
+class Game;
 
 // Abstract base class for player-controlled links (pieces).
 class Link {
@@ -32,7 +33,7 @@ class Link {
     virtual void setCoords(std::pair<int, int> newCoords);
 
     // The Game class will handle the logic for this.
-    virtual void requestMove(Direction dir);
+    virtual void requestMove(Direction dir, Game* game);
 
     virtual Player* getOwner() const;
 
@@ -102,7 +103,7 @@ class LagDecorator : public LinkDecorator {
 
    public:
     using LinkDecorator::LinkDecorator;
-    void requestMove(Direction dir) override;
+    void requestMove(Direction dir, Game* game) override;
 };
 
 class QuantumEntanglementDecorator : public LinkDecorator {
@@ -110,5 +111,5 @@ class QuantumEntanglementDecorator : public LinkDecorator {
 
    public:
     QuantumEntanglementDecorator(std::unique_ptr<Link> base, Link* partner);
-    void requestMove(Direction dir) override;
+    void requestMove(Direction dir, Game* game) override;
 };
