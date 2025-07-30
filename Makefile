@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++23 -Wall -g -MMD
+CXXFLAGS=-std=c++23 -Wall -g -MMD $(shell pkg-config --cflags gtkmm-4.0)
 DEPFLAGS:=-MMD -MP -Iinc
 EXEC=RAIInet
 
@@ -9,7 +9,7 @@ OBJ_DIR:=build
 CCFiles=$(wildcard ${SRC_DIR}/*.cc)
 OBJECTS=${CCFiles:${SRC_DIR}/%.cc=${OBJ_DIR}/%.o}
 DEPENDS=${OBJECTS:.o=.d}
-LIBS:=-lboost_program_options
+LIBS:=-lboost_program_options $(shell pkg-config --libs gtkmm-4.0)
 
 ${EXEC}: ${OBJECTS}
 	${CXX} ${CXXFLAGS} ${OBJECTS} -o $@ ${LIBS}

@@ -1,5 +1,7 @@
 #include "views.h"
 
+#include <gtkmm.h>
+
 #include <iostream>
 #include <map>
 #include <stdexcept>
