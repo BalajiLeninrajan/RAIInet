@@ -85,9 +85,8 @@ void Board::moveLink(std::pair<int, int> old_coords,
     // onEnter may delete the link
     if (game->getLinkManager().hasLink(link)) {
         game->getLinkManager().getLink(link).setCoords(new_coords);
-
-        board[old_coords.first][old_coords.second]->emptyCell();
     }
+    board[old_coords.first][old_coords.second]->emptyCell();
     View::CellUpdate oldCoordsUpdate{old_coords.first, old_coords.second};
     View::CellUpdate newCoordsUpdate{new_coords.first, new_coords.second};
     game->addUpdate(oldCoordsUpdate);
