@@ -75,11 +75,17 @@ void Server::onEnter(LinkManager::LinkKey link) {
 
 void Firewall::onEnter(LinkManager::LinkKey link) {
     if (link.player != owner) {
-        std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> fcn =
-            [](std::unique_ptr<Link> p) {
-                return std::make_unique<RevealDecorator>(std::move(p));
-            };
-        getLinkManager()->applyDecorator(link, fcn);
+        if (!getLinkManager()->getLink(link).getRevealState()) {
+            std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> fcn =
+                [](std::unique_ptr<Link> p) {
+                    return std::make_unique<RevealDecorator>(std::move(p));
+                };
+            getLinkManager()->applyDecorator(link, fcn);
+        }
+        if (getLinkManager()->getLink(link).getType() ==
+            Link::LinkType::VIRUS) {
+            owner->download(link);
+        }
     }
     base->onEnter(link);
 }
