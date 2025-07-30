@@ -31,6 +31,8 @@ std::string BaseCell::cellRepresentation(const Game* game) const {
     return std::string(1, link_char);
 }
 
+bool BaseCell::canDecorate() const { return true; }
+
 BoardCell::~BoardCell() {}
 
 // onEnter should check for collision and handle it
@@ -64,8 +66,7 @@ void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     owner->download(link);
 }
 
-// Always true to prevent decorating
-bool Server::isOccupied() const { return true; }
+bool Server::canDecorate() const { return false; }
 
 std::string Server::cellRepresentation(const Game* game) const { return "S"; }
 
@@ -139,5 +140,6 @@ void Goal::onEnter(LinkManager::LinkKey link, Game* game) {
     }
     link.player->download(link);
 }
+bool Goal::canDecorate() const { return false; }
 
 std::string Goal::cellRepresentation(const Game* game) const { return "="; }
