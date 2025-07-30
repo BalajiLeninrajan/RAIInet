@@ -10,6 +10,7 @@
 #include "cell.h"
 #include "game.h"
 #include "link.h"
+#include "window.h"
 
 View::View(const Game *game, const Player *viewer)
     : players(), viewer(viewer), game(game) {
@@ -115,8 +116,65 @@ void TextView::display() const {
     printPlayer(players[game->getPlayerIndex(*viewer)]);
 }
 
+// TODO: change height of window so it's not so sadly square
 GraphicsView::GraphicsView(const Game *game, const Player *viewer)
-    : View(game, viewer) {};
+    : View(game, viewer),
+      window{600, 400},
+      height(game->getBoard().getBoard().size()),
+      width(game->getBoard().getBoard()[0].size()) {
+    for (unsigned y = 0; y < height; ++y) {
+        for (unsigned x = 0; x < width; ++x) {
+            std::string cell =
+                game->getBoard().getBoard()[y][x]->cellRepresentation(game);
+            drawCell({y, x}, cell[0]);
+        }
+    }
+}
+
+void GraphicsView::drawCell(std::pair<int, int> coords, char cell) {
+    auto colour = Xwindow::White;
+    std::string link = "";
+    switch (cell) {
+        case '.':
+            colour = Xwindow::White;
+            break;
+        case 'm':
+            colour = Xwindow::lRed;
+            break;
+        case 'w':
+            colour = Xwindow::lGreen;
+            break;
+        // TODO: change 3 and 5 to whatever player 3 and 4 firewall are
+        case '3':
+            colour = Xwindow::lBlue;
+            break;
+        case '5':
+            colour = Xwindow::lPurple;
+        default:
+            link += cell;
+            if ('a' <= cell && cell <= 'h') {
+                colour = Xwindow::dRed;
+            } else if ('A' <= cell && cell < 'H') {
+                colour = Xwindow::dGreen;
+            } else if ('i' <= cell && cell <= 'i' + 7) {
+                colour = Xwindow::dBlue;
+            } else if ('I' <= cell && cell <= 'I' + 7) {
+                colour = Xwindow::dPurple;
+            } else {
+                link = "?";  // NOTE: This should not happen
+            }
+    }
+    // draw the rectangle here
+    // if link != "" -> draw the letter too
+    // TODO: check math
+    int screen_width_px = static_cast<int>(window.getWidth() * 0.9 / 2);
+    int screen_height_px = screen_width_px * height / width;
+    int x = (window.getWidth() - screen_width_px) / 2;
+    int y = (window.getHeight() - screen_height_px) / 2;
+    int cell_width = screen_width_px / width;
+
+    window.fillRectangle(x, y, cell_width, cell_width, colour);
+}
 
 void GraphicsView::update(View::CellUpdate update) {
     // TODO: implement

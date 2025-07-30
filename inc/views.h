@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "window.h"
+
 class Game;
 class Player;
 class BaseCell;
@@ -78,6 +80,12 @@ class TextView : public View {
 };
 
 class GraphicsView : public View {
+    Xwindow window;
+    unsigned height;
+    unsigned width;
+
+    void drawCell(std::pair<int, int> coords, char cell);
+
    public:
     GraphicsView(const Game *game, const Player *viewer);
 
