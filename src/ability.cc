@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 #include "board.h"
 #include "cell.h"
@@ -92,7 +93,7 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
     std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
-                        link.getStrength();
+                        std::to_string(link.getStrength());
     View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
     View::ScoreUpdate scoreUpdate{playerId, key.player->getScore()};
@@ -164,7 +165,7 @@ void PolarizeAbility::use(Game& game, const std::vector<std::string>& params) {
     View::CellUpdate cellUpdate{coords.first, coords.second};
 
     std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
-                        link.getStrength();
+                        std::to_string(link.getStrength());
     View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
     unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
@@ -197,21 +198,18 @@ void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
     game.getLinkManager().applyDecorator(key, lambda);
 
     const auto& link = game.getLinkManager().getLink(key);
-    const auto& coords = link.getCoords();
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
-    View::CellUpdate cellUpdate{coords.first, coords.second};
-
     std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
-                        link.getStrength();
+                        std::to_string(link.getStrength());
     unsigned oppId = game.getPlayerIndex(*key.player);
+
     View::RevealLinkUpdate revealUpdate{oppId, key.id, value};
 
     unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
-    game.addUpdate(cellUpdate);
     game.addUpdate(revealUpdate);
     game.addUpdate(abilityCountUpdate);
     used = true;
