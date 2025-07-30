@@ -8,6 +8,7 @@
 
 // Forward declarations to avoid circular includes
 class Ability;
+class PappleAbility;
 
 // Represents a player in the game.
 class Player {
@@ -23,4 +24,6 @@ class Player {
     const std::vector<std::unique_ptr<Ability>> &getAbilities() const;
 
     void download(LinkManager::LinkKey linkKey);
+
+    friend class PappleAbility;
 };
