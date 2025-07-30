@@ -119,17 +119,3 @@ void GraphicsView::update(int playerId, int linkId, std::string value) {
 void GraphicsView::display() const {
     // Does nothing
 }
-
-GraphicsView::GraphicsView(const Game *game, const Player *viewer)
-    : View(game, viewer) {};
-
-void GraphicsView::update(std::pair<int, int> coords) {
-    // TODO: implement
-}
-void GraphicsView::update(int playerId, int linkId, std::string value) {
-    // TODO: implement
-}
-
-void GraphicsView::display() const {
-    // Does nothing
-}
