@@ -109,7 +109,10 @@ void TextView::display() const {
 }
 
 GraphicsView::GraphicsView(const Game *game, const Player *viewer)
-    : View(game, viewer) {};
+    : View(game, viewer) {
+    set_title("RAIInet | " + std::to_string(game->getPlayerIndex(*viewer)));
+    set_default_size(200, 200);
+};
 
 void GraphicsView::update(std::pair<int, int> coords) {
     // TODO: implement

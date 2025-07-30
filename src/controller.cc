@@ -1,11 +1,14 @@
 #include "controller.h"
 
+#include <gtkmm.h>
+
 #include <algorithm>
 #include <boost/program_options.hpp>
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <thread>
 #include <vector>
 
 #include "ability.h"
@@ -172,12 +175,26 @@ void Controller::init(int argc, char *argv[]) {
     game->startGame(nPlayers, allAbilities, allLinkPlacements);
 
     for (auto player : game->getPlayers()) {
-        auto text_view = std::make_unique<TextView>(game.get(), player);
-        views[player].push_back(std::move(text_view));
+        views[player].push_back(std::make_unique<TextView>(game.get(), player));
     }
-    gameIsRunning = true;
-    std::cout << "Starting game\n";
-    runGameLoop();
+
+    std::thread gameThread;
+    if (usingGraphics) {
+        app = Gtk::Application::create("com.cs247.RAIInet");
+        for (auto player : game->getPlayers()) {
+            auto view = std::make_unique<GraphicsView>(game.get(), player);
+            view->show();
+            views[player].push_back(std::move(view));
+        }
+        gameIsRunning = true;
+        gameThread = std::thread([this] { runGameLoop(); });
+        app->run();  // GTK main loop
+        if (gameThread.joinable()) gameThread.join();
+    } else {
+        // Only text mode
+        gameIsRunning = true;
+        runGameLoop();
+    }
 }
 
 void Controller::runGameLoop() {

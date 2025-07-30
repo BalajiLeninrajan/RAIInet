@@ -1,8 +1,12 @@
 #pragma once
 
+#include <gtkmm.h>
+
 #include <map>
 #include <string>
 #include <vector>
+
+#include "gtkmm/window.h"
 
 class Game;
 class Player;
@@ -50,7 +54,7 @@ class TextView : public View {
     void display() const override;
 };
 
-class GraphicsView : public View {
+class GraphicsView : public View, public Gtk::Window {
    public:
     GraphicsView(const Game *game, const Player *viewer);
     void update(std::pair<int, int> coords) override;

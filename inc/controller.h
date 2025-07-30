@@ -1,4 +1,6 @@
 #pragma once
+#include <gtkmm.h>
+
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -11,6 +13,7 @@ class Player;
 // The Controller handles user input and orchestrates the Model and View.
 class Controller {
     std::unique_ptr<Game> game;
+    Glib::RefPtr<Gtk::Application> app;  // GTK application (only if graphics)
 
     std::unordered_map<Player*, std::vector<std::unique_ptr<View>>> views;
     void readLinkFile(std::string filename, std::vector<std::string>& linkList,
