@@ -25,8 +25,7 @@ class BaseCell {
     virtual void setOccupantLink(LinkManager::LinkKey new_link);
     virtual bool isOccupied();
     virtual void emptyCell();
-    virtual std::string cellRepresentation(Player &player,
-                                           const std::unique_ptr<Game> &game);
+    virtual std::string cellRepresentation(const std::unique_ptr<Game> &game);
     friend class PlayerCell;
 };
 
@@ -62,6 +61,7 @@ class Firewall : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
     void onEnter(LinkManager::LinkKey link) override;
+    std::string cellRepresentation(const std::unique_ptr<Game> &game) override;
 };
 
 // Represents the opponent's goal area (Server Ports).

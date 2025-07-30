@@ -7,6 +7,7 @@
 #include "link.h"
 #include "linkmanager.h"
 #include "player.h"
+#include "views.h"
 
 bool BaseCell::isOccupied() { return linkKey.has_value(); }
 
@@ -25,15 +26,13 @@ std::shared_ptr<LinkManager> BaseCell::getLinkManager() { return linkManager; }
 
 void BaseCell::emptyCell() { linkKey.reset(); }
 
-std::string BaseCell::cellRepresentation(Player& player,
-                                         const std::unique_ptr<Game>& game) {
+std::string BaseCell::cellRepresentation(const std::unique_ptr<Game>& game) {
     if (!isOccupied()) {
         return ".";
     }
-    int index = game->getPlayerIndex(player);
-    char base =
-        'a' + (8 * (index / 2)) - (32 * (index % 2)) + linkKey.value().id;
-    return std::string(1, base);
+    int index = game->getPlayerIndex(*linkKey.value().player);
+    char link_char = TextView::findBase(index) + linkKey.value().id;
+    return std::string(1, link_char);
 }
 
 BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
@@ -85,6 +84,27 @@ void Firewall::onEnter(LinkManager::LinkKey link) {
         //     base->onEnter(link);
         // }
     }
+}
+
+std::string Firewall::cellRepresentation(const std::unique_ptr<Game>& game) {
+    if (!isOccupied()) {
+        switch (game->getPlayerIndex(*owner)) {
+            case 0:
+                return "m";
+            case 1:
+                return "w";
+            // TODO: change firewall for player 3 and 4
+            case 2:
+                return "3";
+            case 3:
+                return "5";
+            default:
+                throw std::invalid_argument("invalid index");
+        }
+    }
+    int index = game->getPlayerIndex(*getOccupantLink().player);
+    char link_char = TextView::findBase(index) + getOccupantLink().id;
+    return std::string(1, link_char);
 }
 
 void Goal::onEnter(LinkManager::LinkKey link) {
