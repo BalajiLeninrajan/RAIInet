@@ -85,11 +85,15 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
         throw std::invalid_argument("You can't downlaod a link you own");
     }
 
-    // TODO: figure out reveal
-
     game.getCurrentPlayer()->download(key);
 
+    const auto& link = game.getLinkManager().getLink(key);
+
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
+                        link.getStrength();
+    View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
     View::ScoreUpdate scoreUpdate{playerId, key.player->getScore()};
 
