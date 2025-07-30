@@ -27,4 +27,5 @@ class Controller {
     void init(int argc, char* argv[]);
     void updateViews();
     void display();
+    void clearStdout();
 };

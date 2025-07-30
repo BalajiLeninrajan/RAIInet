@@ -59,7 +59,7 @@ void Game::startGame(
     board->placePlayerCells(p2placements, players[1].get(), 0, this);  // p2
 
     currentPlayerIndex = 0;
-    printGameInfo();
+    // printGameInfo();
 }
 
 Player* Game::getCurrentPlayer() { return players[currentPlayerIndex].get(); }

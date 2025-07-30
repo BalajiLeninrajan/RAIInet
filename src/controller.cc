@@ -177,6 +177,8 @@ void Controller::init(int argc, char *argv[]) {
     }
     gameIsRunning = true;
     std::cout << "Starting game\n";
+    std::cout << "\n\n Player 1's turn. Waiting for command...\n";
+
     runGameLoop();
 }
 
@@ -207,7 +209,10 @@ void Controller::parseCommand(const std::string &commandLine) {
         }
 
         game->makeMove(id, direction);
-        game->printGameInfo();
+        clearStdout();
+        std::cout << "Player " << game->getPlayerIndex(*game->getCurrentPlayer()) + 1 << "'s turn. Waiting for command...\n";
+
+        // game->printGameInfo();
 
     } else if (command == "abilities") {
         // auto &abilities = game->getCurrentPlayer()->getAbilities();
@@ -234,10 +239,7 @@ void Controller::parseCommand(const std::string &commandLine) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }
     } else if (command == "board") {
-        std::cout << "go away this ain't implemented\n";
-        for (const auto &view : views[game->getCurrentPlayer()]) {
-            view->display();
-        }
+        display();
     } else if (command == "sequence") {
         string file;
         ss >> file;
@@ -284,6 +286,17 @@ void Controller::updateViews() {
             q.front());
         q.pop();
     }
+}
+
+void Controller::display() {
+    auto pl = game->getCurrentPlayer();
+    for (auto &i: views[pl]) {
+        i->display();
+    }
+}
+
+void Controller::clearStdout() {
+    std::cout << "\x1B[2J\x1B[H"; // escape sequences that clear & move cursor
 }
 
 Controller::Controller() {}
