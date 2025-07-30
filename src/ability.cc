@@ -12,6 +12,21 @@
 
 Ability::Ability(std::string name) : name(name), used(false) {}
 
+LinkManager::LinkKey Ability::getLinkKeyFromId(const Game& game,
+                                               const char& linkId) {
+    if ('a' <= linkId && linkId < 'a' + 8) {
+        return {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
+    } else if ('A' <= linkId && linkId < 'A' + 8) {
+        return {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
+    } else if ('h' <= linkId && linkId < 'h' + 8) {
+        return {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
+    } else if ('H' <= linkId && linkId < 'H' + 8) {
+        return {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
+    } else {
+        throw std::invalid_argument("Invalid link id");
+    }
+}
+
 // FirewallAbility
 
 FirewallAbility::FirewallAbility() : Ability("Firewall") {}
@@ -54,32 +69,9 @@ void DownloadAbility::use(Game& game, LinkManager& linkManager,
         throw std::invalid_argument("Invalid number of parameters");
     }
     char linkId = params[0][0];
-    LinkManager::LinkKey key;
-
-    if ('a' <= linkId && linkId < 'a' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 0) {
-            throw std::invalid_argument("You can't download your own link");
-        }
-        key = {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
-    } else if ('A' <= linkId && linkId < 'A' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 1) {
-            throw std::invalid_argument("You can't download your own link");
-        }
-        key = {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
-    } else if ('h' <= linkId && linkId < 'h' + 8 &&
-               game.getPlayers().size() > 2) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 2) {
-            throw std::invalid_argument("You can't download your own link");
-        }
-        key = {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
-    } else if ('H' <= linkId && linkId < 'H' + 8 &&
-               game.getPlayers().size() > 3) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 3) {
-            throw std::invalid_argument("You can't download your own link");
-        }
-        key = {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
-    } else {
-        throw std::invalid_argument("Invalid link id");
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player == game.getCurrentPlayer()) {
+        throw std::invalid_argument("You can't downlaod a link you own");
     }
 
     // TODO: figure out reveal
@@ -99,32 +91,9 @@ void LinkBoostAbility::use(Game& game, LinkManager& linkManager,
         throw std::invalid_argument("Invalid number of parameters");
     }
     char linkId = params[0][0];
-    LinkManager::LinkKey key;
-
-    if ('a' <= linkId && linkId < 'a' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 0) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
-    } else if ('A' <= linkId && linkId < 'A' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 1) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
-    } else if ('h' <= linkId && linkId < 'h' + 8 &&
-               game.getPlayers().size() > 2) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 2) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
-    } else if ('H' <= linkId && linkId < 'H' + 8 &&
-               game.getPlayers().size() > 3) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 3) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
-    } else {
-        throw std::invalid_argument("Invalid link id");
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You can only boost links you own");
     }
 
     std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
@@ -146,32 +115,9 @@ void PolarizeAbility::use(Game& game, LinkManager& linkManager,
         throw std::invalid_argument("Invalid number of parameters");
     }
     char linkId = params[0][0];
-    LinkManager::LinkKey key;
-
-    if ('a' <= linkId && linkId < 'a' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 0) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
-    } else if ('A' <= linkId && linkId < 'A' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 1) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
-    } else if ('h' <= linkId && linkId < 'h' + 8 &&
-               game.getPlayers().size() > 2) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 2) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
-    } else if ('H' <= linkId && linkId < 'H' + 8 &&
-               game.getPlayers().size() > 3) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 3) {
-            throw std::invalid_argument("You don't own this link");
-        }
-        key = {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
-    } else {
-        throw std::invalid_argument("Invalid link id");
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You can only polarize links you own");
     }
 
     std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
@@ -192,32 +138,9 @@ void ScanAbility::use(Game& game, LinkManager& linkManager,
         throw std::invalid_argument("Invalid number of parameters");
     }
     char linkId = params[0][0];
-    LinkManager::LinkKey key;
-
-    if ('a' <= linkId && linkId < 'a' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 0) {
-            throw std::invalid_argument("You own this link");
-        }
-        key = {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
-    } else if ('A' <= linkId && linkId < 'A' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 1) {
-            throw std::invalid_argument("You own this link");
-        }
-        key = {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
-    } else if ('h' <= linkId && linkId < 'h' + 8 &&
-               game.getPlayers().size() > 2) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 2) {
-            throw std::invalid_argument("You own this link");
-        }
-        key = {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
-    } else if ('H' <= linkId && linkId < 'H' + 8 &&
-               game.getPlayers().size() > 3) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) == 3) {
-            throw std::invalid_argument("You own this link");
-        }
-        key = {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
-    } else {
-        throw std::invalid_argument("Invalid link id");
+    auto key = Ability::getLinkKeyFromId(game, linkId);
+    if (key.player == game.getCurrentPlayer()) {
+        throw std::invalid_argument("Bro, why are you scanning your own links");
     }
 
     std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =
@@ -247,43 +170,11 @@ void QuantumEntanglementAbility::use(Game& game, LinkManager& linkManager,
     }
     char linkId = params[0][0];
     char partnerId = params[1][0];
-    LinkManager::LinkKey link;
-    LinkManager::LinkKey partner;
-
-    if ('a' <= linkId && linkId < 'a' + 8 && 'a' <= partnerId &&
-        partnerId < 'a' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 0) {
-            throw std::invalid_argument("You dont't own these link");
-        }
-        link = {game.getPlayers()[0], static_cast<unsigned int>(linkId - 'a')};
-        partner = {game.getPlayers()[0],
-                   static_cast<unsigned int>(partnerId - 'a')};
-    } else if ('A' <= linkId && linkId < 'A' + 8 && 'A' <= partnerId &&
-               partnerId < 'A' + 8) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 1) {
-            throw std::invalid_argument("You dont't own these link");
-        }
-        link = {game.getPlayers()[1], static_cast<unsigned int>(linkId - 'A')};
-        partner = {game.getPlayers()[1],
-                   static_cast<unsigned int>(partnerId - 'A')};
-    } else if ('h' <= linkId && linkId < 'h' + 8 && 'h' <= partnerId &&
-               partnerId < 'h' + 8 && game.getPlayers().size() > 2) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 2) {
-            throw std::invalid_argument("You dont't own these link");
-        }
-        link = {game.getPlayers()[2], static_cast<unsigned int>(linkId - 'h')};
-        partner = {game.getPlayers()[2],
-                   static_cast<unsigned int>(partnerId - 'h')};
-    } else if ('H' <= linkId && linkId < 'H' + 8 && 'H' <= partnerId &&
-               partnerId < 'H' + 8 && game.getPlayers().size() > 3) {
-        if (game.getPlayerIndex(*game.getCurrentPlayer()) != 3) {
-            throw std::invalid_argument("You dont't own these link");
-        }
-        link = {game.getPlayers()[3], static_cast<unsigned int>(linkId - 'H')};
-        partner = {game.getPlayers()[3],
-                   static_cast<unsigned int>(partnerId - 'H')};
-    } else {
-        throw std::invalid_argument("Invalid link id(s)");
+    auto link = Ability::getLinkKeyFromId(game, linkId);
+    auto partner = Ability::getLinkKeyFromId(game, partnerId);
+    if (partner.player != link.player &&
+        link.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You must own both links to entangle them");
     }
 
     std::function<std::unique_ptr<Link>(std::unique_ptr<Link>)> lambda =

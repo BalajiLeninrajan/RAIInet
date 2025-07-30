@@ -3,14 +3,18 @@
 #include <string>
 #include <vector>
 
+#include "linkmanager.h"
+
 class Game;
-class LinkManager;
 
 // Abstract base class for all player abilities (Strategy interface).
 class Ability {
    protected:
     std::string name;
     bool used = false;
+
+    static LinkManager::LinkKey getLinkKeyFromId(const Game &game,
+                                                 const char &linkId);
 
    public:
     Ability(std::string name);
