@@ -110,18 +110,15 @@ void Game::makeMove(unsigned link, char dir) {
                                                   this);
         nextTurn();
     } catch (std::exception& e) {
-        std::cout << "Invalid command: " << e.what() << "\n";
+        std::cout << "Invalid command: " << e.what() << std::endl;
         // comment this out for final build
-        throw e;
+        // throw e;
     }
 }
 
-void Game::addUpdate(std::pair<int, int> coords) { queue.push(coords); }
-void Game::addUpdate(int playerId, int linkId, std::string value) {
-    queue.push(std::tuple<int, int, std::string>(playerId, linkId, value));
-}
+void Game::addUpdate(update_type update) { queue.push(update); }
 
-std::queue<update_type> Game::flushUpdates() {
+std::queue<Game::update_type> Game::flushUpdates() {
     std::queue<update_type> temp = std::move(queue);
     queue = {};
     return temp;

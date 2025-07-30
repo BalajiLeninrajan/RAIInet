@@ -3,11 +3,11 @@
 #include <memory>
 #include <queue>
 #include <string>
-#include <tuple>
 #include <variant>
 #include <vector>
 
 #include "link.h"
+#include "views.h"
 
 class Player;
 class LinkManager;
@@ -15,7 +15,8 @@ class Board;
 
 // Manages the overall game state, players, and turn logic.
 class Game {
-    typedef std::variant<std::pair<int, int>, std::tuple<int, int, std::string>>
+    typedef std::variant<View::AbilityCountUpdate, View::CellUpdate,
+                         View::RevealLinkUpdate, View::ScoreUpdate>
         update_type;
     std::vector<std::unique_ptr<Player>> players;
     int currentPlayerIndex;
@@ -38,8 +39,7 @@ class Game {
     unsigned getPlayerIndex(const Player& player) const;
     LinkManager& getLinkManager() const;
 
-    void addUpdate(std::pair<int, int> coords);
-    void addUpdate(int playerId, int linkId, std::string value);
+    void addUpdate(update_type update);
     std::queue<update_type> flushUpdates();
 
     const std::pair<Link::LinkType, int> getPlayerLink(
