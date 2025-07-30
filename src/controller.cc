@@ -213,26 +213,25 @@ void Controller::parseCommand(const std::string &commandLine) {
         game->printGameInfo();
 
     } else if (command == "abilities") {
-        // auto &abilities = game->getCurrentPlayer()->getAbilities();
-        // std::cout << "Available abilities:\n";
-        // for (auto &ability: abilities) {
-        //     if (!ability->isUsed()) {
-        //         std::cout << ability->getName() << "\n";
-        //     }
-        // }
+        auto &abilities = game->getCurrentPlayer()->getAbilities();
+        std::cout << "Available abilities:\n";
+        for (auto &ability : abilities) {
+            if (!ability->isUsed()) {
+                std::cout << ability->getName() << std::endl;
+            }
+        }
     } else if (command == "ability") {
         vector<string> params;
         string arg;
         int abilityID;
         ss >> abilityID;
-        while (ss) {
-            ss >> arg;
+        while (ss >> arg) {
             params.push_back(arg);
         }
 
         auto &abilities = game->getCurrentPlayer()->getAbilities();
         try {
-            abilities.at(abilityID)->use(*game, params);
+            abilities.at(abilityID - 1)->use(*game, params);
         } catch (std::exception &e) {
             std::cout << "Invalid ability usage: " << e.what() << "\n";
         }

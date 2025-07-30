@@ -22,19 +22,42 @@ class View {
     const Game *game;
 
    public:
+    struct CellUpdate {
+        int row;
+        int col;
+    };
+
+    struct RevealLinkUpdate {
+        unsigned playerId;
+        unsigned linkId;
+        std::string value;
+    };
+
+    struct AbilityCountUpdate {
+        unsigned playerId;
+        unsigned abilityCount;
+    };
+
+    struct ScoreUpdate {
+        unsigned playerId;
+        std::pair<int, int> score;
+    };
+
     View(const Game *game, const Player *viewer);
     static char findBase(int index);
     virtual ~View();
     /*
      * Notify view that the coordinate [r, c] has changed.
      */
-    virtual void update(std::pair<int, int> coords) = 0;
+    virtual void update(CellUpdate update) = 0;
     /*
      * For revealing links:
      * Tell views to reveal playerid's link at linkid should be revealed
      * as value.
      */
-    virtual void update(int playerId, int linkId, std::string value) = 0;
+    virtual void update(RevealLinkUpdate update) = 0;
+    virtual void update(AbilityCountUpdate update) = 0;
+    virtual void update(ScoreUpdate update) = 0;
     virtual void display() const = 0;
 };
 
@@ -46,15 +69,21 @@ class TextView : public View {
 
    public:
     TextView(const Game *game, const Player *viewer);
-    void update(std::pair<int, int> coords) override;
-    void update(int playerId, int linkId, std::string value) override;
+
+    void update(CellUpdate update) override;
+    void update(RevealLinkUpdate update) override;
+    void update(AbilityCountUpdate update) override;
+    void update(ScoreUpdate update) override;
     void display() const override;
 };
 
 class GraphicsView : public View {
    public:
     GraphicsView(const Game *game, const Player *viewer);
-    void update(std::pair<int, int> coords) override;
-    void update(int playerId, int linkId, std::string value) override;
+
+    void update(CellUpdate update) override;
+    void update(RevealLinkUpdate update) override;
+    void update(AbilityCountUpdate update) override;
+    void update(ScoreUpdate update) override;
     void display() const override;
 };

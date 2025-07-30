@@ -12,6 +12,10 @@
 
 Ability::Ability(std::string name) : name(name), used(false) {}
 
+bool Ability::isUsed() const { return used; }
+
+std::string Ability::getName() const { return name; }
+
 LinkManager::LinkKey Ability::getLinkKeyFromId(const Game& game,
                                                const char& linkId) {
     if ('a' <= linkId && linkId < 'a' + 8) {
@@ -55,6 +59,15 @@ void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
         std::make_unique<Firewall>(std::move(baseCell),
                                    game.getCurrentPlayer());
 
+    View::CellUpdate cellUpdate{coords.first, coords.second};
+
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(cellUpdate);
+    game.addUpdate(abilityCountUpdate);
+
     used = true;
 }
 
@@ -75,6 +88,16 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
     // TODO: figure out reveal
 
     game.getCurrentPlayer()->download(key);
+
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    View::ScoreUpdate scoreUpdate{playerId, key.player->getScore()};
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(scoreUpdate);
+    game.addUpdate(abilityCountUpdate);
 
     used = true;
 }
@@ -99,6 +122,13 @@ void LinkBoostAbility::use(Game& game, const std::vector<std::string>& params) {
         };
     game.getLinkManager().applyDecorator(key, lambda);
 
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(abilityCountUpdate);
+
     used = true;
 }
 
@@ -121,6 +151,24 @@ void PolarizeAbility::use(Game& game, const std::vector<std::string>& params) {
             return std::make_unique<PolarizeDecorator>(std::move(p));
         };
     game.getLinkManager().applyDecorator(key, lambda);
+
+    const auto& link = game.getLinkManager().getLink(key);
+    const auto& coords = link.getCoords();
+
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    View::CellUpdate cellUpdate{coords.first, coords.second};
+
+    std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
+                        link.getStrength();
+    View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(cellUpdate);
+    game.addUpdate(revealUpdate);
+    game.addUpdate(abilityCountUpdate);
     used = true;
 }
 
@@ -143,6 +191,25 @@ void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
             return std::make_unique<RevealDecorator>(std::move(p));
         };
     game.getLinkManager().applyDecorator(key, lambda);
+
+    const auto& link = game.getLinkManager().getLink(key);
+    const auto& coords = link.getCoords();
+
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    View::CellUpdate cellUpdate{coords.first, coords.second};
+
+    std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
+                        link.getStrength();
+    unsigned oppId = game.getPlayerIndex(*key.player);
+    View::RevealLinkUpdate revealUpdate{oppId, key.id, value};
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(cellUpdate);
+    game.addUpdate(revealUpdate);
+    game.addUpdate(abilityCountUpdate);
     used = true;
 }
 
@@ -178,6 +245,13 @@ void QuantumEntanglementAbility::use(Game& game,
                 std::move(p), &game.getLinkManager().getLink(partner));
         };
     game.getLinkManager().applyDecorator(link, lambda);
+
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(abilityCountUpdate);
     used = true;
 }
 
@@ -202,6 +276,17 @@ void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
     }
 
     game.getCurrentPlayer()->setScore({69, 0});
+
+    unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
+
+    View::ScoreUpdate scoreUpdate{playerId,
+                                  game.getCurrentPlayer()->getScore()};
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
+
+    game.addUpdate(scoreUpdate);
+    game.addUpdate(abilityCountUpdate);
 
     used = true;
 }

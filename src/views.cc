@@ -67,14 +67,19 @@ TextView::TextView(const Game *game, const Player *viewer)
     }
 }
 
-void TextView::update(std::pair<int, int> coords) {
-    BaseCell &cell = game->getBoard().getCell(coords);
-    board[coords.first][coords.second] = cell.cellRepresentation(game);
+void TextView::update(View::CellUpdate update) {
+    BaseCell &cell = game->getBoard().getCell({update.row, update.col});
+    board[update.row][update.col] = cell.cellRepresentation(game);
 }
 
-void TextView::update(int currentPlayer, int linkId, std::string value) {
-    char base = findBase(currentPlayer);
-    players[currentPlayer].links[std::string(1, base + linkId)] = value;
+void TextView::update(View::RevealLinkUpdate update) {
+    char base = findBase(update.playerId);
+    players[update.playerId].links[std::string(1, base + update.linkId)] =
+        update.value;
+}
+
+void TextView::update(View::AbilityCountUpdate update) {
+    players[update.playerId].abilities = update.abilityCount;
 }
 
 void TextView::printPlayer(PlayerStats player) const {
@@ -109,10 +114,13 @@ void TextView::display() const {
 GraphicsView::GraphicsView(const Game *game, const Player *viewer)
     : View(game, viewer) {};
 
-void GraphicsView::update(std::pair<int, int> coords) {
+void GraphicsView::update(View::CellUpdate update) {
     // TODO: implement
 }
-void GraphicsView::update(int playerId, int linkId, std::string value) {
+void GraphicsView::update(View::RevealLinkUpdate update) {
+    // TODO: implement
+}
+void GraphicsView::update(View::AbilityCountUpdate update) {
     // TODO: implement
 }
 
