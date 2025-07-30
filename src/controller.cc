@@ -55,7 +55,6 @@ void Controller::generateRandomLinks(std::vector<string> &linkList,
     std::shuffle(link_assignments.begin(), link_assignments.end(), g);
 
     linkList = std::move(link_assignments);
-
 }
 
 void Controller::init(int argc, char *argv[]) {
@@ -197,6 +196,7 @@ void Controller::parseCommand(const std::string &commandLine) {
         }
 
         game->makeMove(id, direction);
+        game->printGameInfo();
 
     } else if (command == "abilities") {
         std::cout << "go away this ain't implemented\n";

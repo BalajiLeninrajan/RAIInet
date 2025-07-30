@@ -46,7 +46,7 @@ class PlayerCell : public BaseCell {
 
    public:
     PlayerCell(std::unique_ptr<BaseCell> base, Player *owner);
-    virtual ~PlayerCell()=0;
+    virtual ~PlayerCell() = 0;
 };
 
 // Represents a player's Server Port.

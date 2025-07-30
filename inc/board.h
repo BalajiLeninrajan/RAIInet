@@ -21,5 +21,6 @@ class Board {
 
     std::vector<std::vector<std::unique_ptr<BaseCell>>>& getBoard();
     BaseCell& getCell(std::pair<int, int> coords);
-    void placePlayerCells(const std::vector<std::pair<int, int>> placements, Player* player);
+    void placePlayerCells(const std::vector<std::pair<int, int>> placements,
+                          Player* player);
 };

@@ -26,10 +26,10 @@ std::pair<int, int> Link::getNewCoords(std::pair<int, int> coords,
                                        Link::Direction dir) {
     switch (dir) {
         case Link::Direction::NORTH:
-            coords.first++;
+            coords.first--;
             break;
         case Link::Direction::SOUTH:
-            coords.first--;
+            coords.first++;
             break;
         case Link::Direction::EAST:
             coords.second++;

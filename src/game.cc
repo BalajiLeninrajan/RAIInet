@@ -39,38 +39,20 @@ void Game::startGame(
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
-    
+
     // for now, assume the board is 10 rows x 8 cols
     // and that the 1st and last rows are goal rows.
     // first 2 placements are server ports.
     std::vector<std::pair<int, int>> p1placements = {
-        {8, 3},
-        {8, 4},
-        {8, 0},
-        {8, 1},
-        {8, 2},
-        {7, 3},
-        {7, 4},
-        {8, 5},
-        {8, 6},
-        {8, 7}
-    };
+        {8, 3}, {8, 4}, {8, 0}, {8, 1}, {8, 2},
+        {7, 3}, {7, 4}, {8, 5}, {8, 6}, {8, 7}};
 
     std::vector<std::pair<int, int>> p2placements = {
-        {1, 3},
-        {1, 4},
-        {1, 0},
-        {1, 1},
-        {1, 2},
-        {2, 3},
-        {2, 4},
-        {1, 5},
-        {1, 6},
-        {1, 7}
-    };
+        {1, 3}, {1, 4}, {1, 0}, {1, 1}, {1, 2},
+        {2, 3}, {2, 4}, {1, 5}, {1, 6}, {1, 7}};
 
-    board->placePlayerCells(p1placements, players[0].get()); // p1
-    board->placePlayerCells(p2placements, players[1].get()); // p2
+    board->placePlayerCells(p1placements, players[0].get());  // p1
+    board->placePlayerCells(p2placements, players[1].get());  // p2
 
     currentPlayerIndex = 0;
     printGameInfo();
@@ -111,7 +93,8 @@ int Game::getPlayerIndex(const Player& player) const {
 void Game::nextTurn() {
     do {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-    } while (players[currentPlayerIndex] != nullptr);
+    } while (players[currentPlayerIndex] == nullptr);
+    std::cout << "Turn of Player " << currentPlayerIndex + 1 << "\n";
 }
 
 void Game::makeMove(unsigned link, char dir) {
@@ -151,7 +134,7 @@ void Game::printGameInfo() {
         }
 
         std::cout << "Links:\n";
-        for (unsigned j=0; j<8; ++j) {
+        for (unsigned j = 0; j < 8; ++j) {
             LinkManager::LinkKey k{players[i].get(), j};
             std::cout << "Link " << j << " ";
             if (!linkManager->hasLink(k)) {
@@ -160,7 +143,10 @@ void Game::printGameInfo() {
             }
             int strength = linkManager->getLink(k).getStrength();
 
-            char type = linkManager->getLink(k).getType() == Link::LinkType::VIRUS ? 'V' : 'D';
+            char type =
+                linkManager->getLink(k).getType() == Link::LinkType::VIRUS
+                    ? 'V'
+                    : 'D';
             std::cout << " strength " << strength << " type " << type << " ";
             auto [linkr, linkc] = linkManager->getLink(k).getCoords();
             std::cout << "location (" << linkr << ", " << linkc << ")\n";
@@ -169,7 +155,6 @@ void Game::printGameInfo() {
     }
 
     std::cout << "Board state:\n";
-    
 }
 
 Game::Game() {}

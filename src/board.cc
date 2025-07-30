@@ -1,5 +1,6 @@
 #include "board.h"
 
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <vector>
@@ -8,7 +9,6 @@
 #include "link.h"
 #include "linkmanager.h"
 #include "player.h"
-#include <iostream>
 
 Board::Board(int rows, int cols, std::shared_ptr<LinkManager> linkManager)
     : board(rows), linkManager(linkManager) {
@@ -19,17 +19,19 @@ Board::Board(int rows, int cols, std::shared_ptr<LinkManager> linkManager)
     }
 }
 
-void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements, Player* player) {
-    for (int i=0; i<2; ++i) {
-        auto &[r, c] = placements[i];
+void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
+                             Player* player) {
+    for (int i = 0; i < 2; ++i) {
+        auto& [r, c] = placements[i];
         std::cout << r << " " << c << std::endl;
-        
+
         board[r][c] = std::make_unique<Server>(std::move(board[r][c]), player);
     }
 
-    for (unsigned i=2; i<placements.size(); ++i) {
-        auto &[r, c] = placements[i];
-        LinkManager::LinkKey k{player, i-2};
+    for (unsigned i = 2; i < placements.size(); ++i) {
+        auto& [r, c] = placements[i];
+        LinkManager::LinkKey k{player, i - 2};
+        linkManager->getLink(k).setCoords(placements[i]);
         board[r][c]->onEnter(k);
     }
 }
