@@ -176,8 +176,6 @@ void Controller::init(int argc, char *argv[]) {
         auto text_view = std::make_unique<TextView>(game.get(), player);
         views[player].push_back(std::move(text_view));
     }
-    Player *currentPlayer = game->getCurrentPlayer();
-    game->getBoard().addFirewall({4, 4}, currentPlayer);
     gameIsRunning = true;
     std::cout << "Starting game\n";
     runGameLoop();
