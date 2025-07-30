@@ -17,9 +17,7 @@ LinkManager::LinkKey BaseCell::getOccupantLink() const {
 }
 
 void BaseCell::setOccupantLink(LinkManager::LinkKey new_link) {
-    if (!isOccupied()) {
-        linkKey = new_link;
-    }
+    linkKey = new_link;
 }
 
 void BaseCell::emptyCell() { linkKey.reset(); }
