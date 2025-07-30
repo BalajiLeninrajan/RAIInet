@@ -22,10 +22,6 @@ Board::Board(unsigned rows, unsigned cols)
     }
 }
 
-void Board::addFirewall(std::pair<int, int> coords, Player* player) {
-    board[coords.first][coords.second] = std::make_unique<Firewall>(
-        std::move(board[coords.first][coords.second]), player);
-}
 void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
                              Player* player, unsigned goalRow, Game* game) {
     for (int i = 0; i < 2; ++i) {
