@@ -82,6 +82,10 @@ void TextView::update(View::AbilityCountUpdate update) {
     players[update.playerId].abilities = update.abilityCount;
 }
 
+void TextView::update(View::ScoreUpdate update) {
+    players[update.playerId].score = update.score;
+}
+
 void TextView::printPlayer(PlayerStats player) const {
     std::cout << "Player " << player.id + 1 << ":" << std::endl;
     std::cout << "Downloaded: " << player.score.first << ", "
@@ -121,6 +125,10 @@ void GraphicsView::update(View::RevealLinkUpdate update) {
     // TODO: implement
 }
 void GraphicsView::update(View::AbilityCountUpdate update) {
+    // TODO: implement
+}
+
+void GraphicsView::update(View::ScoreUpdate update) {
     // TODO: implement
 }
 
