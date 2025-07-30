@@ -51,7 +51,7 @@ void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
         throw std::invalid_argument("Invalid coordinates");
     }
 
-    if (baseCell->isOccupied()) {
+    if (baseCell->isOccupied() || !baseCell->canDecorate()) {
         throw std::invalid_argument("Cell is occupied or is a server");
     }
 

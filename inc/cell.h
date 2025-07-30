@@ -22,6 +22,7 @@ class BaseCell {
     virtual void emptyCell();
     virtual std::string cellRepresentation(const Game *game) const;
     friend class PlayerCell;
+    virtual bool canDecorate() const;
 };
 
 // A standard, unoccupied cell on the board.
@@ -49,6 +50,7 @@ class Server : public PlayerCell {
     void onEnter(LinkManager::LinkKey link, Game *game) override;
     bool isOccupied() const override;
     std::string cellRepresentation(const Game *game) const override;
+    bool canDecorate() const override;
 };
 
 // Represents a player's Firewall.
@@ -70,4 +72,5 @@ class Goal : public PlayerCell {
     using PlayerCell::PlayerCell;
     void onEnter(LinkManager::LinkKey link, Game *game) override;
     std::string cellRepresentation(const Game *game) const override;
+    bool canDecorate() const override;
 };
