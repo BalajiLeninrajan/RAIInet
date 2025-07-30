@@ -4,7 +4,6 @@
 #include <vector>
 
 class BaseCell;
-class LinkManager;
 class Link;
 class Player;
 class Game;
@@ -12,12 +11,11 @@ class Game;
 // Manages the game board, which is a grid of BaseCells.
 class Board {
     std::vector<std::vector<std::unique_ptr<BaseCell>>> board;
-    std::shared_ptr<LinkManager> linkManager;
     unsigned rows;
     unsigned cols;
 
    public:
-    Board(unsigned width, unsigned height, std::shared_ptr<LinkManager> lm);
+    Board(unsigned width, unsigned height);
     ~Board();
     void moveLink(std::pair<int, int> old_coords,
                   std::pair<int, int> new_coords, Game* game);

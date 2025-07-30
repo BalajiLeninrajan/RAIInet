@@ -11,11 +11,10 @@
 #include "linkmanager.h"
 #include "player.h"
 
-Board::Board(unsigned r, unsigned c, std::shared_ptr<LinkManager> linkManager)
-    : board(r), linkManager(linkManager), rows{r}, cols{c} {
+Board::Board(unsigned r, unsigned c) : board(r), rows{r}, cols{c} {
     for (unsigned r = 0; r < rows; ++r) {
         for (unsigned c = 0; c < cols; ++c) {
-            board[r].push_back(std::make_unique<BoardCell>(linkManager));
+            board[r].push_back(std::make_unique<BoardCell>());
         }
     }
 }
@@ -30,7 +29,7 @@ void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
     for (unsigned i = 2; i < placements.size(); ++i) {
         auto& [r, c] = placements[i];
         LinkManager::LinkKey k{player, i - 2};
-        linkManager->getLink(k).setCoords(placements[i]);
+        game->getLinkManager().getLink(k).setCoords(placements[i]);
         board[r][c]->onEnter(k, game);
     }
 
@@ -77,8 +76,8 @@ void Board::moveLink(std::pair<int, int> old_coords,
     board[new_coords.first][new_coords.second]->onEnter(link, game);
 
     // onEnter may delete the link
-    if (linkManager->hasLink(link)) {
-        linkManager->getLink(link).setCoords(new_coords);
+    if (game->getLinkManager().hasLink(link)) {
+        game->getLinkManager().getLink(link).setCoords(new_coords);
     }
 
     board[old_coords.first][old_coords.second]->emptyCell();
