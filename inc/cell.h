@@ -54,6 +54,7 @@ class Server : public PlayerCell {
    public:
     using PlayerCell::PlayerCell;
     void onEnter(LinkManager::LinkKey link, Game *game) override;
+    bool isOccupied() const override;
 };
 
 // Represents a player's Firewall.
