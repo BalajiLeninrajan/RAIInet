@@ -21,6 +21,7 @@ class View {
 
    public:
     View(const std::unique_ptr<Game> &game);
+    static char findBase(int index);
     virtual ~View();
     virtual void update(std::pair<int, int> coords) = 0;
     virtual void update(int playerId, int linkId, std::string value) = 0;
@@ -36,7 +37,6 @@ class TextView : public View {
 
    public:
     TextView(const std::unique_ptr<Game> &game, unsigned currentPlayer);
-    static char findBase(int index);
     void update(std::pair<int, int> coords) override;
     void update(int playerId, int linkId, std::string value) override;
     void display() const override;

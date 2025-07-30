@@ -22,7 +22,7 @@ View::~View() {}
 
 void View::display() const {}
 
-char TextView::findBase(int index) {
+char View::findBase(int index) {
     switch (index) {
         case 0:
             return 'a';
@@ -65,7 +65,7 @@ TextView::TextView(const std::unique_ptr<Game> &game, unsigned currentPlayer)
 
 void TextView::update(std::pair<int, int> coords) {
     BaseCell &cell = game->getBoard().getCell(coords);
-    board[coords.first][coords.second] = cell.cellRepresentation(game);
+    board[coords.first][coords.second] = cell.cellRepresentation(game.get());
 }
 
 void TextView::update(int currentPlayer, int linkId, std::string value) {

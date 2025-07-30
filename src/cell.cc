@@ -9,9 +9,9 @@
 #include "player.h"
 #include "views.h"
 
-bool BaseCell::isOccupied() { return linkKey.has_value(); }
+bool BaseCell::isOccupied() const { return linkKey.has_value(); }
 
-LinkManager::LinkKey BaseCell::getOccupantLink() {
+LinkManager::LinkKey BaseCell::getOccupantLink() const {
     if (isOccupied()) return linkKey.value();
     throw std::invalid_argument("Tried to get link from empty cell");
 }
@@ -26,8 +26,8 @@ std::shared_ptr<LinkManager> BaseCell::getLinkManager() { return linkManager; }
 
 void BaseCell::emptyCell() { linkKey.reset(); }
 
-std::string BaseCell::cellRepresentation(const std::unique_ptr<Game>& game) {
-    if (!isOccupied()) {
+std::string BaseCell::cellRepresentation(const Game* game) const {
+    if (!linkKey.has_value()) {
         return ".";
     }
     int index = game->getPlayerIndex(*linkKey.value().player);
@@ -86,7 +86,7 @@ void Firewall::onEnter(LinkManager::LinkKey link) {
     }
 }
 
-std::string Firewall::cellRepresentation(const std::unique_ptr<Game>& game) {
+std::string Firewall::cellRepresentation(const Game* game) const {
     if (!isOccupied()) {
         switch (game->getPlayerIndex(*owner)) {
             case 0:
