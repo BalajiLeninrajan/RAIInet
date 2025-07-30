@@ -18,7 +18,7 @@ void Game::startGame(
     const std::vector<std::vector<std::string>>& linkPlacements) {
     linkManager = std::make_shared<LinkManager>();
     // create board
-    board = std::make_unique<Board>(8, 8, linkManager);
+    board = std::make_unique<Board>(10, 8, linkManager);
 
     // create player objects
     if (abilities.size() != nPlayers || linkPlacements.size() != nPlayers) {
@@ -39,6 +39,38 @@ void Game::startGame(
         linkManager->addLinksForPlayer(linkPlacements[i], players[i].get(),
                                        board.get());
     }
+    
+    // for now, assume the board is 10 rows x 8 cols
+    // and that the 1st and last rows are goal rows.
+    // first 2 placements are server ports.
+    std::vector<std::pair<int, int>> p1placements = {
+        {8, 3},
+        {8, 4},
+        {8, 0},
+        {8, 1},
+        {8, 2},
+        {7, 3},
+        {7, 4},
+        {8, 5},
+        {8, 6},
+        {8, 7}
+    };
+
+    std::vector<std::pair<int, int>> p2placements = {
+        {1, 3},
+        {1, 4},
+        {1, 0},
+        {1, 1},
+        {1, 2},
+        {2, 3},
+        {2, 4},
+        {1, 5},
+        {1, 6},
+        {1, 7}
+    };
+
+    board->placePlayerCells(p1placements, players[0].get()); // p1
+    board->placePlayerCells(p2placements, players[1].get()); // p2
 
     currentPlayerIndex = 0;
     printGameInfo();

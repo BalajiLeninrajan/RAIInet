@@ -6,6 +6,7 @@
 class BaseCell;
 class LinkManager;
 class Link;
+class Player;
 
 // Manages the game board, which is a grid of BaseCells.
 class Board {
@@ -20,4 +21,5 @@ class Board {
 
     std::vector<std::vector<std::unique_ptr<BaseCell>>>& getBoard();
     BaseCell& getCell(std::pair<int, int> coords);
+    void placePlayerCells(const std::vector<std::pair<int, int>> placements, Player* player);
 };

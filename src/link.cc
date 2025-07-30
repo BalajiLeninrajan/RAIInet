@@ -116,7 +116,7 @@ Link::LinkType PolarizeDecorator::getType() const {
     switch (base->getType()) {
         case Link::LinkType::VIRUS:
             return Link::LinkType::DATA;
-        case Link::LinkType::DATA:
+        default:
             return Link::LinkType::VIRUS;
     }
 }
