@@ -33,7 +33,6 @@ std::string BaseCell::cellRepresentation(const Game* game) const {
     return std::string(1, link_char);
 }
 
-BoardCell::BoardCell(std::shared_ptr<LinkManager> lm) : BaseCell(lm) {}
 BoardCell::~BoardCell() {}
 
 // onEnter should check for collision and handle it
@@ -56,7 +55,7 @@ void BoardCell::onEnter(LinkManager::LinkKey link, Game* game) {
 }
 
 PlayerCell::PlayerCell(std::unique_ptr<BaseCell> base, Player* owner)
-    : BaseCell{nullptr}, base{std::move(base)}, owner{owner} {}
+    : base{std::move(base)}, owner{owner} {}
 
 void Server::onEnter(LinkManager::LinkKey link, Game* game) {
     if (link.player == owner) {
