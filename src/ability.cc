@@ -43,8 +43,8 @@ void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
 
     std::unique_ptr<BaseCell> baseCell;
     try {
-        coords.first = std::stoi(params[0]);
-        coords.second = std::stoi(params[1]) - 1;
+        coords.second = std::stoi(params[0]);
+        coords.first = std::stoi(params[1]) - 1;
         baseCell =
             std::move(game.getBoard().getBoard()[coords.first][coords.second]);
     } catch (const std::invalid_argument& e) {
