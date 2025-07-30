@@ -112,7 +112,7 @@ Player* LinkDecorator::getOwner() const { return base->getOwner(); }
 // Link boosts
 std::pair<int, int> LinkBoostDecorator::getNewCoords(std::pair<int, int> coords,
                                                      Link::Direction dir) {
-    return base->getNewCoords(coords, dir);
+    return base->getNewCoords(base->getNewCoords(coords, dir), dir);
 }
 
 // Polarize
