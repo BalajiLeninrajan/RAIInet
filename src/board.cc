@@ -87,12 +87,11 @@ void Board::moveLink(std::pair<int, int> old_coords,
         game->getLinkManager().getLink(link).setCoords(new_coords);
 
         board[old_coords.first][old_coords.second]->emptyCell();
-
-        View::CellUpdate oldCoordsUpdate{old_coords.first, old_coords.second};
-        View::CellUpdate newCoordsUpdate{new_coords.first, new_coords.second};
-        game->addUpdate(oldCoordsUpdate);
-        game->addUpdate(newCoordsUpdate);
     }
+    View::CellUpdate oldCoordsUpdate{old_coords.first, old_coords.second};
+    View::CellUpdate newCoordsUpdate{new_coords.first, new_coords.second};
+    game->addUpdate(oldCoordsUpdate);
+    game->addUpdate(newCoordsUpdate);
 }
 std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
     return board;
