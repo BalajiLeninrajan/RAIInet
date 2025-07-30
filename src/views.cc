@@ -70,11 +70,6 @@ TextView::TextView(const std::unique_ptr<Game> &game, unsigned currentPlayer)
             player.links[std::string(1, base + i)] =
                 (link.first == Link::LinkType::DATA ? "D" : "V") +
                 std::to_string(link.second);
-            // std::string type =
-            //     playerLinks[i].getType() == Link::LinkType::DATA ? "D"
-            //                                                      : "V";
-            // links[std::string(1, base + i)] =
-            //     type + std::to_string(playerLinks[i].getStrength());
         }
     }
 }
