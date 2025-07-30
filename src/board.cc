@@ -91,13 +91,13 @@ void Board::moveLink(std::pair<int, int> old_coords,
         game->addUpdate(old_coords);
         game->addUpdate(new_coords);
     }
+}
+std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
+    return board;
+}
 
-    std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
-        return board;
-    }
+BaseCell& Board::getCell(std::pair<int, int> coords) {
+    return *board[coords.first][coords.second];
+}
 
-    BaseCell& Board::getCell(std::pair<int, int> coords) {
-        return *board[coords.first][coords.second];
-    }
-
-    PlayerCell::~PlayerCell() {}
+PlayerCell::~PlayerCell() {}
