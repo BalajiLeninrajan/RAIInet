@@ -14,7 +14,7 @@ class Board {
     unsigned cols;
 
    public:
-    Board(unsigned width, unsigned height);
+    Board(unsigned row, unsigned cols);
     ~Board();
     void moveLink(std::pair<int, int> old_coords,
                   std::pair<int, int> new_coords, Game* game);

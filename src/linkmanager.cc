@@ -1,6 +1,5 @@
 #include "linkmanager.h"
 
-#include <iostream>
 #include <stdexcept>
 
 #include "board.h"

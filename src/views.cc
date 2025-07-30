@@ -41,15 +41,20 @@ char View::findBase(int index) {
 TextView::TextView(const Game *game, const Player *viewer)
     : View(game, viewer),
       board(game->getBoard().getBoard().size(),
-            std::vector<std::string>(game->getBoard().getBoard()[0].size(),
-                                     ".")) {
+            std::vector<std::string>(game->getBoard().getBoard()[0].size())) {
+    for (unsigned i = 0; i < board.size(); ++i) {
+        for (unsigned j = 0; j < board[0].size(); ++j) {
+            board[i][j] =
+                game->getBoard().getBoard()[i][j]->cellRepresentation(game);
+        }
+    }
+
     for (auto &player : players) {
         char base = findBase(player.id);
-        if (currentPlayer != player.id) {
+        if (game->getPlayerIndex(*viewer) != player.id) {
             for (int i = 0; i < 8; ++i) {
-                player.links[std::string(1, base + i)] = "?";
+                player.links[std::string(1, base + i)] = " ?";
             }
-        } else {
             continue;
         }
 
@@ -77,9 +82,9 @@ void TextView::printPlayer(PlayerStats player) const {
     std::cout << "Downloaded: " << player.score.first << ", "
               << player.score.second << std::endl;
     std::cout << "Abilities: " << player.abilities << std::endl;
-    // TODO: make spacing nicer
     for (auto link : player.links) {
         std::cout << link.first << ": " << link.second;
+        std::cout << " ";
     }
     std::cout << std::endl;
 }
@@ -87,7 +92,7 @@ void TextView::printPlayer(PlayerStats player) const {
 void TextView::display() const {
     // print other players
     for (auto player : players) {
-        if (player.id != currentPlayer) {
+        if (player.id != game->getPlayerIndex(*viewer)) {
             printPlayer(player);
         }
     }
@@ -98,7 +103,7 @@ void TextView::display() const {
         }
         std::cout << std::endl;
     }
-    printPlayer(players[currentPlayer]);
+    printPlayer(players[game->getPlayerIndex(*viewer)]);
 }
 
 GraphicsView::GraphicsView(const Game *game, const Player *viewer)
