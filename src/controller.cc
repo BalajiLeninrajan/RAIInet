@@ -199,24 +199,54 @@ void Controller::parseCommand(const std::string &commandLine) {
         char link, direction;
         ss >> link >> direction;
         unsigned id;
-        if (link <= 'z') {
-            id = link - 'a';
-        } else {
+        if (link <= 'A') {
             id = link - 'A';
+        } else {
+            id = link - 'a';
         }
 
         game->makeMove(id, direction);
         game->printGameInfo();
 
     } else if (command == "abilities") {
-        std::cout << "go away this ain't implemented\n";
+        auto &abilities = game->getCurrentPlayer()->getAbilities();
+        std::cout << "Available abilities:\n";
+        for (auto &ability: abilities) {
+            if (!ability->isUsed()) {
+                std::cout << ability->getName() << "\n";
+            }
+        }
     } else if (command == "ability") {
-        std::cout << "go away this ain't implemented\n";
+        vector<string> params;
+        string arg;
+        int abilityID;
+        ss >> abilityID;
+        while (ss) {
+            ss >> arg;
+            params.push_back(arg);
+        }
+        
+        auto &abilities = game->getCurrentPlayer()->getAbilities();
+        try {
+            abilities.at(abilityID)->use(params);
+        } catch (std::exception &e) {
+            std::cout << "Invalid ability usage: " << e.what() << "\n";
+        }
     } else if (command == "board") {
         std::cout << "go away this ain't implemented\n";
     } else if (command == "sequence") {
-        std::cout << "SUCK BALLS this ain't implemented\n";
+        string file; ss >> file;
+        std::ifstream commandFile(file);
+        if (!commandFile) {
+            std::cout << "Command file not found.\n";
+        } else {
+            while (commandFile) {
+                string line; std::getline(commandFile, line);
+                parseCommand(line);
+            }
+        }
     }
 }
+
 Controller::Controller() {}
 Controller::~Controller() {}
