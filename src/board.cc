@@ -1,6 +1,9 @@
 #include "board.h"
 
+#include <assert.h>
+
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <vector>
@@ -20,6 +23,10 @@ Board::Board(unsigned rows, unsigned cols)
     }
 }
 
+void Board::addFirewall(std::pair<int, int> coords, Player* player) {
+    board[coords.first][coords.second] = std::make_unique<Firewall>(
+        std::move(board[coords.first][coords.second]), player);
+}
 void Board::placePlayerCells(const std::vector<std::pair<int, int>> placements,
                              Player* player, unsigned goalRow, Game* game) {
     for (int i = 0; i < 2; ++i) {
@@ -79,13 +86,12 @@ void Board::moveLink(std::pair<int, int> old_coords,
     // onEnter may delete the link
     if (game->getLinkManager().hasLink(link)) {
         game->getLinkManager().getLink(link).setCoords(new_coords);
+
+        board[old_coords.first][old_coords.second]->emptyCell();
+        game->addUpdate(old_coords);
+        game->addUpdate(new_coords);
     }
-
-    board[old_coords.first][old_coords.second]->emptyCell();
-    game->addUpdate(old_coords);
-    game->addUpdate(new_coords);
 }
-
 std::vector<std::vector<std::unique_ptr<BaseCell>>>& Board::getBoard() {
     return board;
 }

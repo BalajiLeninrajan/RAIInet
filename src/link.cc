@@ -83,10 +83,14 @@ DataLink::~DataLink() {}
 // Link decorator
 
 LinkDecorator::LinkDecorator(std::unique_ptr<Link> base)
-    : Link(base->getCoords(), base->getStrength(), nullptr, nullptr),
+    : Link(base->getCoords(), base->getStrength(), base->owner, base->board),
       base(std::move(base)) {}
 
 Link::LinkType LinkDecorator::getType() const { return base->getType(); }
+
+void LinkDecorator::requestMove(Link::Direction dir, Game* game) {
+    board->moveLink(getCoords(), getNewCoords(getCoords(), dir), game);
+}
 
 bool LinkDecorator::getRevealState() const { return base->getRevealState(); }
 
