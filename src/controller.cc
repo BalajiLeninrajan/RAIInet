@@ -248,5 +248,27 @@ void Controller::parseCommand(const std::string &commandLine) {
     }
 }
 
+
+void Controller::updateViews() {
+    auto q = game->flushUpdates();
+    while (!q.empty()) {
+        std::visit([this](auto&& x){
+            using T = std::decay_t<decltype(x)>;
+            if constexpr (std::is_same_v<T, std::pair<int, int>>) {
+                for (auto &view: views) {
+                    view->update(x);
+                }
+            }
+            else if constexpr (std::is_same_v<T, std::tuple<int, int, string>>) {
+                for (auto &view: views) {
+                    auto &[player, link, val] = x;
+                    view->update(player, link, val);
+                }
+            }
+        }, q.front());
+        q.pop();
+    }
+}
+
 Controller::Controller() {}
 Controller::~Controller() {}
