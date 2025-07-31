@@ -179,10 +179,23 @@ class ScanAbility : public Ability {
     void use(Game &game, const std::vector<std::string> &params) override;
 };
 
-// Our custom abilities
+/**
+ * @brief Represents the WormHole ability.
+ *
+ * This custom ability swaps the positions of two links on the board.
+ */
 class WormHoleAbility : public Ability {
    public:
+    /**
+     * @brief Constructor for WormHoleAbility.
+     */
     WormHoleAbility();
+    /**
+     * @brief Uses the WormHole ability.
+     * @param game A reference to the Game instance.
+     * @param params A vector of strings containing parameters (i.e. IDs of two
+     * links to swap).
+     */
     void use(Game &game, const std::vector<std::string> &params) override;
 };
 
