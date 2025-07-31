@@ -87,13 +87,16 @@ void Firewall::onEnter(LinkManager::LinkKey link, Game* game) {
             std::string strength = std::to_string(
                 game->getLinkManager().getLink(link).getStrength());
 
-            View::RevealLinkUpdate update{game->getPlayerIndex(*owner), link.id,
-                                          type + strength};
+            View::RevealLinkUpdate update{game->getPlayerIndex(*link.player),
+                                          link.id, type + strength};
             game->addUpdate(update);
         }
         if (game->getLinkManager().getLink(link).getType() ==
             Link::LinkType::VIRUS) {
             owner->download(link);
+            View::ScoreUpdate update = {game->getPlayerIndex(*owner),
+                                        owner->getScore()};
+            game->addUpdate(update);
             return;
         }
     }
