@@ -6,6 +6,7 @@
 
 class Game;
 class View;
+class GraphicsView;
 class Player;
 
 // The Controller handles user input and orchestrates the Model and View.
@@ -18,7 +19,8 @@ class Controller {
     void generateRandomLinks(std::vector<std::string>& linkList,
                              int placements);
     bool gameIsRunning = false;
-    std::unique_ptr<View> graphicsView;
+    bool usingGraphics;
+    std::unique_ptr<GraphicsView> graphicsView;
 
    public:
     Controller();

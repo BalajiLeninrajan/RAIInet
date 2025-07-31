@@ -9,11 +9,17 @@
 #include "game.h"
 #include "window.h"
 
-GraphicsView::GraphicsView(const Game *game)
-    : View(game, nullptr), Xwindow(1000, 700), height(8), width(8), cPlayer{0} {
+GraphicsView::GraphicsView(Game *game)
+    : View(game, nullptr), Xwindow(1000, 700), height(8), width(8), game{game}, cPlayer{0} {
     lm = &game->getLinkManager();
     nPlayers = game->getPlayers().size();
     players = std::vector<PlayerInfo>(nPlayers);
+    b = &game->getBoard();
+    boardStates = std::vector<std::vector<char>>(8, std::vector<char>(8, ' '));
+    boardStates[0][3] = 'S';
+    boardStates[0][4] = 'S';
+    boardStates[7][3] = 'S';
+    boardStates[7][4] = 'S';
     std::vector<int> cols = {lPurple, lGreen};
     for (int i=0; i<nPlayers; ++i) {
         players[i].player = game->getPlayers()[i];
@@ -22,20 +28,8 @@ GraphicsView::GraphicsView(const Game *game)
         players[i].abilitiesLeft = 5;
         players[i].revealedLinks = 0;
         players[i].isAlive = true;
-        players[i].linkRepresentations = {};
-        for (unsigned j=0; j<8; ++j) {
-            LinkManager::LinkKey k = {
-                players[i].player,
-                j
-            };
-            auto &link = lm->getLink(k);
-            players[i].linkRepresentations.push_back(linkDat{link.getStrength(), 'V', ""});
-            if (link.getType() == Link::LinkType::DATA) {
-                players[i].linkRepresentations[j].type = 'D';
-            }
-
-        }
     }
+    refresh();
 }
 
 void GraphicsView::drawBoard() {
@@ -74,35 +68,90 @@ void GraphicsView::drawBoard() {
         int y = gridY + row * cellSize;
         drawLine(gridX, y, gridX + gridWidth, y, 2, Black);
     }
-    
-    // TODO: Draw cells in each grid cell
-    // This will be implemented later when we add cell drawing logic
-}
 
-void GraphicsView::drawCell(std::pair<int, int> coords, char cell) {
-    // TODO: Implement cell drawing logic
-    // This method should draw a single cell at the given coordinates
-    // with the appropriate color and content based on the cell character
+    // draw cells
+    std::string firewalls = "wm";
+    for (int r=0; r<8; ++r) {
+        for (int c=0; c<8; ++c) {
+            int col;
+            if (boardStates[r][c] == 'S') {
+                col = lBlue;
+            } else if (firewalls.find(boardStates[r][c]) != std::string::npos) {
+                col = dRed;
+            } else continue;
+
+            int x = gridX + c * cellSize + 5;
+            int y = gridY + r * cellSize + 5;
+            fillRectangle(x, y, cellSize-10, cellSize-10, col);
+        }
+    }
+
+    
+    // Draw links on the grid
+    for (int playerIndex = 0; playerIndex < nPlayers; ++playerIndex) {
+        const PlayerInfo& player = players[playerIndex];
+        
+        for (size_t linkIndex = 0; linkIndex < player.linkRepresentations.size(); ++linkIndex) {
+            const auto& link = player.linkRepresentations[linkIndex];
+            
+            // Account for invisible rows: add 1 to row coordinate
+            // Rows increase downwards, so we need to flip the calculation
+            int adjustedRow = link.r - 1;
+            
+            // Calculate position on the grid
+            int x = gridX + link.c * cellSize + 5;
+            int y = gridY + adjustedRow * cellSize + 5;
+            
+            // Draw the main player-colored square for the link
+            fillRectangle(x, y, cellSize-10, cellSize-10, player.colour);
+            
+            // Determine if link should be revealed
+            bool isRevealed = (playerIndex == cPlayer) || 
+                             (player.revealedLinks & (1 << linkIndex));
+            
+            // Draw the small indicator based on visibility and type
+            int smallBoxSize = cellSize / 3;
+            int smallBoxX = x + (cellSize - smallBoxSize) / 2;
+            int smallBoxY = y + (cellSize - smallBoxSize) / 2;
+            
+            if (!isRevealed) {
+                // Unrevealed link: draw smaller black box
+                fillRectangle(smallBoxX, smallBoxY, smallBoxSize, smallBoxSize, Black);
+            } else {
+                // Revealed link: draw colored box based on type
+                if (link.type == 'V') {
+                    // Virus: draw red box
+                    fillRectangle(smallBoxX, smallBoxY, smallBoxSize, smallBoxSize, dRed);
+                } else if (link.type == 'D') {
+                    // Data: draw green box
+                    fillRectangle(smallBoxX, smallBoxY, smallBoxSize, smallBoxSize, dGreen);
+                }
+            }
+        }
+    }
 }
 
 void GraphicsView::update(View::CellUpdate update) {
     // TODO: Implement cell update logic
     // This method should update the display when a cell changes
+    boardStates[update.row-1][update.col] = b->getBoard()[update.row][update.col]->cellRepresentation(game)[0];
 }
 
 void GraphicsView::update(View::RevealLinkUpdate update) {
     // TODO: Implement link reveal update logic
-    // This method should update the display when a link is revealed
+
 }
 
 void GraphicsView::update(View::AbilityCountUpdate update) {
     // TODO: Implement ability count update logic
     // This method should update the display when ability count changes
+    players[update.playerId].abilitiesLeft -= 1;
 }
 
 void GraphicsView::update(View::ScoreUpdate update) {
     // TODO: Implement score update logic
     // This method should update the display when scores change
+    players[update.playerId].score = update.score;
 }
 
 void GraphicsView::drawPlayerInfo(int playerIndex, int x, int y) {
@@ -178,13 +227,44 @@ void GraphicsView::drawPlayerInfo(int playerIndex, int x, int y) {
     drawString(textX, textY, secondRow);
 }
 
-void GraphicsView::display() const {
+void GraphicsView::display() const {}
+
+void GraphicsView::realdisplay() {
     // Call the non-const implementation
     const_cast<GraphicsView*>(this)->displayImpl();
 }
 
 void GraphicsView::refresh() {
+    for (int i=0; i<nPlayers; ++i) {
+        players[i].linkRepresentations = {};
+        for (unsigned j=0; j<8; ++j) {
+            LinkManager::LinkKey k = {
+                players[i].player,
+                j
+            };
+            if (!lm->hasLink(k)) continue;
+            auto &link = lm->getLink(k);
+            auto [r, c] = link.getCoords();
+            players[i].linkRepresentations.push_back(linkDat{link.getStrength(), 'V', "", r, c});
+            if (link.getType() == Link::LinkType::DATA) {
+                players[i].linkRepresentations[players[i].linkRepresentations.size()-1].type = 'D';
+            }
 
+        }
+    }
+    
+    // Ensure current player can see all their own links
+    updateCurrentPlayerRevealedLinks();
+}
+
+void GraphicsView::nextTurn() {
+    cPlayer = (cPlayer + 1) % nPlayers;
+    Xwindow::display();
+}
+
+void GraphicsView::updateCurrentPlayerRevealedLinks() {
+    // Set all bits for the current player's revealedLinks
+    players[cPlayer].revealedLinks = 0xFF; // All 8 bits set to 1
 }
 
 void GraphicsView::displayImpl() {
@@ -200,7 +280,6 @@ void GraphicsView::displayImpl() {
     // Draw player info boxes on the right side
     int infoX = getWidth() - 270;  // 250 width + 20 margin
     int player1Y = 80;
-    int player2Y = 250;  // 150 height + 20 margin
     
     // Draw player info for each player
     for (int i = 0; i < nPlayers; ++i) {

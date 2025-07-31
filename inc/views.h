@@ -93,11 +93,16 @@ class GraphicsView : public View, public Xwindow {
     unsigned width;
 
     LinkManager* lm;
+    Board* b;
+    Game* game;
+    std::vector<std::vector<char>> boardStates;
     
     struct linkDat {
         int strength;
         char type;
         std::string suffix;
+        int r;
+        int c;
     };
 
     struct PlayerInfo {
@@ -116,17 +121,19 @@ class GraphicsView : public View, public Xwindow {
     std::vector<PlayerInfo> players;
 
 
-    void drawCell(std::pair<int, int> coords, char cell);
     void drawBoard();
     void drawPlayerInfo(int playerIndex, int x, int y);
+    void updateCurrentPlayerRevealedLinks();
     void displayImpl();
 
    public:
-    GraphicsView(const Game *game);
+    GraphicsView(Game *game);
     void refresh();
     void update(CellUpdate update) override;
     void update(RevealLinkUpdate update) override;
     void update(AbilityCountUpdate update) override;
     void update(ScoreUpdate update) override;
+    void realdisplay();
     void display() const override;
+    void nextTurn();
 };

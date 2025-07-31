@@ -180,7 +180,6 @@ void Controller::init(int argc, char *argv[]) {
 
     if (usingGraphics) {
         graphicsView = std::make_unique<GraphicsView>(game.get());
-        graphicsView->display();
     }
     std::cout << "Starting game\n";
     std::cout << "Player 1's turn. Waiting for command...\n";
@@ -216,6 +215,7 @@ void Controller::parseCommand(const std::string &commandLine) {
 
         game->makeMove(id, direction);
         clearStdout();
+        graphicsView->nextTurn();
         std::cout << "Player " << game->getPlayerIndex(*game->getCurrentPlayer()) + 1 << "'s turn. Waiting for command...\n";
 
         // game->printGameInfo();
@@ -264,7 +264,7 @@ void Controller::parseCommand(const std::string &commandLine) {
         // sequence.
     } else if (command == "gupdate") {
         if (graphicsView) {
-            graphicsView->display();
+            graphicsView->realdisplay();
         } else {
             std::cout << "Not using graphics.\n";
         }
@@ -286,12 +286,23 @@ void Controller::updateViews() {
 
     while (!q.empty()) {
         const auto &update = q.front();
+        std::visit([&](auto &&x) { 
+                if (usingGraphics) {
+                    graphicsView->update(x);
+                }  
+            }, update);
+
         for (const auto &[_, playerViews] : views) {
             for (const auto &view : playerViews) {
-                std::visit([&](auto &&x) { view->update(x); }, update);
+                std::visit([&](auto &&x) { 
+                    view->update(x); 
+                }, update);
             }
         }
         q.pop();
+    }
+    if (usingGraphics) {
+        graphicsView->refresh();
     }
 }
 
@@ -299,6 +310,9 @@ void Controller::display() {
     auto pl = game->getCurrentPlayer();
     for (auto &i: views[pl]) {
         i->display();
+    }
+    if (usingGraphics) {
+        graphicsView->realdisplay();
     }
 }
 
