@@ -134,6 +134,7 @@ void GraphicsView::drawBoard() {
 void GraphicsView::update(View::CellUpdate update) {
     // TODO: Implement cell update logic
     // This method should update the display when a cell changes
+    if (update.row == 0 || update.row > 7) return;
     boardStates[update.row-1][update.col] = b->getBoard()[update.row][update.col]->cellRepresentation(game)[0];
 }
 

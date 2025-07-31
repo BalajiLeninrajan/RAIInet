@@ -4,10 +4,12 @@
 
 #include "ability.h"
 #include "link.h"
+#include "views.h"
+#include "game.h"
 
 Player::Player(std::vector<std::unique_ptr<Ability>> abilities,
-               std::shared_ptr<LinkManager> lm)
-    : abilities{std::move(abilities)}, abilitiesUsed(0), linkManager{lm} {}
+               std::shared_ptr<LinkManager> lm, Game* game)
+    : abilities{std::move(abilities)}, abilitiesUsed(0), linkManager{lm}, game{game} {}
 
 std::pair<int, int> Player::getScore() const { return score; }
 
@@ -31,5 +33,8 @@ void Player::download(LinkManager::LinkKey linkKey) {
             ++score.second;
             break;
     }
+    View::ScoreUpdate scoreUpdate{game->getPlayerIndex(*this),
+                                  getScore()};
+    game->addUpdate(scoreUpdate);
     linkManager->removeLink(linkKey);
 }

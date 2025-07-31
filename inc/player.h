@@ -9,6 +9,7 @@
 
 // Forward declarations to avoid circular includes
 class Ability;
+class Game;
 
 /**
  * @brief Represents a player in the game.
@@ -28,6 +29,8 @@ class Player {
         linkManager; /**< A shared_ptr to the LinkManager, allowing player to
                         interact with links. */
 
+    Game* game;
+
    public:
     /**
      * @brief Constructor for the Player class.
@@ -36,7 +39,7 @@ class Player {
      * @param lm A shared_ptr to the LinkManager instance.
      */
     Player(std::vector<std::unique_ptr<Ability>> abilities,
-           std::shared_ptr<LinkManager> lm);
+           std::shared_ptr<LinkManager> lm, Game* game);
 
     /**
      * @brief Gets the player's current score.
