@@ -20,6 +20,8 @@ std::unique_ptr<Ability> AbilityFactory::createPlayerAbility(char id) {
             return std::make_unique<ScanAbility>();
         case 'Q':
             return std::make_unique<QuantumEntanglementAbility>();
+        case 'W':
+            return std::make_unique<WormHoleAbility>();
         case 'p':
             return std::make_unique<PappleAbility>();
         default:

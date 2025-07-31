@@ -54,10 +54,12 @@ class ScanAbility : public Ability {
 };
 
 // Our custom abilities
-class BadConnectionAbility : public Ability {
+class WormHoleAbility : public Ability {
    public:
+    WormHoleAbility();
     void use(Game &game, const std::vector<std::string> &params) override;
 };
+
 class QuantumEntanglementAbility : public Ability {
    public:
     QuantumEntanglementAbility();
