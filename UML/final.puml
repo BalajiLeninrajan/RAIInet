@@ -1,0 +1,269 @@
+@startuml
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam defaultFontName "JetBrains Mono"
+hide empty members
+
+' --- Enums ---
+package "enums" {
+  enum "Link::Direction" as LinkDirection {
+    NORTH
+    SOUTH
+    EAST
+    WEST
+  }
+
+  enum "Link::LinkType" as LinkType {
+    VIRUS
+    DATA
+  }
+}
+
+' --- Model Classes ---
+package "model" {
+    class Game {
+      - std::vector<std::unique_ptr<Player>> players
+      - int currentPlayerIndex
+      - std::unique_ptr<Board> board
+      - std::shared_ptr<LinkManager> linkManager
+      - std::queue<update_type> queue
+
+      + void startGame(...)
+      + void nextTurn()
+      + Board& getBoard() const
+      + Player* checkWinLoss()
+      + Player* getCurrentPlayer()
+      + LinkManager& getLinkManager() const
+      + void makeMove(unsigned link, char dir)
+      + void useAbility(int id, const std::vector<std::string>& params)
+    }
+
+    class Board {
+      - std::vector<std::vector<std::unique_ptr<BaseCell>>> board
+      - unsigned rows
+      - unsigned cols
+
+      + void moveLink(std::pair<int, int> old_coords, std::pair<int, int> new_coords, Game* game)
+      + BaseCell& getCell(std::pair<int, int> coords)
+      + void addFirewall(std::pair<int, int> coords, Player* player)
+    }
+
+    class LinkManager {
+      - std::map<Player*, std::vector<std::unique_ptr<Link>>> linkMap
+      + void addLinksForPlayer(const std::vector<std::string>& links, Player* player, Board* board)
+      + bool removeLink(LinkKey key)
+      + Link& getLink(LinkKey key)
+      + bool applyDecorator(...)
+    }
+
+    abstract class BaseCell {
+      # std::optional<LinkManager::LinkKey> linkKey
+      + virtual void onEnter(LinkManager::LinkKey link, Game *game) = 0
+      + virtual bool isOccupied() const
+    }
+
+    class BoardCell {
+      + void onEnter(LinkManager::LinkKey link, Game *game)
+    }
+
+    abstract class PlayerCell {
+      # std::unique_ptr<BaseCell> base
+      # Player* owner
+    }
+
+    class Server {
+      + void onEnter(LinkManager::LinkKey link, Game *game)
+    }
+
+    class Firewall {
+      + void onEnter(LinkManager::LinkKey link, Game *game)
+    }
+
+    class Goal {
+      + void onEnter(LinkManager::LinkKey link, Game *game)
+    }
+
+    class Player {
+      - std::pair<int, int> score
+      - std::vector<std::unique_ptr<Ability>> abilities
+      - std::shared_ptr<LinkManager> linkManager
+
+      + std::pair<int, int> getScore() const
+      + const std::vector<std::unique_ptr<Ability>>& getAbilities() const
+      + void download(LinkManager::LinkKey linkKey)
+    }
+
+    abstract class Link {
+      # std::pair<int, int> coords
+      # Player* owner
+      # Board* board
+      # int strength
+
+      + virtual LinkType getType() const = 0
+      + virtual bool getRevealState() const
+      + void requestMove(Direction dir, Game* game)
+    }
+
+    class VirusLink {}
+    class DataLink {}
+
+    abstract class LinkDecorator {
+      # std::unique_ptr<Link> base
+    }
+
+    class LinkBoostDecorator {}
+    class PolarizeDecorator {}
+    class RevealDecorator {}
+    class LagDecorator {
+      - int turnsLeft
+    }
+    class QuantumEntanglementDecorator {
+      - Link* partner
+    }
+
+    abstract class Ability {
+      # std::string name
+      # bool used
+
+      + virtual void use(Game &game, const std::vector<std::string> &params) = 0
+      + std::string getName() const
+    }
+
+    class FirewallAbility {}
+    class DownloadAbility {}
+    class LinkBoostAbility {}
+    class PolarizeAbility {}
+    class ScanAbility {}
+    class BadConnectionAbility {}
+    class QuantumEntanglementAbility {}
+    class PappleAbility {}
+}
+
+' --- Controller ---
+package "controller" {
+    class Controller {
+      - std::unique_ptr<Game> game
+      - std::unordered_map<Player*, std::vector<std::unique_ptr<View>>> views
+      - bool gameIsRunning
+
+      + void runGameLoop()
+      + void parseCommand(const std::string& commandLine)
+      + void init(int argc, char* argv[])
+    }
+}
+
+' --- View ---
+package "view" {
+    class TextView {
+        - std::vector<std::vector<std::string>> board
+        + void update(CellUpdate)
+        + void display() const
+    }
+
+    class GraphicsView {
+        + void update(CellUpdate)
+        + void display() const
+    }
+
+    struct PlayerStats {
+        +unsigned id
+        +int abilities
+        +std::pair<int, int> score
+        +std::map<std::string, std::string> links
+    }
+
+         struct CellUpdate {
+            + int row
+            + int col
+        }
+         struct RevealLinkUpdate {
+            + unsigned playerId
+            + unsigned linkId
+            + std::string value
+        }
+         struct AbilityCountUpdate {
+            + unsigned playerId
+            + unsigned abilityCount
+        }
+         struct ScoreUpdate {
+            + unsigned playerId
+            + std::pair<int, int> score
+        }
+
+    abstract class View {
+        # std::vector<PlayerStats> players
+        # const Player *viewer
+        # const Game *game
+
+
+        + virtual void update(CellUpdate) = 0
+        + virtual void update(RevealLinkUpdate) = 0
+        + virtual void update(AbilityCountUpdate) = 0
+        + virtual void update(ScoreUpdate) = 0
+        + virtual void display() const = 0
+    }
+}
+
+' --- Factory Classes ---
+package "factory" {
+
+    class AbilityFactory {
+      + {static} std::unique_ptr<Ability> createPlayerAbility(char id)
+    }
+}
+
+
+' --- Relationships ---
+
+' Composition (Owns-a, manages lifetime)
+Controller *--  Game
+Controller *--  View
+Game       *--  Board
+Game       *--  Player
+Board      *--  BaseCell
+Player     *--  Ability
+LinkManager *-- Link
+LinkDecorator *--  Link
+PlayerCell *--  BaseCell
+
+
+' Aggregation / Association (Has-a, does not manage lifetime)
+Game       o--  LinkManager
+Player     o--  LinkManager
+Link       o--  Player
+Link       o--  Board
+PlayerCell o--  Player
+BaseCell   o--  Link
+
+' Inheritance (Is-a)
+BaseCell <|-- BoardCell
+BaseCell <|-- PlayerCell
+PlayerCell <|-- Server
+PlayerCell <|-- Firewall
+PlayerCell <|-- Goal
+
+Link <|-- VirusLink
+Link <|-- DataLink
+Link <|-- LinkDecorator
+
+LinkDecorator <|-- LinkBoostDecorator
+LinkDecorator <|-- PolarizeDecorator
+LinkDecorator <|-- RevealDecorator
+LinkDecorator <|-- LagDecorator
+LinkDecorator <|-- QuantumEntanglementDecorator
+
+Ability <|-- FirewallAbility
+Ability <|-- DownloadAbility
+Ability <|-- LinkBoostAbility
+Ability <|-- PolarizeAbility
+Ability <|-- ScanAbility
+Ability <|-- BadConnectionAbility
+Ability <|-- QuantumEntanglementAbility
+Ability <|-- PappleAbility
+
+View <|-- TextView
+View <|-- GraphicsView
+
+
+@enduml
