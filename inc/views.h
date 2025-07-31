@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "window.h"
+#include "linkmanager.h"
 
 class Game;
 class Player;
@@ -91,13 +92,38 @@ class GraphicsView : public View, public Xwindow {
     unsigned height;
     unsigned width;
 
+    LinkManager* lm;
+    
+    struct linkDat {
+        int strength;
+        char type;
+        std::string suffix;
+    };
+
+    struct PlayerInfo {
+        bool isAlive;
+        unsigned int revealedLinks;  // bitmask for revealed links
+        std::vector<linkDat> linkRepresentations;
+        unsigned int abilitiesLeft;
+        std::pair<int, int> score;
+        int colour;
+        Player* player;
+    };
+
+    int cPlayer;
+
+    int nPlayers;
+    std::vector<PlayerInfo> players;
+
+
     void drawCell(std::pair<int, int> coords, char cell);
     void drawBoard();
+    void drawPlayerInfo(int playerIndex, int x, int y);
     void displayImpl();
 
    public:
     GraphicsView(const Game *game);
-
+    void refresh();
     void update(CellUpdate update) override;
     void update(RevealLinkUpdate update) override;
     void update(AbilityCountUpdate update) override;

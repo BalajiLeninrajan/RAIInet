@@ -180,6 +180,7 @@ void Controller::init(int argc, char *argv[]) {
 
     if (usingGraphics) {
         graphicsView = std::make_unique<GraphicsView>(game.get());
+        graphicsView->display();
     }
     std::cout << "Starting game\n";
     std::cout << "Player 1's turn. Waiting for command...\n";

@@ -97,7 +97,7 @@ void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
 }
 
 void Xwindow::drawString(int x, int y, string msg) {
-    XDrawString(d, pix, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
+    XDrawString(d, pix, gc, x, y, msg.c_str(), msg.length());
 }
 
 void Xwindow::drawLine(int x1, int y1, int x2, int y2, int thickness, int colour) {
