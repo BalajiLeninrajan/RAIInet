@@ -99,3 +99,11 @@ void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
 void Xwindow::drawString(int x, int y, string msg) {
     XDrawString(d, pix, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
 }
+
+void Xwindow::drawLine(int x1, int y1, int x2, int y2, int thickness, int colour) {
+    XSetForeground(d, gc, colours[colour]);
+    XSetLineAttributes(d, gc, thickness, LineSolid, CapRound, JoinRound);
+    XDrawLine(d, pix, gc, x1, y1, x2, y2);
+    XSetLineAttributes(d, gc, 1, LineSolid, CapRound, JoinRound);
+    XSetForeground(d, gc, colours[Black]);
+}

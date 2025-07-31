@@ -40,6 +40,9 @@ class Xwindow {
     // Draws a string TO BUFFER
     void drawString(int x, int y, std::string msg);
 
+    // Draws a line TO BUFFER
+    void drawLine(int x1, int y1, int x2, int y2, int thickness = 1, int colour = Black);
+
     void display();
 };
 #endif

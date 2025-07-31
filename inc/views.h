@@ -58,7 +58,15 @@ class View {
      * as value.
      */
     virtual void update(RevealLinkUpdate update) = 0;
+
+    /*
+    * update player playerId with that they have abilityCount abilities remaining
+    */
     virtual void update(AbilityCountUpdate update) = 0;
+
+    /*
+    * Update player playerId with that they have [d, v] data/viruses (score)
+    */
     virtual void update(ScoreUpdate update) = 0;
     virtual void display() const = 0;
 };
@@ -79,7 +87,7 @@ class TextView : public View {
     void display() const override;
 };
 
-class GraphicsView : public View {
+class GraphicsView : public View, Xwindow {
     Xwindow window;
     unsigned height;
     unsigned width;
