@@ -112,7 +112,7 @@ void Game::makeMove(unsigned link, char dir) {
     } catch (std::exception& e) {
         std::cout << "Invalid command: " << e.what() << std::endl;
         // comment this out for final build
-        throw e;
+        // throw e;
     }
 }
 
