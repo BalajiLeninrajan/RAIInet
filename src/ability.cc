@@ -1,5 +1,6 @@
 #include "ability.h"
 
+#include <execution>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -236,10 +237,48 @@ void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
     used = true;
 }
 
-// BadConnectionAbility
+// WormHole
+WormHoleAbility::WormHoleAbility() : Ability("WormHole") {}
 
-void BadConnectionAbility::use(Game& game,
-                               const std::vector<std::string>& params) {
+void WormHoleAbility::use(Game& game, const std::vector<std::string>& params) {
+    if (params.size() != 2) {
+        throw std::invalid_argument("Invalid number of parameters");
+    }
+    char linkId = params[0][0];
+    char partnerId = params[1][0];
+    auto linkKey = Ability::getLinkKeyFromId(game, linkId);
+    auto partnerKey = Ability::getLinkKeyFromId(game, partnerId);
+    if (partnerKey.player != linkKey.player &&
+        linkKey.player != game.getCurrentPlayer()) {
+        throw std::invalid_argument("You must own both links to swap them");
+    }
+
+    auto& link = game.getLinkManager().getLink(linkKey);
+    auto& partner = game.getLinkManager().getLink(partnerKey);
+
+    auto linkCoords = link.getCoords();
+    auto partnerCoords = partner.getCoords();
+
+    game.getBoard().getCell(linkCoords).setOccupantLink(partnerKey);
+    game.getBoard().getCell(partnerCoords).setOccupantLink(linkKey);
+
+    link.setCoords(partnerCoords);
+    partner.setCoords(linkCoords);
+
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    View::CellUpdate linkCellUpdate{linkCoords.first, linkCoords.second};
+    View::CellUpdate partnerCellUpdate{partnerCoords.first,
+                                       partnerCoords.second};
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
+    View::AbilityCountUpdate abilityCountUpdate{
+        game.getPlayerIndex(*game.getCurrentPlayer()), abilityCount};
+
+    game.addUpdate(abilityCountUpdate);
+    game.addUpdate(linkCellUpdate);
+    game.addUpdate(partnerCellUpdate);
     used = true;
 }
 
