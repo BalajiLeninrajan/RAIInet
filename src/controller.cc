@@ -177,6 +177,10 @@ void Controller::init(int argc, char *argv[]) {
         views[player].push_back(std::move(text_view));
     }
     gameIsRunning = true;
+
+    if (usingGraphics) {
+        graphicsView = std::make_unique<GraphicsView>(game.get());
+    }
     std::cout << "Starting game\n";
     std::cout << "Player 1's turn. Waiting for command...\n";
 
@@ -211,9 +215,8 @@ void Controller::parseCommand(const std::string &commandLine) {
 
         game->makeMove(id, direction);
         clearStdout();
-        std::cout << "Player "
-                  << game->getPlayerIndex(*game->getCurrentPlayer()) + 1
-                  << "'s turn. Waiting for command...\n";
+        graphicsView->nextTurn();
+        std::cout << "Player " << game->getPlayerIndex(*game->getCurrentPlayer()) + 1 << "'s turn. Waiting for command...\n";
 
         // game->printGameInfo();
 
@@ -259,6 +262,12 @@ void Controller::parseCommand(const std::string &commandLine) {
     } else if (command == "comment") {
         // do nothing; this simply allows for comments in test files run by
         // sequence.
+    } else if (command == "gupdate") {
+        if (graphicsView) {
+            graphicsView->realdisplay();
+        } else {
+            std::cout << "Not using graphics.\n";
+        }
     } else {
         std::cout << "Command not found.\n";
     }
@@ -277,12 +286,23 @@ void Controller::updateViews() {
 
     while (!q.empty()) {
         const auto &update = q.front();
+        std::visit([&](auto &&x) { 
+                if (usingGraphics) {
+                    graphicsView->update(x);
+                }  
+            }, update);
+
         for (const auto &[_, playerViews] : views) {
             for (const auto &view : playerViews) {
-                std::visit([&](auto &&x) { view->update(x); }, update);
+                std::visit([&](auto &&x) { 
+                    view->update(x); 
+                }, update);
             }
         }
         q.pop();
+    }
+    if (usingGraphics) {
+        graphicsView->refresh();
     }
 }
 
@@ -290,6 +310,9 @@ void Controller::display() {
     auto pl = game->getCurrentPlayer();
     for (auto &i : views[pl]) {
         i->display();
+    }
+    if (usingGraphics) {
+        graphicsView->realdisplay();
     }
 }
 

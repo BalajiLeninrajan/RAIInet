@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+#include "window.h"
+#include "linkmanager.h"
+
 class Game;
 class Player;
 class BaseCell;
@@ -56,7 +59,15 @@ class View {
      * as value.
      */
     virtual void update(RevealLinkUpdate update) = 0;
+
+    /*
+    * update player playerId with that they have abilityCount abilities remaining
+    */
     virtual void update(AbilityCountUpdate update) = 0;
+
+    /*
+    * Update player playerId with that they have [d, v] data/viruses (score)
+    */
     virtual void update(ScoreUpdate update) = 0;
     virtual void display() const = 0;
 };
@@ -77,13 +88,52 @@ class TextView : public View {
     void display() const override;
 };
 
-class GraphicsView : public View {
-   public:
-    GraphicsView(const Game *game, const Player *viewer);
+class GraphicsView : public View, public Xwindow {
+    unsigned height;
+    unsigned width;
 
+    LinkManager* lm;
+    Board* b;
+    Game* game;
+    std::vector<std::vector<char>> boardStates;
+    
+    struct linkDat {
+        int strength;
+        char type;
+        std::string suffix;
+        int r;
+        int c;
+    };
+
+    struct PlayerInfo {
+        bool isAlive;
+        unsigned int revealedLinks;  // bitmask for revealed links
+        std::vector<linkDat> linkRepresentations;
+        unsigned int abilitiesLeft;
+        std::pair<int, int> score;
+        int colour;
+        Player* player;
+    };
+
+    int cPlayer;
+
+    int nPlayers;
+    std::vector<PlayerInfo> players;
+
+
+    void drawBoard();
+    void drawPlayerInfo(int playerIndex, int x, int y);
+    void updateCurrentPlayerRevealedLinks();
+    void displayImpl();
+
+   public:
+    GraphicsView(Game *game);
+    void refresh();
     void update(CellUpdate update) override;
     void update(RevealLinkUpdate update) override;
     void update(AbilityCountUpdate update) override;
     void update(ScoreUpdate update) override;
+    void realdisplay();
     void display() const override;
+    void nextTurn();
 };

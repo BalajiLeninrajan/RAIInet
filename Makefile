@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++23 -Wall -g -MMD
+CXXFLAGS=-std=c++23 -Wall -g -MMD -lX11
 DEPFLAGS:=-MMD -MP -Iinc
 EXEC=RAIInet
 

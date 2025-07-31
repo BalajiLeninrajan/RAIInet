@@ -10,6 +10,7 @@
 #include "cell.h"
 #include "game.h"
 #include "link.h"
+#include "window.h"
 #include "linkmanager.h"
 
 View::View(const Game *game, const Player *viewer)
@@ -122,23 +123,3 @@ void TextView::display() const {
     printPlayer(players[game->getPlayerIndex(*viewer)]);
 }
 
-GraphicsView::GraphicsView(const Game *game, const Player *viewer)
-    : View(game, viewer) {};
-
-void GraphicsView::update(View::CellUpdate update) {
-    // TODO: implement
-}
-void GraphicsView::update(View::RevealLinkUpdate update) {
-    // TODO: implement
-}
-void GraphicsView::update(View::AbilityCountUpdate update) {
-    // TODO: implement
-}
-
-void GraphicsView::update(View::ScoreUpdate update) {
-    // TODO: implement
-}
-
-void GraphicsView::display() const {
-    // Does nothing
-}
