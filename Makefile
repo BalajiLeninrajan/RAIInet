@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++23 -Wall -g -MMD -lX11
+CXXFLAGS=-std=c++23 -Wall -g -MMD
 DEPFLAGS:=-MMD -MP -Iinc
 EXEC=RAIInet
 
@@ -9,7 +9,7 @@ OBJ_DIR:=build
 CCFiles=$(wildcard ${SRC_DIR}/*.cc)
 OBJECTS=${CCFiles:${SRC_DIR}/%.cc=${OBJ_DIR}/%.o}
 DEPENDS=${OBJECTS:.o=.d}
-LIBS:=-lboost_program_options
+LIBS:=-lboost_program_options -lX11 -ltbb
 
 ${EXEC}: ${OBJECTS}
 	${CXX} ${CXXFLAGS} ${OBJECTS} -o $@ ${LIBS}
@@ -25,3 +25,5 @@ clean:
 
 debug:
 	@echo ${CCFiles}
+
+
