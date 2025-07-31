@@ -10,6 +10,7 @@
 #include "cell.h"
 #include "game.h"
 #include "link.h"
+#include "linkmanager.h"
 
 View::View(const Game *game, const Player *viewer)
     : players(), viewer(viewer), game(game) {
@@ -73,6 +74,12 @@ void TextView::update(View::CellUpdate update) {
 }
 
 void TextView::update(View::RevealLinkUpdate update) {
+    LinkManager::LinkKey key{game->getPlayers()[update.playerId],
+                             update.linkId};
+    if (key.player != viewer &&
+        !game->getLinkManager().getLink(key).getRevealState()) {
+        return;
+    }
     char base = findBase(update.playerId);
     players[update.playerId].links[std::string(1, base + update.linkId)] =
         update.value;
