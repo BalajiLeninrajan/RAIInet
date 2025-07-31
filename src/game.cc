@@ -116,6 +116,17 @@ void Game::makeMove(unsigned link, char dir) {
     }
 }
 
+std::vector<std::string> Game::showCurrentPlayerAbility() const {
+    std::vector<std::string> res;
+    const auto& abilities = players[currentPlayerIndex]->getAbilities();
+    for (const auto& ability : abilities) {
+        if (!ability->isUsed()) {
+            res.push_back(ability->getName());
+        }
+    }
+    return res;
+}
+
 void Game::addUpdate(update_type update) { queue.push(update); }
 
 std::queue<Game::update_type> Game::flushUpdates() {
@@ -136,7 +147,7 @@ std::vector<Player*> Game::getPlayers() const {
 }
 
 void Game::cleanPlayers() {
-    for (auto &pl: players) {
+    for (auto& pl : players) {
         if (pl != nullptr) {
             // loss condition 1: player has 4 viruses
             bool has4virus = pl->getScore().second >= 4;
@@ -151,7 +162,6 @@ void Game::cleanPlayers() {
                 // set to nullptr
                 pl = nullptr;
             }
-
         }
     }
 }
