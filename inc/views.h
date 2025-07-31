@@ -280,6 +280,11 @@ class GraphicsView : public View, public Xwindow {
      * @param update A ScoreUpdate struct.
      */
     void update(ScoreUpdate update) override;
-
     void realdisplay();
+
+    /**
+     * @brief Placeholder for displaying the graphical game.
+     */
+    void display() const override;
+    void nextTurn();
 };
