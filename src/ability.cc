@@ -280,19 +280,6 @@ void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
                 "YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
         }
     }
-    // bool topLeft = board[1][1]->getOccupantLink().player == currentPlayer;
-    // bool bottomLeft =
-    //     board[board.size() - 3][1]->getOccupantLink().player ==
-    //     currentPlayer;
-    // bool topRight = board[1][board[0].size() - 1]->getOccupantLink().player
-    // ==
-    //                 currentPlayer;
-    // bool bottomRight = board[board.size() - 3][board[0].size() - 2]
-    //                        ->getOccupantLink()
-    //                        .player == currentPlayer;
-    // if (!(topLeft && bottomLeft && topRight && bottomRight)) {
-    //     throw std::runtime_error("YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
-    // }
 
     game.getCurrentPlayer()->setScore({69, 0});
 
