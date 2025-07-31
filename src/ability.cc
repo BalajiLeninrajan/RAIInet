@@ -63,7 +63,11 @@ void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
     View::CellUpdate cellUpdate{coords.first, coords.second};
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(cellUpdate);
@@ -97,12 +101,17 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
                         std::to_string(link.getStrength());
     View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
-    View::ScoreUpdate scoreUpdate{playerId, key.player->getScore()};
+    game.getCurrentPlayer()->download(key);
 
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+    View::ScoreUpdate scoreUpdate{playerId,
+                                  game.getCurrentPlayer()->getScore()};
+
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
-    game.getCurrentPlayer()->download(key);
     game.addUpdate(cellUpdate);
     game.addUpdate(scoreUpdate);
     game.addUpdate(abilityCountUpdate);
@@ -132,7 +141,10 @@ void LinkBoostAbility::use(Game& game, const std::vector<std::string>& params) {
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(abilityCountUpdate);
@@ -171,7 +183,10 @@ void PolarizeAbility::use(Game& game, const std::vector<std::string>& params) {
                         std::to_string(link.getStrength());
     View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(cellUpdate);
@@ -210,7 +225,10 @@ void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
 
     View::RevealLinkUpdate revealUpdate{oppId, key.id, value};
 
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(revealUpdate);
@@ -253,7 +271,10 @@ void QuantumEntanglementAbility::use(Game& game,
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(abilityCountUpdate);
@@ -287,7 +308,10 @@ void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
     View::ScoreUpdate scoreUpdate{playerId,
                                   game.getCurrentPlayer()->getScore()};
 
-    unsigned abilityCount = game.showCurrentPlayerAbility().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(scoreUpdate);

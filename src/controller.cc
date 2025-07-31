@@ -218,9 +218,12 @@ void Controller::parseCommand(const std::string &commandLine) {
         // game->printGameInfo();
 
     } else if (command == "abilities") {
-        std::cout << "Available abilities:" << std::endl;
-        for (const auto &ability : game->showCurrentPlayerAbility()) {
-            std::cout << ability << std::endl;
+        auto &abilities = game->getCurrentPlayer()->getAbilities();
+        std::cout << "Available abilities:\n";
+        for (auto &ability : abilities) {
+            if (!ability->isUsed()) {
+                std::cout << ability->getName() << std::endl;
+            }
         }
     } else if (command == "ability") {
         vector<string> params;

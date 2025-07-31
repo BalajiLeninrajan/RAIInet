@@ -116,17 +116,6 @@ void Game::makeMove(unsigned link, char dir) {
     }
 }
 
-std::vector<std::string> Game::showCurrentPlayerAbility() const {
-    std::vector<std::string> res;
-    const auto& abilities = players[currentPlayerIndex]->getAbilities();
-    for (const auto& ability : abilities) {
-        if (!ability->isUsed()) {
-            res.push_back(ability->getName());
-        }
-    }
-    return res;
-}
-
 void Game::addUpdate(update_type update) { queue.push(update); }
 
 std::queue<Game::update_type> Game::flushUpdates() {

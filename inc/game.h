@@ -51,7 +51,6 @@ class Game {
         const int playerId, const unsigned linkId) const;
 
     void makeMove(unsigned link, char dir);
-    std::vector<std::string> showCurrentPlayerAbility() const;
     void useAbility(int id, const std::vector<std::string>& params);
     void printGameInfo();  // for debugging with no view
 };
