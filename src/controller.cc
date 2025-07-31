@@ -308,7 +308,7 @@ void Controller::updateViews() {
 
 void Controller::display() {
     auto pl = game->getCurrentPlayer();
-    for (auto &i: views[pl]) {
+    for (auto &i : views[pl]) {
         i->display();
     }
     if (usingGraphics) {
@@ -317,7 +317,7 @@ void Controller::display() {
 }
 
 void Controller::clearStdout() {
-    std::cout << "\x1B[2J\x1B[H"; // escape sequences that clear & move cursor
+    std::cout << "\x1B[2J\x1B[H";  // escape sequences that clear & move cursor
 }
 
 Controller::Controller() {}

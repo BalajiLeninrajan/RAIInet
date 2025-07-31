@@ -11,6 +11,7 @@
 #include "game.h"
 #include "link.h"
 #include "window.h"
+#include "linkmanager.h"
 
 View::View(const Game *game, const Player *viewer)
     : players(), viewer(viewer), game(game) {
@@ -74,6 +75,12 @@ void TextView::update(View::CellUpdate update) {
 }
 
 void TextView::update(View::RevealLinkUpdate update) {
+    LinkManager::LinkKey key{game->getPlayers()[update.playerId],
+                             update.linkId};
+    if (key.player != viewer &&
+        !game->getLinkManager().getLink(key).getRevealState()) {
+        return;
+    }
     char base = findBase(update.playerId);
     players[update.playerId].links[std::string(1, base + update.linkId)] =
         update.value;
@@ -89,8 +96,8 @@ void TextView::update(View::ScoreUpdate update) {
 
 void TextView::printPlayer(PlayerStats player) const {
     std::cout << "Player " << player.id + 1 << ":" << std::endl;
-    std::cout << "Downloaded: " << player.score.first << ", "
-              << player.score.second << std::endl;
+    std::cout << "Downloaded: " << player.score.first << "D, "
+              << player.score.second << "V" << std::endl;
     std::cout << "Abilities: " << player.abilities << std::endl;
     for (auto link : player.links) {
         std::cout << link.first << ": " << link.second;

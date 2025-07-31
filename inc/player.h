@@ -13,6 +13,7 @@ class Ability;
 class Player {
     std::pair<int, int> score;  // {data, virus}
     std::vector<std::unique_ptr<Ability>> abilities;
+    int abilitiesUsed;
     std::shared_ptr<LinkManager> linkManager;
 
    public:
@@ -21,6 +22,10 @@ class Player {
 
     std::pair<int, int> getScore() const;
     void setScore(std::pair<int, int> newScore);
+
+    int getAbilitiesUsed() const;
+    void incrementAbilityUse();
+
     const std::vector<std::unique_ptr<Ability>> &getAbilities() const;
 
     void download(LinkManager::LinkKey linkKey);

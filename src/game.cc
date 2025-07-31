@@ -136,7 +136,7 @@ std::vector<Player*> Game::getPlayers() const {
 }
 
 void Game::cleanPlayers() {
-    for (auto &pl: players) {
+    for (auto& pl : players) {
         if (pl != nullptr) {
             // loss condition 1: player has 4 viruses
             bool has4virus = pl->getScore().second >= 4;
@@ -151,7 +151,6 @@ void Game::cleanPlayers() {
                 // set to nullptr
                 pl = nullptr;
             }
-
         }
     }
 }
