@@ -88,8 +88,8 @@ void TextView::update(View::ScoreUpdate update) {
 
 void TextView::printPlayer(PlayerStats player) const {
     std::cout << "Player " << player.id + 1 << ":" << std::endl;
-    std::cout << "Downloaded: " << player.score.first << ", "
-              << player.score.second << std::endl;
+    std::cout << "Downloaded: " << player.score.first << "D, "
+              << player.score.second << "V" << std::endl;
     std::cout << "Abilities: " << player.abilities << std::endl;
     for (auto link : player.links) {
         std::cout << link.first << ": " << link.second;

@@ -82,7 +82,7 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
     char linkId = params[0][0];
     auto key = Ability::getLinkKeyFromId(game, linkId);
     if (key.player == game.getCurrentPlayer()) {
-        throw std::invalid_argument("You can't downlaod a link you own");
+        throw std::invalid_argument("You can't download a link you own");
     }
 
     game.getCurrentPlayer()->download(key);
@@ -267,17 +267,32 @@ void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
     // TODO: DESHITTIFY
     const auto& board = game.getBoard().getBoard();
     Player* currentPlayer = game.getCurrentPlayer();
-    bool topLeft = board[1][1]->getOccupantLink().player == currentPlayer;
-    bool bottomLeft =
-        board[board.size() - 2][1]->getOccupantLink().player == currentPlayer;
-    bool topRight = board[1][board[0].size() - 2]->getOccupantLink().player ==
-                    currentPlayer;
-    bool bottomRight = board[board.size() - 2][board[0].size() - 2]
-                           ->getOccupantLink()
-                           .player == currentPlayer;
-    if (!(topLeft && bottomLeft && topRight && bottomRight)) {
-        throw std::runtime_error("YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
+    std::vector<std::pair<int, int>> corners = {
+        {1, 0},
+        {board.size() - 2, 0},
+        {board.size() - 2, board[0].size() - 1},
+        {1, board[0].size() - 1}};
+    for (std::pair<int, int> corner : corners) {
+        BaseCell& cell = game.getBoard().getCell(corner);
+        if (!cell.isOccupied() ||
+            cell.getOccupantLink().player != currentPlayer) {
+            throw std::runtime_error(
+                "YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
+        }
     }
+    // bool topLeft = board[1][1]->getOccupantLink().player == currentPlayer;
+    // bool bottomLeft =
+    //     board[board.size() - 3][1]->getOccupantLink().player ==
+    //     currentPlayer;
+    // bool topRight = board[1][board[0].size() - 1]->getOccupantLink().player
+    // ==
+    //                 currentPlayer;
+    // bool bottomRight = board[board.size() - 3][board[0].size() - 2]
+    //                        ->getOccupantLink()
+    //                        .player == currentPlayer;
+    // if (!(topLeft && bottomLeft && topRight && bottomRight)) {
+    //     throw std::runtime_error("YOU ARE NOT WORTHY OF THE POWA OF PAPPLE");
+    // }
 
     game.getCurrentPlayer()->setScore({69, 0});
 
