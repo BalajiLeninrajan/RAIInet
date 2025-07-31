@@ -34,8 +34,13 @@ void Game::startGame(
 
     for (unsigned i = 0; i < nPlayers; ++i) {
         std::vector<std::unique_ptr<Ability>> p_abilities;
+        int freq[26] = {0};
         for (auto ch : abilities[i]) {
             p_abilities.push_back(AbilityFactory::createPlayerAbility(ch));
+            if (++freq[ch - 'a'] > 2) {
+                throw std::invalid_argument(
+                    "Incorrect number of abilities/link placements.");
+            }
         }
         players.push_back(
             std::make_unique<Player>(std::move(p_abilities), linkManager));
