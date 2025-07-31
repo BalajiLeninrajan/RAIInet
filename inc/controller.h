@@ -18,6 +18,7 @@ class Controller {
     void generateRandomLinks(std::vector<std::string>& linkList,
                              int placements);
     bool gameIsRunning = false;
+    std::unique_ptr<View> graphicsView;
 
    public:
     Controller();

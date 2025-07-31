@@ -87,15 +87,16 @@ class TextView : public View {
     void display() const override;
 };
 
-class GraphicsView : public View, Xwindow {
-    Xwindow window;
+class GraphicsView : public View, public Xwindow {
     unsigned height;
     unsigned width;
 
     void drawCell(std::pair<int, int> coords, char cell);
+    void drawBoard();
+    void displayImpl();
 
    public:
-    GraphicsView(const Game *game, const Player *viewer);
+    GraphicsView(const Game *game);
 
     void update(CellUpdate update) override;
     void update(RevealLinkUpdate update) override;

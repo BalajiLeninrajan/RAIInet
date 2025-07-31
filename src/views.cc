@@ -116,6 +116,7 @@ void TextView::display() const {
     printPlayer(players[game->getPlayerIndex(*viewer)]);
 }
 
+/*
 // TODO: change height of window so it's not so sadly square
 GraphicsView::GraphicsView(const Game *game, const Player *viewer)
     : View(game, viewer),
@@ -193,3 +194,4 @@ void GraphicsView::update(View::ScoreUpdate update) {
 void GraphicsView::display() const {
     // Does nothing
 }
+*/

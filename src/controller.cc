@@ -177,6 +177,10 @@ void Controller::init(int argc, char *argv[]) {
         views[player].push_back(std::move(text_view));
     }
     gameIsRunning = true;
+
+    if (usingGraphics) {
+        graphicsView = std::make_unique<GraphicsView>(game.get());
+    }
     std::cout << "Starting game\n";
     std::cout << "Player 1's turn. Waiting for command...\n";
 
@@ -257,6 +261,12 @@ void Controller::parseCommand(const std::string &commandLine) {
     } else if (command == "comment") {
         // do nothing; this simply allows for comments in test files run by
         // sequence.
+    } else if (command == "gupdate") {
+        if (graphicsView) {
+            graphicsView->display();
+        } else {
+            std::cout << "Not using graphics.\n";
+        }
     } else {
         std::cout << "Command not found.\n";
     }
