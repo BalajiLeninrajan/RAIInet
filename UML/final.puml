@@ -155,18 +155,6 @@ package "controller" {
 
 ' --- View ---
 package "view" {
-    abstract class View {
-        # std::vector<PlayerStats> players
-        # const Player *viewer
-        # const Game *game
-
-        + virtual void update(CellUpdate) = 0
-        + virtual void update(RevealLinkUpdate) = 0
-        + virtual void update(AbilityCountUpdate) = 0
-        + virtual void update(ScoreUpdate) = 0
-        + virtual void display() const = 0
-    }
-
     class TextView {
         - std::vector<std::vector<std::string>> board
         + void update(CellUpdate)
@@ -177,13 +165,48 @@ package "view" {
         + void update(CellUpdate)
         + void display() const
     }
+
+    struct PlayerStats {
+        +unsigned id
+        +int abilities
+        +std::pair<int, int> score
+        +std::map<std::string, std::string> links
+    }
+
+         struct CellUpdate {
+            + int row
+            + int col
+        }
+         struct RevealLinkUpdate {
+            + unsigned playerId
+            + unsigned linkId
+            + std::string value
+        }
+         struct AbilityCountUpdate {
+            + unsigned playerId
+            + unsigned abilityCount
+        }
+         struct ScoreUpdate {
+            + unsigned playerId
+            + std::pair<int, int> score
+        }
+
+    abstract class View {
+        # std::vector<PlayerStats> players
+        # const Player *viewer
+        # const Game *game
+
+
+        + virtual void update(CellUpdate) = 0
+        + virtual void update(RevealLinkUpdate) = 0
+        + virtual void update(AbilityCountUpdate) = 0
+        + virtual void update(ScoreUpdate) = 0
+        + virtual void display() const = 0
+    }
 }
 
 ' --- Factory Classes ---
 package "factory" {
-    class LinkFactory {
-      + {static} std::unique_ptr<Link> createLink(...)
-    }
 
     class AbilityFactory {
       + {static} std::unique_ptr<Ability> createPlayerAbility(char id)
