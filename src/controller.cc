@@ -277,9 +277,25 @@ void Controller::updateViews() {
 
     while (!q.empty()) {
         const auto &update = q.front();
-        for (const auto &[_, playerViews] : views) {
+        for (const auto &[player, playerViews] : views) {
             for (const auto &view : playerViews) {
-                std::visit([&](auto &&x) { view->update(x); }, update);
+                std::visit(
+                    [&](auto &&x) {
+                        using T = std::decay_t<decltype(x)>;
+                        if constexpr (std::is_same_v<T,
+                                                     View::RevealLinkUpdate>) {
+                            Player *xplayer = game->getPlayers()[x.playerId];
+                            if (xplayer == player ||
+                                game->getLinkManager()
+                                    .getLink({player, x.linkId})
+                                    .getRevealState()) {
+                                view->update(x);
+                            }
+                        } else {
+                            view->update(x);
+                        }
+                    },
+                    update);
             }
         }
         q.pop();
