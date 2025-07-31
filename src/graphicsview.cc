@@ -139,7 +139,24 @@ void GraphicsView::update(View::CellUpdate update) {
 
 void GraphicsView::update(View::RevealLinkUpdate update) {
     // TODO: Implement link reveal update logic
+     LinkManager::LinkKey key{game->getPlayers()[update.playerId],
+                             update.linkId};
 
+    if (!game->getLinkManager().getLink(key).getRevealState()) {
+        for (int i=0; i<nPlayers; ++i) {
+            if (players[i].player == key.player) {
+                players[i].linkRepresentations[update.linkId].type = update.value[0];
+            }
+        }
+    }
+
+    else {
+        for (int i=0; i<nPlayers; ++i) {
+            if (players[i].player == key.player) {
+                players[i].revealedLinks |= (1 << update.linkId);
+            }
+        }
+    }
 }
 
 void GraphicsView::update(View::AbilityCountUpdate update) {
@@ -253,18 +270,11 @@ void GraphicsView::refresh() {
         }
     }
     
-    // Ensure current player can see all their own links
-    updateCurrentPlayerRevealedLinks();
 }
 
 void GraphicsView::nextTurn() {
     cPlayer = (cPlayer + 1) % nPlayers;
-    Xwindow::display();
-}
-
-void GraphicsView::updateCurrentPlayerRevealedLinks() {
-    // Set all bits for the current player's revealedLinks
-    players[cPlayer].revealedLinks = 0xFF; // All 8 bits set to 1
+    clear();
 }
 
 void GraphicsView::displayImpl() {

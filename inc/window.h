@@ -44,5 +44,7 @@ class Xwindow {
     void drawLine(int x1, int y1, int x2, int y2, int thickness = 1, int colour = Black);
 
     void display();
+
+    void clear();
 };
 #endif

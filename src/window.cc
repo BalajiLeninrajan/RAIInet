@@ -107,3 +107,8 @@ void Xwindow::drawLine(int x1, int y1, int x2, int y2, int thickness, int colour
     XSetLineAttributes(d, gc, 1, LineSolid, CapRound, JoinRound);
     XSetForeground(d, gc, colours[Black]);
 }
+
+void Xwindow::clear() {
+    XClearWindow(d, w);
+    XFlush(d);
+}
