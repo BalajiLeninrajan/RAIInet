@@ -211,7 +211,9 @@ void Controller::parseCommand(const std::string &commandLine) {
 
         game->makeMove(id, direction);
         clearStdout();
-        std::cout << "Player " << game->getPlayerIndex(*game->getCurrentPlayer()) + 1 << "'s turn. Waiting for command...\n";
+        std::cout << "Player "
+                  << game->getPlayerIndex(*game->getCurrentPlayer()) + 1
+                  << "'s turn. Waiting for command...\n";
 
         // game->printGameInfo();
 
@@ -286,13 +288,13 @@ void Controller::updateViews() {
 
 void Controller::display() {
     auto pl = game->getCurrentPlayer();
-    for (auto &i: views[pl]) {
+    for (auto &i : views[pl]) {
         i->display();
     }
 }
 
 void Controller::clearStdout() {
-    std::cout << "\x1B[2J\x1B[H"; // escape sequences that clear & move cursor
+    std::cout << "\x1B[2J\x1B[H";  // escape sequences that clear & move cursor
 }
 
 Controller::Controller() {}

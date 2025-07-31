@@ -35,8 +35,8 @@ class Game {
     Board& getBoard() const;
 
     /*
-    * Clean players that have lost all their links.
-    */
+     * Clean players that have lost all their links.
+     */
     void cleanPlayers();
     Player* checkWinLoss();
     Player* getCurrentPlayer();
@@ -51,7 +51,6 @@ class Game {
         const int playerId, const unsigned linkId) const;
 
     void makeMove(unsigned link, char dir);
-    std::vector<std::string> showCurrentPlayerAbility();
     void useAbility(int id, const std::vector<std::string>& params);
     void printGameInfo();  // for debugging with no view
 };

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 #include "board.h"
 #include "cell.h"
@@ -62,7 +63,11 @@ void FirewallAbility::use(Game& game, const std::vector<std::string>& params) {
     View::CellUpdate cellUpdate{coords.first, coords.second};
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(cellUpdate);
@@ -85,21 +90,29 @@ void DownloadAbility::use(Game& game, const std::vector<std::string>& params) {
         throw std::invalid_argument("You can't downlaod a link you own");
     }
 
-    game.getCurrentPlayer()->download(key);
-
     const auto& link = game.getLinkManager().getLink(key);
+
+    View::CellUpdate cellUpdate{link.getCoords().first,
+                                link.getCoords().second};
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
     std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
-                        link.getStrength();
+                        std::to_string(link.getStrength());
     View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
-    View::ScoreUpdate scoreUpdate{playerId, key.player->getScore()};
+    game.getCurrentPlayer()->download(key);
 
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    View::ScoreUpdate scoreUpdate{playerId,
+                                  game.getCurrentPlayer()->getScore()};
+
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
+    game.addUpdate(cellUpdate);
     game.addUpdate(scoreUpdate);
     game.addUpdate(abilityCountUpdate);
 
@@ -128,7 +141,10 @@ void LinkBoostAbility::use(Game& game, const std::vector<std::string>& params) {
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(abilityCountUpdate);
@@ -164,10 +180,13 @@ void PolarizeAbility::use(Game& game, const std::vector<std::string>& params) {
     View::CellUpdate cellUpdate{coords.first, coords.second};
 
     std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
-                        link.getStrength();
+                        std::to_string(link.getStrength());
     View::RevealLinkUpdate revealUpdate{playerId, key.id, value};
 
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(cellUpdate);
@@ -197,21 +216,21 @@ void ScanAbility::use(Game& game, const std::vector<std::string>& params) {
     game.getLinkManager().applyDecorator(key, lambda);
 
     const auto& link = game.getLinkManager().getLink(key);
-    const auto& coords = link.getCoords();
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
-    View::CellUpdate cellUpdate{coords.first, coords.second};
-
     std::string value = (link.getType() == Link::LinkType::DATA ? "D" : "V") +
-                        link.getStrength();
+                        std::to_string(link.getStrength());
     unsigned oppId = game.getPlayerIndex(*key.player);
+
     View::RevealLinkUpdate revealUpdate{oppId, key.id, value};
 
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
-    game.addUpdate(cellUpdate);
     game.addUpdate(revealUpdate);
     game.addUpdate(abilityCountUpdate);
     used = true;
@@ -252,7 +271,10 @@ void QuantumEntanglementAbility::use(Game& game,
 
     unsigned playerId = game.getPlayerIndex(*game.getCurrentPlayer());
 
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(abilityCountUpdate);
@@ -286,7 +308,10 @@ void PappleAbility::use(Game& game, const std::vector<std::string>& params) {
     View::ScoreUpdate scoreUpdate{playerId,
                                   game.getCurrentPlayer()->getScore()};
 
-    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size();
+    game.getCurrentPlayer()->incrementAbilityUse();
+
+    unsigned abilityCount = game.getCurrentPlayer()->getAbilities().size() -
+                            game.getCurrentPlayer()->getAbilitiesUsed();
     View::AbilityCountUpdate abilityCountUpdate{playerId, abilityCount};
 
     game.addUpdate(scoreUpdate);
